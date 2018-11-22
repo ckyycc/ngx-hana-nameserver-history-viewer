@@ -1,6 +1,6 @@
 {
   "name": "ngx-hana-nameserver-history-viewer",
-  "version": "1.0.5",
+  "version": "1.0.7",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -81,6 +81,7 @@
     "@angular/common": "^6.1.10",
     "@angular/core": "^6.1.10",
     "@angular/forms": "^6.1.10",
+    "@angular/cdk": "^6.4.7",
     "@angular/platform-browser": "^6.1.10",
     "zone.js": "^0.8.26",
     "rxjs": "^6.1.0"

@@ -43,12 +43,12 @@ The only file required is the ng-pick-datetime `picker.min.css` file:
 ### Importing The 'ngx-hana-nameserver-history-viewer' Module
 ```TypeScript
 //Import the library
-import { NameserverHistoryModule } from 'NameserverHistoryModule';
+import { NameserverHistoryModule } from 'ngx-hana-nameserver-history-viewer';
 
 @NgModule({
   declarations: [...],
   imports: [
-    DropdownListModule, // Include the library in the imports section
+    NameserverHistoryModule, // Include the library in the imports section
     ...
   ],
   providers: [],
