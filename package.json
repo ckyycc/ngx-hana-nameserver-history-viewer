@@ -49,6 +49,7 @@
     "@types/jasmine": "~2.8.6",
     "@types/jasminewd2": "^2.0.4",
     "@types/node": "~8.9.4",
+    "angular-cli-ghpages": "^0.5.3",
     "chart.js": "^2.7.2",
     "chartjs-plugin-responsive-downsample": "^1.1.1",
     "chartjs-plugin-zoom": "^0.6.5",
