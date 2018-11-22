@@ -1,0 +1,70 @@
+<div #nameserverHistoryAll class="nameserver-history-all" (window:resize)="onResize()">
+  <div class="toolbar-chart">
+    <div class="upload-box-content">
+      <div *ngIf="!showReadFileProgress">
+        <file-drop-input (fileDrop)="fileDropped($event)" (fileInput)="fileSelected($event)"
+                         [dropAreaText]= "abbreviatedFileName"
+                         [inputAreaText]="'Browse'"
+                         [title]="file?.name? file.name:'Select a name server history file from your local disk.'">
+        </file-drop-input>
+      </div>
+      <div *ngIf="showReadFileProgress">
+        <progress-bar [progress]="readProgress"></progress-bar>
+      </div>
+    </div>
+    <div class="input-time">
+     <div class="input-time-range">
+       <time-range-selector [disabled]="showReadFileProgress" [(dateTimeRange)]="dateTimeRange"></time-range-selector>
+     </div>
+      <div class="timezone-selector">
+        <timezone-selector [(timezone)]="timezone" [disabled]="showReadFileProgress"></timezone-selector>
+      </div>
+    </div>
+
+    <div class="port-selection">
+      <div class="port-selector">
+        <port-selector (portChange)="switchPortForChart($event)" [(port)]="port" [ports]="ports" [disabled]="showReadFileProgress"></port-selector>
+      </div>
+      <div class="port-load-button">
+        <button (click)="loadPorts()" title="Load all ports from name server history trace file." [disabled]="!enableShowChartButton || port || !enableLoadPortsButton">{{showReadFileProgress? "Loading..." : "Load"}}</button>
+      </div>
+    </div>
+
+    <div class="chart-operation">
+      <div class="left">
+        <button (click)="showChart()" title="Load and display all data from name server history trace file." [disabled]="!enableShowChartButton">{{showReadFileProgress? "Loading..." : "Show"}}</button>
+      </div>
+      <div class="right">
+        <button (click)="resetChart()" title="Reset zoom of chart." [disabled]="showReadFileProgress || !enableResetChartButton">Reset Chart</button>
+      </div>
+    </div>
+  </div>
+  <div #nameserverHistoryContent class="nameserver-history-content">
+    <div class="nameserver-history-content-chart">
+      <instruction [(show)]="showInstruction" *ngIf="!showChartFlag && showInstruction"
+                   [step1Finished]="file"
+                   [step2Finished]="dateTimeRange && (dateTimeRange[0] || dateTimeRange[1]) || timezone != defaultTimezone"
+                   [step3Finished]="port"
+                   [step4Finished]="stepShowChart && !enableShowChartButton"
+                   [step5Finished]="false">
+      </instruction>
+      <canvas id="chartNameServerHistory" ></canvas>
+    </div>
+    <div class="nameserver-history-content-controller" >
+      <ngx-selection-table (change)="selectItem($event)" *ngIf="showChartFlag"
+                           [filter]="true"
+                           [checkbox]="true"
+                           [tableSource]="tableSource"
+                           [keyColumn]="kpiColumn"
+                           [hiddenColumns]="hiddenColumns"
+                           [tooltipColumn]="descColumn"
+                           [searchStyle]="'searchAll'"
+                           [searchColumn]="kpiColumn"
+                           [multiSelection]="true">
+      </ngx-selection-table>
+    </div>
+  </div>
+</div>
+<div class="message-container" *ngIf="alertMessage">
+  <alert [(alertMessage)]="alertMessage" [alertType]="alertType" [alertTimeout]="30000"></alert>
+</div>

@@ -1,0 +1,10 @@
+﻿<div class="alert-container" *ngIf="message">
+  <div [ngClass]="alertClassType">
+    {{message}}
+    <a class="close" (click)="clearAlert()">&times;</a>
+  </div>
+</div>
+
+
+
+

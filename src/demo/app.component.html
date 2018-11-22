@@ -1,0 +1,31 @@
+<div class="header">
+  <div class="header-content">
+    <!--<span class="header-image"><img src = "../assets/logo.png" alt="SAP HANA Tools" class="logo"></span>-->
+    <span class="header-title">SAP HANA Nameserver History Viewer</span>
+    <div class="header-center">
+      <div class="header-max-rows-limitation">
+        <ngx-dropdown-list [items]="maxRowLimitations"
+                           [multiSelection]="false"
+                           [placeHolder]="'Limit Row Number'"
+                           [(selectedValue)]="maxRowsLimitation"
+                           [suffixText]="' Rows'"
+                           [filterBox]="false"
+                           [formatNumber]="true">
+        </ngx-dropdown-list>
+      </div>
+      <div class="header-hide-measures">
+        <ngx-dropdown-list [items]="measureItems" [multiSelection]="true" [placeHolder]="'Measures'"></ngx-dropdown-list>
+      </div>
+    </div>
+    <a class="header-github" href="https://github.com/ckyycc/ngx-hana-nameserver-history-viewer" target="_blank">View on Github</a>
+  </div>
+  <hr>
+</div>
+<ngx-hana-nameserver-history-viewer
+  [defaultSelectedItems]="defaultSelectedItems"
+  [hideMeasureColumns]="hiddenMeasures"
+  [maxRowsLimitation]="maxRowsLimitation"
+  [showInstruction]="true">
+</ngx-hana-nameserver-history-viewer>
+
+

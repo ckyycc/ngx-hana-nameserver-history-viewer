@@ -1,0 +1,78 @@
+.alert-container {
+  position: relative;
+  width: 100%;
+  text-align: left;
+
+  .fadein {
+    @keyframes fadein {
+      from { opacity:0; }
+      to { opacity:1; }
+    }
+    @-moz-keyframes fadein { /* Firefox */
+      from { opacity:0; }
+      to { opacity:1; }
+    }
+    @-webkit-keyframes fadein { /* Safari and Chrome */
+      from { opacity:0; }
+      to { opacity:1; }
+    }
+    @-o-keyframes fadein { /* Opera */
+      from { opacity:0; }
+      to { opacity:1; }
+    }
+    animation: fadein 1s;
+    -moz-animation: fadein 1s; /* Firefox */
+    -webkit-animation: fadein 1s; /* Safari and Chrome */
+    -o-animation: fadein 1s; /* Opera */
+  }
+
+  .alert {
+    display: inline-block;
+    padding: .50rem 1rem .50rem;
+    border: 1px solid transparent;
+    border-radius: .25rem;
+    font-size: 12px;
+  }
+
+  .alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+    @extend .fadein, .alert;
+  }
+
+  .alert-info {
+    color: #0c5460;
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+    @extend .fadein, .alert;
+
+  }
+
+  .alert-warning {
+    color: #856404;
+    background-color: #fff3cd;
+    border-color: #ffeeba;
+    @extend .fadein, .alert;
+  }
+
+  .alert-error {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    @extend .fadein, .alert;
+  }
+
+  .close {
+    color: #000;
+    text-shadow: 0 1px 0 #fff;
+    opacity: .5;
+    box-sizing: border-box;
+
+    &:hover {
+      cursor: pointer;
+      font-weight: 900;
+      color: red;
+    }
+  }
+}

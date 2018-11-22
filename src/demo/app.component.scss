@@ -1,0 +1,112 @@
+:host {
+  $defaultBorderRadius: 4px;
+  $defaultHeaderHeight: 72px;
+  $defaultSplitLineHeight: $defaultHeaderHeight - 10px;
+  $defaultTop: $defaultSplitLineHeight / 2;
+
+  *, *:before, *:after {
+    font-size: inherit;
+    font-weight: inherit;
+    font-family: inherit;
+    box-sizing: inherit;
+    background: inherit;
+    display: inherit;
+  }
+  .vertical-center {
+    position: absolute;
+    top: $defaultTop;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+  }
+  .horizontal-vertical-center {
+    position: absolute;
+    top: $defaultTop;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+  }
+  .hover-box {
+    outline: 0;
+    box-shadow: 0 0 6px rgba(35, 173, 278, 1);
+    border-radius: $defaultBorderRadius;
+  }
+  .selection-box {
+    position: relative;
+    width: 200px;
+    height: 100%;
+    display: inline-block;
+    background: transparent;
+  }
+  .header {
+    width: 100%;
+    min-width: 1325px;
+    height: $defaultHeaderHeight;
+    display: inline-block;
+    box-sizing: border-box;
+    background: white;
+    position: relative;
+    font-family: Helvetica, Arial, "Microsoft YaHei", "微软雅黑", SimSun, "宋体", Heiti, "黑体", sans-serif;
+    .header-content {
+      width: 98%;
+      margin: 0 1% 0 1%;
+      top: 0;
+      //img.logo {
+      //  width: 72px;
+      //  margin-top: 8px;
+      //}
+      .header-title {
+        color: #575757;
+        font-size: 22px;
+        font-weight: 600;
+        margin: 0;
+        cursor: default;
+        @extend .vertical-center;
+      }
+      .header-center {
+        z-index: 1;
+        width: 410px;
+        left: 50%;
+        @extend .horizontal-vertical-center;
+        .header-max-rows-limitation {
+          float: left;
+          @extend .selection-box;
+        }
+        .header-hide-measures {
+          float: right;
+          @extend .selection-box;
+        }
+      }
+      .header-github {
+        right: 1%;
+        @extend .vertical-center;
+        border: inset 10px transparent;
+        border-radius: $defaultBorderRadius;
+        height: 34px;
+        color: black;
+        text-decoration: none;
+        text-align: center;
+        font-size: 14px;
+        padding-left: 23px;
+        background: url('../assets/GitHub-Mark-32px.png') no-repeat left center;
+        background-size: 16px;
+        -webkit-filter: opacity(50%);
+        filter: opacity(50%);
+        &:hover {
+          @extend .hover-box;
+          -webkit-filter: opacity(85%);
+          filter: opacity(85%);
+        }
+      }
+    }
+    hr {
+      position: absolute;
+      width: 98%;
+      margin: 0 1% 0 1%;
+      top: $defaultSplitLineHeight;
+      display: block;
+      border: 0;
+      border-top: 1px dashed rgba(0, 0, 0, 0.1);
+      border-bottom: 0 solid rgba(255, 255, 255, 0.3);
+    }
+  }
+}

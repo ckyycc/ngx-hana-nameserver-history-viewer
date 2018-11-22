@@ -1,0 +1,31 @@
+@import '../nameserver-history.component.scss';
+
+.time-range {
+  width: 100%;
+  box-sizing: border-box;
+  .time-range-from {
+    width: 48.5%;
+    float: left;
+    margin-left: 1%;
+    margin-right: 1%;
+  }
+  .time-range-to {
+    width: 48.5%;
+    float: right;
+    margin-right: 1%;
+  }
+  input {
+    margin-top: 6px;
+    width: 100%;
+    padding: 6px 12px;
+    color: #495057;
+    cursor: pointer;
+    @extend .solid-box;
+    &:hover {
+      @extend .hover-box
+    }
+    &:disabled {
+      box-shadow: none;
+    }
+  }
+}

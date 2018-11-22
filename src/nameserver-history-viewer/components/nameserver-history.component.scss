@@ -1,0 +1,191 @@
+:host {
+  $defaultFontSize: 14px;
+  $defaultBorderRadius: 4px;
+  $defaultFontWeight: 400;
+  $defaultDashedBorderColor: #0782d0;
+
+  *, *:before, *:after {
+    box-sizing: inherit;
+    display: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    font-family: inherit;
+  }
+
+  .hover-box {
+    outline: 0;
+    box-shadow: 0 0 6px rgba(35, 173, 278, 1);
+  }
+  .dashed-box {
+    background: #f8f8f8;
+    box-shadow: inset 0 20px 20px -20px rgba(0, 0, 0, .6);
+    border: 1px dashed $defaultDashedBorderColor;
+  }
+  .solid-box {
+    background: #fff none;
+    border: 1px solid #ccc;
+    border-radius: $defaultBorderRadius;
+    line-height: 1.42857143;
+  }
+
+  .nameserver-history-all {
+    width: 98%;
+    min-width: 1325px;
+    height: auto;
+    border: 1px none $defaultDashedBorderColor;
+    border-bottom-style: dashed;
+    margin: 3px 1% 3px 1%;
+    box-sizing: border-box;
+    display: inline-block;
+    font-size: $defaultFontSize;
+    font-weight: $defaultFontWeight;
+    font-family: Helvetica, Arial, "Microsoft YaHei", "微软雅黑", SimSun, "宋体", Heiti, "黑体", sans-serif ;
+
+    /*BAR AREA*/
+    .toolbar-chart {
+      width: 100%;
+      height: 48px;
+
+      button {
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+
+        &:hover {
+          text-shadow: 1px 1px 3px royalblue;
+          cursor: pointer;
+          font-weight: 600;
+        }
+        &:disabled {
+          text-shadow: none;
+          opacity: .65;
+          cursor: default;
+          color: darkgrey;
+          font-weight: $defaultFontWeight;
+        }
+      }
+
+      .upload-box-content {
+        width: 20%;
+        height: 100%;
+        float: left;
+        @extend .dashed-box;
+      }
+
+      /*BAR AREA -- CENTER LEFT -- DATE/TIMEZONE SELECTOR*/
+      .input-time {
+        margin-left: 1%;
+        margin-right: 1%;
+        width: 43%;
+        height: 100%;
+        @extend .dashed-box;
+        .input-time-range {
+          height: 100%;
+          width: 57%;
+          float: left;
+        }
+
+        .timezone-selector {
+          margin-top: 6px;
+          height: 100%;
+          width: 42.5%;
+          margin-right: 0.5%;
+          float: right;
+        }
+      }
+
+      /*BAR AREA -- CENTER RIGHT-- PORT SELECTOR*/
+      .port-selection {
+        width: 14%;
+        margin-right: 1%;
+        height: 48px;
+        @extend .dashed-box;
+
+        .port-selector {
+          margin-top: 6px;
+          margin-left: 2%;
+          margin-right: 1%;
+          width: 47%;
+          float: left;
+        }
+
+        .port-load-button {
+          margin-top: 6px;
+          margin-left: 1%;
+          margin-right: 2%;
+          width: 47%;
+          float: right;
+          button {
+            color: #333;
+            width: 100%;
+            padding: 6px 12px;
+            margin-bottom: 0;
+            @extend .solid-box;
+            &:hover {
+              text-shadow: None;
+              font-weight: $defaultFontWeight;
+              @extend .hover-box;
+            }
+            &:disabled {
+              box-shadow: none;
+            }
+          }
+        }
+      }
+
+      /*BAR AREA -- RIGHT -- CHART OPERATION AREA*/
+      .chart-operation {
+        width: 20%;
+        height: 48px;
+        float: right;
+        .left {
+          margin-right: 1%;
+          width: 49%;
+          height: 100%;
+          float: left;
+        }
+        .right {
+          width: 50%;
+          height: 100%;
+          float: right;
+        }
+        button {
+          width: 100%;
+          height: 100%;
+          color: darkblue;
+          @extend .dashed-box;
+        }
+      }
+    }
+
+    /*CHART AREA*/
+    .nameserver-history-content {
+      width: 100%;
+      height: 730px;
+      margin: 5px 5px 5px 0;
+      .nameserver-history-content-chart {
+        width: 75%;
+        height: 100%;
+        position: relative;
+        float: left;
+      }
+      .nameserver-history-content-controller {
+        width: 25%;
+        height: 100%;
+        float: right;
+        overflow: auto;
+      }
+    }
+  }
+
+  /**alert message area**/
+  .message-container {
+    width: 98%;
+    margin: 0 1% 0 1%;
+    box-sizing: border-box;
+    display: inline-block;
+  }
+}
+
+
+

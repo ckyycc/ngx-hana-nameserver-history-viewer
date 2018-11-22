@@ -1,0 +1,33 @@
+<div class="instruction" *ngIf="show">
+  <div class="close" (click)="onClose()">&times;</div>
+  <div class="mandatory" [class.completed]="step1Finished">
+    <label>Select nameserver history file <span class="flag">*</span></label> <br>
+    <ul>
+      <li>Click the "Browse" </li>
+      <li>Drag and drop your file to "Drop File Here"</li>
+    </ul>
+  </div>
+  <div class="optional" [class.completed]="step2Finished">
+    <label>Select time range and timezone <span class="flag">(optional)</span></label> <br>
+    <ul>
+      <li>If you do not select time range, this tool will read from the beginning until it reaches the configured maxRowsLimitation. </li>
+      <li>If you do not select time zone, this tool will use your local default timezone.</li>
+    </ul>
+  </div>
+  <div class="optional" [class.completed]="step3Finished">
+    <label>Select ports <span class="flag">(optional)</span></label> <br>
+    <ul>
+      <li>If you do not choose any port, this tool will try to load data for all ports until it reaches the configured maxRowsLimitation.</li>
+      <li>After choosing one port, this tool will only try to load data for the selected port until it reaches the configured maxRowsLimitation.</li>
+      <li>If you do not know any port information, you can click "Load" to load all ports from the nameserver history file.</li>
+    </ul>
+  </div>
+  <div class="mandatory" [class.completed]="step4Finished">
+    <label>Load the data from nameserver history file and show the chart <span class="flag">*</span></label> <br>
+    <ul><li>Click button "Show"</li></ul>
+  </div>
+  <div class="optional" [class.completed]="step5Finished">
+    <label>Reset the chart <span class="flag">(optional)</span></label> <br>
+    <ul><li>If you zoomed in, you can go back to original status by clicking "Reset Chart"</li></ul>
+  </div>
+</div>
