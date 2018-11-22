@@ -55,7 +55,6 @@ export class FileService {
    * get the time column from the analyzed data
    * @param data the analyzed data
    * @param firstChunk whether it's first chunk or not
-   * @param timezone selected timezone
    * @param startTime selected starting time. It's millisecond, need to be converted second.
    * @param endTime selected ending time. It's millisecond, need to be converted second.
    * @param lastProcessedTime last processed time form last chunk
@@ -67,7 +66,6 @@ export class FileService {
    */
   private static _getTimeColumn(data: string[][],
                                 firstChunk: boolean,
-                                timezone: string,
                                 startTime: number,
                                 endTime: number,
                                 lastProcessedTime: number,
@@ -355,7 +353,7 @@ export class FileService {
 
           // get time column
           ({indexStart, indexEnd, lastProcessedTime, isMDC} = FileService._getTimeColumn(
-            results.data, firstChunk, timezone, startTime, endTime, lastProcessedTime, time, port, isMDC, maxRowsLimitation));
+            results.data, firstChunk, startTime, endTime, lastProcessedTime, time, port, isMDC, maxRowsLimitation));
           printProcessedTime(beginTime, 'step3');
 
           if (indexStart == null && indexEnd == null && lastProcessedTime == null && isMDC == null) {
