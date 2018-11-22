@@ -24,7 +24,10 @@ The only file required is the ng-pick-datetime `picker.min.css` file:
 ```
 {
   ...
-    "styles": ["../node_modules/ng-pick-datetime/assets/style/picker.min.css", ...],
+    "styles": [
+      "../node_modules/ng-pick-datetime/assets/style/picker.min.css",
+      ...
+    ],
   ...
 }
 ```
@@ -57,7 +60,7 @@ export class AppModule { }
 ### Enabling nameserverh history viewer
 ```HTML
 <ngx-hana-nameserver-history-viewer
-  [defaultSelectedItems]="['memoryTotalResident', 'indexserverCpu', 'indexserverMemUsed', 'mvccNum']"
+  [defaultSelectedItems]="['indexserverMemUsed', 'mvccNum']"
   [hideMeasureColumns]="['Sum', 'Last']"
   [maxRowsLimitation]="100000"
   [showInstruction]="true">
