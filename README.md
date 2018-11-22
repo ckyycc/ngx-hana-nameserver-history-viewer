@@ -15,7 +15,7 @@ npm install ngx-hana-nameserver-history-viewer --save
 
 ### Requirements
 
-The library depents on [ngx-selection-table](https://github.com/ckyycc/ngx-selection-table), [ngx-dropdown-list](https://github.com/ckyycc/ngx-dropdown-list), [chart.js](https://github.com/chartjs/Chart.js), [chartjs-plugin-responsive-downsample](https://github.com/3dcl/chartjs-plugin-responsive-downsample), [chartjs-plugin-zoom](https://github.com/chartjs/chartjs-plugin-zoom), [moment-timezone](https://github.com/moment/moment-timezone), [papaparse](https://github.com/mholt/PapaParse) and [ng-pick-datetime](https://github.com/DanielYKPan/date-time-picker).
+The library depents on [ngx-selection-table](https://github.com/ckyycc/ngx-selection-table), [ngx-dropdown-list](https://github.com/ckyycc/ngx-dropdown-list), [moment-timezone](https://github.com/moment/moment-timezone), [papaparse](https://github.com/mholt/PapaParse), [ng-pick-datetime](https://github.com/DanielYKPan/date-time-picker) and [chart.js](https://github.com/chartjs/Chart.js) (with [chartjs-plugin-responsive-downsample](https://github.com/3dcl/chartjs-plugin-responsive-downsample) and [chartjs-plugin-zoom](https://github.com/chartjs/chartjs-plugin-zoom)).
 
 The only file required is the ng-pick-datetime `picker.min.css` file:
 
