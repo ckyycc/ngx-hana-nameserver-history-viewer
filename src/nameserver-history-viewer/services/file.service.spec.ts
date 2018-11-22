@@ -214,7 +214,7 @@ describe('FileService', () => {
   it('#12 getChartContentFromFile: check time of default timezone for MDC name server history', (done: DoneFn) => {
     const service = TestBed.get(FileService);
     // default timezone America/Los_Angeles (GMT -7)
-    timezone = 'America/Los_Angeles';
+    timezone = getDefaultTimezone();
     service.getChartContentFromFile(FSSpecHelper.getMdcFile(), startTime, endTime, port, timezone, maxRow, null)
       .then(result => {
         let servicePort = '30201';
