@@ -6,6 +6,8 @@ An Angular 6 module of SAP HANA nameserver history viewer. Supports MDC, differe
 
 ## DEMO
 Check out the [DEMO](https://ckyycc.github.io/ngx-hana-nameserver-history-viewer/) for more information!
+![small_demo_nameserver_history_viewer](https://raw.githubusercontent.com/ckyycc/ngx-hana-nameserver-history-viewer/master/src/demo/small-demo.gif)
+
 
 ## Installation
 To use ngx-hana-nameserver-history-viewer in your project install it via [npm](https://www.npmjs.com/package/ngx-hana-nameserver-history-viewer):
