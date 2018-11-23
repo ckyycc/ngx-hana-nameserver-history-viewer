@@ -51,7 +51,6 @@
     "@types/node": "~8.9.4",
     "angular-cli-ghpages": "^0.5.3",
     "chart.js": "^2.7.2",
-    "chartjs-plugin-responsive-downsample": "^1.1.1",
     "chartjs-plugin-zoom": "^0.6.5",
     "codelyzer": "~4.2.1",
     "core-js": "^2.5.4",
@@ -89,12 +88,10 @@
   "dependencies": {
     "papaparse": "^4.6.0",
     "chart.js": "^2.7.2",
-    "chartjs-plugin-responsive-downsample": "^1.1.1",
     "chartjs-plugin-zoom": "^0.6.5",
     "moment-timezone": "^0.5.21",
     "ng-pick-datetime": "^6.0.16",
     "ngx-selection-table": "^1.0.5",
     "ngx-dropdown-list": "^1.0.3"
   }
-
 }

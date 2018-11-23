@@ -22,7 +22,7 @@ import { FileService, ChartService, UIService } from '../services';
 
 import 'hammerjs';
 import 'chartjs-plugin-zoom';
-import 'chartjs-plugin-responsive-downsample';
+import '../utils/chartjs-downsample';
 
 @Component({
   selector: 'ngx-hana-nameserver-history-viewer',
@@ -158,6 +158,11 @@ export class NameServerHistoryComponent implements OnInit {
    * selection information for the selection table
    */
   private _selection: SelectionModel<any>;
+
+  /**
+   * current displaying port
+   */
+  private _currentChartPort: string;
 
   constructor(private fileService: FileService,
               private chartService: ChartService,
@@ -299,6 +304,10 @@ export class NameServerHistoryComponent implements OnInit {
    * @param port the selected port
    */
   switchPortForChart(port: string): void {
+    if (port === this._currentChartPort) {
+      // not to switch port, because the relative port is displaying, no need to render twice.
+      return;
+    }
     if (!this.file || !port || port.length === 0 || port.slice(1, 3) === '**') {
       return;
     } else if (Object.keys(this.time).length > 1 && !getRealPorts(Object.keys(this.time).filter(key => this.time[key])).includes(port)) {
@@ -519,6 +528,8 @@ export class NameServerHistoryComponent implements OnInit {
                 {id: HtmlElement.readFileProgress, status: false},
                 {id: HtmlElement.showChartButton, status: true}
               ]);
+              // set port to current displaying port
+              this._currentChartPort = port;
               printProcessedTime(beginTime, 'step_build_chart');
               if (ports && ports.length > 0) {
                 if (!switchFlag) {
