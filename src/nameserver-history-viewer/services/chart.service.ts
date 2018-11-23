@@ -77,7 +77,7 @@ export class ChartService {
       return {
         borderColor: color,
         backgroundColor: color,
-        borderWidth: 2,
+        borderWidth: 1.5,
         spanGaps: false,
         label: header[i],
         data: data[i],
@@ -152,13 +152,11 @@ export class ChartService {
     return {
       type: 'line',
       data: {
-        // labels: this.data[0], // Date Objects
         datasets: ChartService._generateDataSets(data, header, defaultItems)
       },
       options: {
-        elements: {point: {radius: 1, hitRadius: 5, hoverRadius: 5}},
+        elements: {point: {radius: 0, hitRadius: 5, hoverRadius: 5}}, // set radius to 0 not to display point
         responsive: true,
-        // maintainAspectRatio: false,
         animation: {
           duration: 0, // general animation time
         },
@@ -176,7 +174,6 @@ export class ChartService {
         responsiveAnimationDuration: 0, // animation duration after a resize
         legend: {
           position: 'bottom',
-          // onClick: (e, item) => this.legendOnClick(e, item),
           onHover: (e) => {
             e.target.style.cursor = 'pointer';
           },
@@ -190,7 +187,7 @@ export class ChartService {
         },
         responsiveDownsample: {
           enabled: true,
-          desiredDataPointDistance: 5
+          desiredDataPointDistance: 1
         },
         scales: {
           xAxes: ChartService._generateXAxes(time),
