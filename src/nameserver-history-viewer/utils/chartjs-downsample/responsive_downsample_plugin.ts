@@ -73,6 +73,8 @@ export interface ResponsiveDownsamplePluginOptions {
   scaleRange?: data_culling.Range;
 }
 
+// Using dynamic flag to fix the issue of ng-packagr #696: Lambda not supported
+// @dynamic
 /**
  * Chart js Plugin for downsampling data
  */
@@ -231,7 +233,7 @@ export class ResponsiveDownsamplePlugin implements IChartPlugin {
       options.needsUpdate = false;
 
       if (ResponsiveDownsamplePlugin.updateMipMap(chart, options, rangeChanged)) {
-        utils.changeRadiusofPoint(chart, options);
+        utils.changePointRadius(chart, options);
         // update chart and cancel current render
         chart.update(0);
 

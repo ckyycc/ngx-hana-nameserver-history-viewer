@@ -41,7 +41,7 @@ export function clamp(value: number, min: number, max: number): number {
 }
 
 /**
- * Recursivly assign default values to an object if object is missing the keys.
+ * Recursively assign default values to an object if object is missing the keys.
  * @param object The destination object to assign default values to
  * @param defaults The default values for the object
  * @return The destination object
@@ -67,10 +67,9 @@ export function defaultsDeep<T>(object: T, defaults: Partial<T>): T {
  * Finds the first element in an array for that the comaperator functions returns true
  *
  * @export
- * @template T Element type of the array
- * @param {Array<T>} array An array
- * @param {(element: T) => boolean} compareFunction Comperator function returning true for the element seeked
- * @returns {T} The found element or undefined
+ * @param array An array
+ * @param compareFunction Comperator function returning true for the element seeked
+ * @returns The found element or undefined
  */
 export function findInArray<T>(array: Array<T>, compareFunction: (element: T) => boolean): T {
     if (isNil(array)) {
@@ -89,10 +88,9 @@ export function findInArray<T>(array: Array<T>, compareFunction: (element: T) =>
  * Finds the first index in an array for that the comaperator function for an element returns true
  *
  * @export
- * @template T
- * @param {Array<T>} array An array of elements
- * @param {(element: T) => boolean} compareFunction Comperator function returning true for the element seeked
- * @returns {number} Index of the matched element or -1 if no element was found
+ * @param array An array of elements
+ * @param compareFunction Comperator function returning true for the element seeked
+ * @returns Index of the matched element or -1 if no element was found
  */
 export function findIndexInArray<T>(array: Array<T>, compareFunction: (element: T) => boolean): number {
     if (isNil(array)) {
@@ -107,9 +105,9 @@ export function findIndexInArray<T>(array: Array<T>, compareFunction: (element: 
 }
 
 /**
- * if point number less than minNumPoints, show radius for point
+ * If points number is less than minNumPoints, show radius for point.
  */
-export function changeRadiusofPoint(chart, options): void {
+export function changePointRadius(chart, options): void {
   if (chart && chart.data && chart.data.datasets && options) {
     let pointRadiusChangeFlag = false;
     const minNumPoints = options.minNumPoints == null ? 100 : options.minNumPoints;
