@@ -1,6 +1,6 @@
 # ngx-hana-nameserver-history-viewer
 
-[![npm](https://img.shields.io/npm/v/ngx-hana-nameserver-history-viewer.svg?style=flat-square)](https://www.npmjs.com/package/ngx-hana-nameserver-history-viewer) [![Travis](https://img.shields.io/travis/ckyycc/ngx-hana-nameserver-history-viewer.svg?style=flat-square)](https://travis-ci.org/ckyycc/ngx-hana-nameserver-history-viewer) [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://github.com/ckyycc/ngx-hana-nameserver-history-viewer/blob/master/LICENSE)
+[![npm](https://img.shields.io/npm/v/ngx-hana-nameserver-history-viewer.svg?style=flat-square)](https://www.npmjs.com/package/ngx-hana-nameserver-history-viewer) [![npm downloads](https://img.shields.io/npm/dm/ngx-hana-nameserver-history-viewer.svg)](https://www.npmjs.com/package/ngx-hana-nameserver-history-viewer) [![Travis](https://img.shields.io/travis/ckyycc/ngx-hana-nameserver-history-viewer.svg?style=flat-square)](https://travis-ci.org/ckyycc/ngx-hana-nameserver-history-viewer) [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://github.com/ckyycc/ngx-hana-nameserver-history-viewer/blob/master/LICENSE)
 
 An Angular 6 module of SAP HANA nameserver history viewer. Supports MDC, different timezone and zoom-in.
 
