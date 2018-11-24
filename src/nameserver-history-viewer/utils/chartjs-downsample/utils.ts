@@ -105,7 +105,7 @@ export function findIndexInArray<T>(array: Array<T>, compareFunction: (element: 
 }
 
 /**
- * If points number is less than minNumPoints, show radius for point.
+ * If points number is less than minNumPoints, show radius for all points.
  */
 export function changePointRadius(chart, options): void {
   if (chart && chart.data && chart.data.datasets && options) {
