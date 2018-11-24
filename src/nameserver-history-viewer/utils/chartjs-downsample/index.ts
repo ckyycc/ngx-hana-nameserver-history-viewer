@@ -29,15 +29,16 @@ import { ResponsiveDownsamplePlugin, ResponsiveDownsamplePluginOptions } from '.
 export { ResponsiveDownsamplePlugin, ResponsiveDownsamplePluginOptions } from './responsive_downsample_plugin';
 
 
-// Extend chart.js options interface
-// @ts-ignore
-declare module 'chart.js' {
-    interface ChartOptions {
-        /**
-         * Options for responsive downsample plugin
-         */
-        responsiveDownsample?: ResponsiveDownsamplePluginOptions;
-    }
-}
+// comment this because this plugin is only used internally, merge ChartOptions interface is unnecessary
+// and causes build error: "error TS2665: Invalid module name in augmentation.".
+// // Extend chart.js options interface
+// declare module 'chart.js' {
+//     interface ChartOptions {
+//         /**
+//          * Options for responsive downsample plugin
+//          */
+//         responsiveDownsample?: ResponsiveDownsamplePluginOptions;
+//     }
+// }
 
 Chart.pluginService.register(new ResponsiveDownsamplePlugin());
