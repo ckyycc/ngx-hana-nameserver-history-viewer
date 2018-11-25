@@ -77,7 +77,7 @@ export class ChartService {
       return {
         borderColor: color,
         backgroundColor: color,
-        borderWidth: 1.5,
+        borderWidth: 1.25,
         spanGaps: false,
         label: header[i],
         data: data[i],
@@ -187,7 +187,9 @@ export class ChartService {
         },
         responsiveDownsample: {
           enabled: true,
-          desiredDataPointDistance: 1
+          desiredDataPointDistance: 2,
+          minNumPoints: 200,
+          maxNumPointsToDraw: 100
         },
         scales: {
           xAxes: ChartService._generateXAxes(time),

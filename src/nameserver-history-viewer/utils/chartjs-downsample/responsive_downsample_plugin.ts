@@ -48,7 +48,7 @@ export interface ResponsiveDownsamplePluginOptions {
    */
   aggregationAlgorithm?: 'AVG' | 'LTTB';
   /**
-   * Desired mininmal distance between data points in pixels. Default: 1 pixel
+   * Desired minimal distance between data points in pixels. Default: 1 pixel
    */
   desiredDataPointDistance?: number;
   /**
@@ -71,6 +71,10 @@ export interface ResponsiveDownsamplePluginOptions {
    * Scale range of x axis
    */
   scaleRange?: data_culling.Range;
+  /**
+   * Draw points only if the points number less than the limitation
+   */
+  maxNumPointsToDraw?: number;
 }
 
 // Using dynamic flag to fix the issue of ng-packagr #696: Lambda not supported
@@ -86,6 +90,7 @@ export class ResponsiveDownsamplePlugin implements IChartPlugin {
       aggregationAlgorithm: 'LTTB',
       desiredDataPointDistance: 1,
       minNumPoints: 100,
+      maxNumPointsToDraw: 100,
       cullData: true
     });
 
@@ -108,7 +113,7 @@ export class ResponsiveDownsamplePlugin implements IChartPlugin {
   }
 
   static createDataMipMap(chart: Chart, options: ResponsiveDownsamplePluginOptions): void {
-    chart.data.datasets.forEach((dataset: MipMapDataSets, i) => {
+    chart.data.datasets.forEach((dataset: MipMapDataSets) => {
       // @ts-ignore
       const data = !utils.isNil(dataset.originalData) ? dataset.originalData : dataset.data as ChartPoint[];
 
@@ -155,7 +160,7 @@ export class ResponsiveDownsamplePlugin implements IChartPlugin {
   static updateMipMap(chart: Chart, options: ResponsiveDownsamplePluginOptions, rangeChanged: boolean): boolean {
     let updated = false;
 
-    chart.data.datasets.forEach((dataset: MipMapDataSets, i) => {
+    chart.data.datasets.forEach((dataset: MipMapDataSets) => {
       const mipMap = dataset.mipMap;
       if (utils.isNil(mipMap)) {
         return;

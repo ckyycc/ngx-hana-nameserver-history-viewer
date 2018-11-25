@@ -110,9 +110,9 @@ export function findIndexInArray<T>(array: Array<T>, compareFunction: (element: 
 export function changePointRadius(chart, options): void {
   if (chart && chart.data && chart.data.datasets && options) {
     let pointRadiusChangeFlag = false;
-    const minNumPoints = options.minNumPoints == null ? 100 : options.minNumPoints;
+    const maxNumPointsToDraw = options.maxNumPointsToDraw == null ? 100 : options.maxNumPointsToDraw;
     for (const dataset of chart.data.datasets) {
-      if (dataset.data.length < minNumPoints) {
+      if (dataset.data.length < maxNumPointsToDraw) {
         pointRadiusChangeFlag = true;
         break;
       }
