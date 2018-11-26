@@ -19,4 +19,3 @@ export function randomColor(opacity: number): string {
 export function getColorString(rgbaColor: ColorRgba): string {
   return `rgba(${rgbaColor['red']}, ${rgbaColor['green']}, ${rgbaColor['blue']}, ${rgbaColor['alpha']})`;
 }
-
