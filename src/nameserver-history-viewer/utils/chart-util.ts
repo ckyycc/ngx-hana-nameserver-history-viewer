@@ -10,7 +10,7 @@ function _randomColorFactor(): number {
  * @param opacity alpha
  */
 export function randomColor(opacity: number): string {
-  return 'rgba(' + this._randomColorFactor() + ',' + this._randomColorFactor() + ',' + this._randomColorFactor() + ',' + (opacity || '.3') + ')';
+  return 'rgba(' + _randomColorFactor() + ',' + _randomColorFactor() + ',' + _randomColorFactor() + ',' + (opacity || '.3') + ')';
 }
 
 /**
@@ -19,5 +19,4 @@ export function randomColor(opacity: number): string {
 export function getColorString(rgbaColor: ColorRgba): string {
   return `rgba(${rgbaColor['red']}, ${rgbaColor['green']}, ${rgbaColor['blue']}, ${rgbaColor['alpha']})`;
 }
-
 
