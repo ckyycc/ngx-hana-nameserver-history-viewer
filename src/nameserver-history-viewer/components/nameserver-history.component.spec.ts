@@ -169,6 +169,7 @@ describe('NameServerHistoryComponent', () => {
     expect(component.enableShowChartButton).toBe(false);
     expect(component.enableResetChartButton).toBe(false);
   });
+
   // it('#_buildChartFromDataFile: should show Maximum number of lines reached if result gets aborted', fakeAsync(() => {
   //   // set spy on getChartContentFromFile(fileService)
   //   spyOn(FileService.prototype, 'getChartContentFromFile').and.returnValue(Promise.resolve({time: {'30001': [21000000000, 21000000000]},

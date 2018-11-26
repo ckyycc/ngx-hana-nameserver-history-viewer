@@ -54,12 +54,18 @@ export function getDefaultTimezone(): string {
 /**
  * Get time from provided timezone, using this only because chart.js doesn't support timezone.
  * This function will be removed when chart.js starts to support timezone feature.
+ * @param time time in seconds (Epoch time)
+ * @param timezone timezone string, uses local timezone if this is null.
  */
 export function getTimeFromTimeZone (time: number, timezone: string): number {
-  const utcOffset = moment.tz(timezone).utcOffset();
-  const currentOffset = moment.tz(getDefaultTimezone()).utcOffset();
+  if (timezone == null) {
+    timezone = getDefaultTimezone();
+    console.warn(`getTimeFromTimeZone - Input timezone is null, returning the local (${timezone}) time. `);
+  }
+  const utcOffset = moment.tz.zone(timezone).utcOffset(time * 1000);
+  const currentOffset = moment.tz.zone(getDefaultTimezone()).utcOffset(time * 1000);
   // convert to utc and then to selected timezone
-  return time - currentOffset * 60 + utcOffset * 60;
+  return time + currentOffset * 60 - utcOffset * 60;
 }
 
 /**

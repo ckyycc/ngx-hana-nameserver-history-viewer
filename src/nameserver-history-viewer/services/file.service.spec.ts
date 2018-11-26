@@ -3293,10 +3293,10 @@ hanaserver2;;1527846629.804;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-
     const mdcFileBlob = [new Blob([mdcFileContent], { type: 'text/plain' })];
     return new File(mdcFileBlob, 'mdcNameServerHistory.trc', {type: 'text/plain', lastModified: Number(new Date())});
   }
-  static getOffset(timezone): number {
-    const utcOffset = moment.tz(timezone).utcOffset();
-    const currentOffset = moment.tz(getDefaultTimezone()).utcOffset();
-    return (utcOffset - currentOffset) / 60;
+  static getOffset(timezone, time): number {
+    const utcOffset = moment.tz.zone(timezone).utcOffset(time);
+    const currentOffset = moment.tz.zone(getDefaultTimezone()).utcOffset(time);
+    return (currentOffset - utcOffset) / 60;
   }
   static checkMdcTime(firstLineTimes, lastLineTimes, servicePort, result, firstLineExpect, lastLineExpect) {
     firstLineTimes[servicePort] = Math.round(result.time[servicePort][0]);
@@ -3307,7 +3307,7 @@ hanaserver2;;1527846629.804;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-
   static checkNonMdcTimeZone(service, startTime, endTime, servicePort, timezone, maxRow, firstLineTime, lastLineTime, done) {
     service.getChartContentFromFile(FSSpecHelper.getNonMdcFile(), startTime, endTime, servicePort, timezone, maxRow, null)
       .then(result => {
-        const offset = FSSpecHelper.getOffset(timezone);
+        const offset = FSSpecHelper.getOffset(timezone, firstLineTime);
         FSSpecHelper._checkTimeZone(result, servicePort, firstLineTime, lastLineTime, offset);
         done();
       });
@@ -3315,20 +3315,26 @@ hanaserver2;;1527846629.804;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-
   static checkMdcTimezone(service, startTime, endTime, port, timezone, maxRow, firstLineTime, lastLineTime, done) {
     service.getChartContentFromFile(FSSpecHelper.getMdcFile(), startTime, endTime, port, timezone, maxRow, null)
       .then(result => {
-        const offset = FSSpecHelper.getOffset(timezone);
         let serverPort = '30201';
+        let offset = FSSpecHelper.getOffset(timezone, firstLineTime[serverPort]);
         FSSpecHelper._checkTimeZone(result, serverPort, firstLineTime[serverPort], lastLineTime[serverPort], offset);
         serverPort = '30203';
+        offset = FSSpecHelper.getOffset(timezone, firstLineTime[serverPort]);
         FSSpecHelper._checkTimeZone(result, serverPort, firstLineTime[serverPort], lastLineTime[serverPort], offset);
         serverPort = '30207';
+        offset = FSSpecHelper.getOffset(timezone, firstLineTime[serverPort]);
         FSSpecHelper._checkTimeZone(result, serverPort, firstLineTime[serverPort], lastLineTime[serverPort], offset);
         serverPort = '30240';
+        offset = FSSpecHelper.getOffset(timezone, firstLineTime[serverPort]);
         FSSpecHelper._checkTimeZone(result, serverPort, firstLineTime[serverPort], lastLineTime[serverPort], offset);
         serverPort = '30243';
+        offset = FSSpecHelper.getOffset(timezone, firstLineTime[serverPort]);
         FSSpecHelper._checkTimeZone(result, serverPort, firstLineTime[serverPort], lastLineTime[serverPort], offset);
         serverPort = '30246';
+        offset = FSSpecHelper.getOffset(timezone, firstLineTime[serverPort]);
         FSSpecHelper._checkTimeZone(result, serverPort, firstLineTime[serverPort], lastLineTime[serverPort], offset);
         serverPort = '30249';
+        offset = FSSpecHelper.getOffset(timezone, firstLineTime[serverPort]);
         FSSpecHelper._checkTimeZone(result, serverPort, firstLineTime[serverPort], lastLineTime[serverPort], offset);
         done();
       });
