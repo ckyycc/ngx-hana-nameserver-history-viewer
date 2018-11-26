@@ -4,7 +4,7 @@ import { Chart } from 'chart.js';
 import { getColorString, randomColor } from '../utils';
 import { UIService } from './ui.service';
 import { SelectionModel } from '@angular/cdk/collections';
-import { ChartContentDataItem } from '../types';
+import { ChartContentDataItem, LegendColor } from '../types';
 
 // Using dynamic flag to fix the issue of ng-packagr #696: Lambda not supported
 // @dynamic
@@ -69,11 +69,11 @@ export class ChartService {
   /**
    * Generate DataSets by the data and header information
    */
-  private static _generateDataSets(data: ChartContentDataItem[][], header: string[], defaultItems: string[]): any {
+  private static _generateDataSets(data: ChartContentDataItem[][], header: string[], headerKey: string[], defaultItems: string[]): any {
     const alpha = 0.5;
-    const colors = UIService.getColors(alpha);
+    const colors: LegendColor = UIService.getColors(alpha);
     return data.map((item, i) => {
-      const color =  i < colors.length ? getColorString(colors[i]) : randomColor(alpha);
+      const color = colors[headerKey[i]] ? getColorString(colors[headerKey[i]]) : randomColor(alpha);
       return {
         borderColor: color,
         backgroundColor: color,
@@ -143,6 +143,7 @@ export class ChartService {
                                       data: ChartContentDataItem[][],
                                       yScale: number[],
                                       header: string[],
+                                      headerKey: string[],
                                       selection: SelectionModel<any>,
                                       tableSource: any,
                                       title: string,
@@ -152,7 +153,7 @@ export class ChartService {
     return {
       type: 'line',
       data: {
-        datasets: ChartService._generateDataSets(data, header, defaultItems)
+        datasets: ChartService._generateDataSets(data, header, headerKey, defaultItems)
       },
       options: {
         elements: {point: {radius: 0, hitRadius: 5, hoverRadius: 5}}, // set radius to 0 not to display point
@@ -301,6 +302,7 @@ export class ChartService {
                     data: ChartContentDataItem[][],
                     yScale: number[],
                     header: string[],
+                    headerKey: string[],
                     selection: SelectionModel<any>,
                     tableSource: any,
                     title: string,
@@ -308,7 +310,7 @@ export class ChartService {
                     zoomCB): Promise<any> {
     return new Promise((resolve) => {
       const ctx = (<HTMLCanvasElement> document.getElementById('chartNameServerHistory')).getContext('2d');
-      const cfg: any = ChartService._generateChartConfig(time, data, yScale, header, selection, tableSource, title, defaultItems, zoomCB);
+      const cfg: any = ChartService._generateChartConfig(time, data, yScale, header, headerKey, selection, tableSource, title, defaultItems, zoomCB);
       this._chart = new Chart(ctx, cfg);
       resolve();
     });

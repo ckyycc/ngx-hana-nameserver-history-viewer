@@ -16,6 +16,7 @@ import {
   LoadHistoryInfoThreads,
   ChartContentDataItem,
   ChartContentHeader,
+  LegendColor,
   ScaleGroup,
   Unit,
   UnitType,
@@ -32,211 +33,76 @@ export class UIService {
   private _loadHistoryInfos = {};
 
   /**
-   * get the 65 generated colors
+   * get the colors for legends
    */
-  public static getColors(alpha: number = null): ColorRgba[] {
+  public static getColors(alpha: number = null): LegendColor {
     if (alpha == null) {
-      alpha = 0.5;
+      alpha = 0.8;
     }
-    return [
-      // this._getRgbColor(157, 134, 216, alpha),
-      // this._getRgbColor(90, 178, 45, alpha),
-      // this._getRgbColor(155, 58, 181, alpha),
-      // this._getRgbColor(72, 200, 91, alpha),
-      // this._getRgbColor(209, 108, 231, alpha),
-      // this._getRgbColor(152, 190, 48, alpha),
-      // this._getRgbColor(151, 102, 225, alpha),
-      // this._getRgbColor(131, 205, 97, alpha),
-      // this._getRgbColor(196, 49, 159, alpha),
-      // this._getRgbColor(58, 195, 125, alpha),
-      // this._getRgbColor(234, 99, 199, alpha),
-      // this._getRgbColor(49, 140, 46, alpha),
-      // this._getRgbColor(97, 93, 205, alpha),
-      // this._getRgbColor(187, 187, 52, alpha),
-      // this._getRgbColor(72, 117, 215, alpha),
-      // this._getRgbColor(223, 169, 57, alpha),
-      // this._getRgbColor(145, 72, 160, alpha),
-      // this._getRgbColor(98, 151, 50, alpha),
-      // this._getRgbColor(235, 72, 148, alpha),
-      // this._getRgbColor(93, 204, 173, alpha),
-      // this._getRgbColor(216, 48, 82, alpha),
-      // this._getRgbColor(70, 202, 210, alpha),
-      // this._getRgbColor(221, 79, 37, alpha),
-      // this._getRgbColor(95, 199, 242, alpha),
-      // this._getRgbColor(227, 125, 43, alpha),
-      // this._getRgbColor(106, 151, 222, alpha),
-      // this._getRgbColor(145, 140, 34, alpha),
-      // this._getRgbColor(204, 125, 217, alpha),
-      // this._getRgbColor(155, 184, 89, alpha),
-      // this._getRgbColor(189, 42, 115, alpha),
-      // this._getRgbColor(121, 191, 128, alpha),
-      // this._getRgbColor(186, 72, 147, alpha),
-      // this._getRgbColor(69, 140, 80, alpha),
-      // this._getRgbColor(229, 92, 132, alpha),
-      // this._getRgbColor(60, 158, 129, alpha),
-      // this._getRgbColor(232, 88, 75, alpha),
-      // this._getRgbColor(40, 163, 169, alpha),
-      // this._getRgbColor(169, 49, 32, alpha),
-      // this._getRgbColor(65, 159, 208, alpha),
-      // this._getRgbColor(182, 87, 35, alpha),
-      // this._getRgbColor(72, 106, 164, alpha),
-      // this._getRgbColor(177, 120, 33, alpha),
-      // this._getRgbColor(112, 89, 160, alpha),
-      // this._getRgbColor(197, 180, 98, alpha),
-      // this._getRgbColor(157, 64, 115, alpha),
-      // this._getRgbColor(83, 107, 40, alpha),
-      // this._getRgbColor(230, 133, 192, alpha),
-      // this._getRgbColor(43, 111, 77, alpha),
-      // this._getRgbColor(173, 50, 86, alpha),
-      // this._getRgbColor(146, 156, 90, alpha),
-      // this._getRgbColor(189, 167, 233, alpha),
-      // this._getRgbColor(115, 103, 28, alpha),
-      // this._getRgbColor(195, 128, 176, alpha),
-      // this._getRgbColor(233, 153, 92, alpha),
-      // this._getRgbColor(145, 83, 131, alpha),
-      // this._getRgbColor(221, 171, 122, alpha),
-      // this._getRgbColor(148, 69, 90, alpha),
-      // this._getRgbColor(163, 128, 72, alpha),
-      // this._getRgbColor(227, 136, 155, alpha),
-      // this._getRgbColor(141, 84, 41, alpha),
-      // this._getRgbColor(228, 128, 123, alpha),
-      // this._getRgbColor(194, 120, 80, alpha),
-      // this._getRgbColor(196, 78, 75, alpha),
-      // this._getRgbColor(237, 134, 104, alpha),
-      // this._getRgbColor(174, 89, 90, alpha),
-
-      // this._getRgbColor(55, 173, 125, alpha),
-      // this._getRgbColor(208, 50, 163, alpha),
-      // this._getRgbColor(76, 201, 86, alpha),
-      // this._getRgbColor(138, 60, 186, alpha),
-      // this._getRgbColor(124, 194, 63, alpha),
-      // this._getRgbColor(180, 101, 229, alpha),
-      // this._getRgbColor(79, 157, 36, alpha),
-      // this._getRgbColor(152, 114, 231, alpha),
-      // this._getRgbColor(165, 186, 46, alpha),
-      // this._getRgbColor(88, 80, 188, alpha),
-      // this._getRgbColor(225, 179, 56, alpha),
-      // this._getRgbColor(83, 121, 236, alpha),
-      // this._getRgbColor(184, 166, 42, alpha),
-      // this._getRgbColor(156, 56, 156, alpha),
-      // this._getRgbColor(57, 209, 143, alpha),
-      // this._getRgbColor(237, 108, 211, alpha),
-      // this._getRgbColor(57, 146, 60, alpha),
-      // this._getRgbColor(191, 89, 192, alpha),
-      // this._getRgbColor(103, 193, 106, alpha),
-      // this._getRgbColor(188, 46, 129, alpha),
-      // this._getRgbColor(68, 209, 187, alpha),
-      // this._getRgbColor(226, 60, 86, alpha),
-      // this._getRgbColor(88, 210, 204, alpha),
-      // this._getRgbColor(220, 78, 46, alpha),
-      // this._getRgbColor(84, 185, 229, alpha),
-      // this._getRgbColor(216, 144, 33, alpha),
-      // this._getRgbColor(74, 97, 176, alpha),
-      // this._getRgbColor(225, 123, 49, alpha),
-      // this._getRgbColor(127, 151, 228, alpha),
-      // this._getRgbColor(104, 127, 33, alpha),
-      // this._getRgbColor(159, 122, 214, alpha),
-      // this._getRgbColor(148, 177, 82, alpha),
-      // this._getRgbColor(240, 83, 148, alpha),
-      // this._getRgbColor(59, 129, 68, alpha),
-      // this._getRgbColor(207, 48, 106, alpha),
-      // this._getRgbColor(117, 198, 153, alpha),
-      // this._getRgbColor(179, 46, 52, alpha),
-      // this._getRgbColor(60, 185, 197, alpha),
-      // this._getRgbColor(178, 95, 37, alpha),
-      // this._getRgbColor(71, 139, 196, alpha),
-      // this._getRgbColor(191, 172, 85, alpha),
-      // this._getRgbColor(126, 77, 153, alpha),
-      // this._getRgbColor(133, 185, 115, alpha),
-      // this._getRgbColor(219, 134, 217, alpha),
-      // this._getRgbColor(42, 106, 69, alpha),
-      // this._getRgbColor(198, 90, 158, alpha),
-      // this._getRgbColor(84, 154, 115, alpha),
-      // this._getRgbColor(153, 62, 118, alpha),
-      // this._getRgbColor(31, 147, 131, alpha),
-      // this._getRgbColor(221, 104, 98, alpha),
-      // this._getRgbColor(99, 104, 162, alpha),
-      // this._getRgbColor(218, 159, 90, alpha),
-      // this._getRgbColor(197, 155, 216, alpha),
-      // this._getRgbColor(100, 109, 45, alpha),
-      // this._getRgbColor(236, 134, 172, alpha),
-      // this._getRgbColor(166, 172, 108, alpha),
-      // this._getRgbColor(173, 106, 153, alpha),
-      // this._getRgbColor(134, 102, 30, alpha),
-      // this._getRgbColor(192, 84, 111, alpha),
-      // this._getRgbColor(166, 129, 78, alpha),
-      // this._getRgbColor(147, 61, 89, alpha),
-      // this._getRgbColor(229, 142, 104, alpha),
-      // this._getRgbColor(165, 85, 84, alpha),
-      // this._getRgbColor(227, 138, 138, alpha),
-      // this._getRgbColor(154, 76, 43, alpha),
-
-      this._getRgbColor(101, 123, 236, alpha),
-      this._getRgbColor(133, 92, 31, alpha),
-      this._getRgbColor(166, 188, 58, alpha),
-      this._getRgbColor(85, 82, 185, alpha),
-      this._getRgbColor(151, 216, 100, alpha),
-      this._getRgbColor(74, 41, 132, alpha),
-      this._getRgbColor(76, 220, 139, alpha),
-      this._getRgbColor(164, 61, 157, alpha),
-      this._getRgbColor(106, 194, 98, alpha),
-      this._getRgbColor(230, 124, 220, alpha),
-      this._getRgbColor(52, 132, 42, alpha),
-      this._getRgbColor(151, 120, 226, alpha),
-      this._getRgbColor(141, 188, 77, alpha),
-      this._getRgbColor(172, 104, 202, alpha),
-      this._getRgbColor(100, 139, 30, alpha),
-      this._getRgbColor(59, 120, 214, alpha),
-      this._getRgbColor(208, 182, 60, alpha),
-      this._getRgbColor(60, 64, 138, alpha),
-      this._getRgbColor(229, 167, 63, alpha),
-      this._getRgbColor(108, 137, 229, alpha),
-      this._getRgbColor(171, 142, 24, alpha),
-      this._getRgbColor(55, 158, 231, alpha),
-      this._getRgbColor(212, 129, 34, alpha),
-      this._getRgbColor(72, 98, 169, alpha),
-      this._getRgbColor(164, 179, 76, alpha),
-      this._getRgbColor(106, 45, 113, alpha),
-      this._getRgbColor(109, 198, 122, alpha),
-      this._getRgbColor(204, 60, 126, alpha),
-      this._getRgbColor(75, 183, 126, alpha),
-      this._getRgbColor(190, 79, 156, alpha),
-      this._getRgbColor(50, 143, 75, alpha),
-      this._getRgbColor(208, 54, 66, alpha),
-      this._getRgbColor(54, 222, 230, alpha),
-      this._getRgbColor(174, 48, 31, alpha),
-      this._getRgbColor(67, 194, 158, alpha),
-      this._getRgbColor(208, 65, 86, alpha),
-      this._getRgbColor(133, 185, 115, alpha),
-      this._getRgbColor(134, 40, 97, alpha),
-      this._getRgbColor(159, 192, 105, alpha),
-      this._getRgbColor(156, 114, 193, alpha),
-      this._getRgbColor(194, 177, 82, alpha),
-      this._getRgbColor(124, 147, 220, alpha),
-      this._getRgbColor(197, 97, 37, alpha),
-      this._getRgbColor(217, 146, 217, alpha),
-      this._getRgbColor(53, 106, 42, alpha),
-      this._getRgbColor(174, 42, 81, alpha),
-      this._getRgbColor(93, 115, 35, alpha),
-      this._getRgbColor(214, 116, 167, alpha),
-      this._getRgbColor(170, 161, 86, alpha),
-      this._getRgbColor(142, 44, 83, alpha),
-      this._getRgbColor(224, 156, 78, alpha),
-      this._getRgbColor(225, 113, 151, alpha),
-      this._getRgbColor(153, 116, 29, alpha),
-      this._getRgbColor(226, 106, 129, alpha),
-      this._getRgbColor(212, 170, 103, alpha),
-      this._getRgbColor(143, 41, 49, alpha),
-      this._getRgbColor(218, 139, 87, alpha),
-      this._getRgbColor(149, 57, 74, alpha),
-      this._getRgbColor(233, 113, 80, alpha),
-      this._getRgbColor(124, 40, 22, alpha),
-      this._getRgbColor(237, 100, 95, alpha),
-      this._getRgbColor(160, 70, 29, alpha),
-      this._getRgbColor(223, 111, 112, alpha),
-      this._getRgbColor(178, 65, 56, alpha),
-      this._getRgbColor(215, 122, 96, alpha),
-    ];
+    return {
+      cpuUsed                        : this._getRgbColor(199, 21, 133, alpha), // mediumvioletred
+      memoryResident                 : this._getRgbColor(238, 130, 238, alpha), // violet
+      memoryTotalResident            : this._getRgbColor(72, 61, 139, alpha), // darkslateblue
+      memoryUsed                     : this._getRgbColor(0, 0, 205, alpha), // mediumblue
+      memoryLimit                    : this._getRgbColor(255, 105, 180, alpha), // hotpink
+      memorySize                     : this._getRgbColor(70, 130, 180, alpha), // steelblue
+      diskUsed                       : this._getRgbColor(25, 25, 112, alpha), // midnightblue
+      diskSize                       : this._getRgbColor(0, 255, 255, alpha), // aqua
+      networkIn                      : this._getRgbColor(102, 51, 153, alpha), // rebeccapurple
+      networkOut                     : this._getRgbColor(245, 222, 179, alpha), // wheat
+      swapIn                         : this._getRgbColor(47, 79, 79, alpha), // darkslategray
+      swapOut                        : this._getRgbColor(205, 92, 92, alpha), // indianred
+      indexserverCpu                 : this._getRgbColor(255, 99, 71, alpha), // tomato
+      indexserverCpuSys              : this._getRgbColor(255, 20, 147, alpha), // deeppink
+      indexserverMemUsed             : this._getRgbColor(0, 255, 0, alpha), // lime
+      indexserverMemLimit            : this._getRgbColor(139, 0, 0, alpha), // darkred
+      indexserverHandles             : this._getRgbColor(139, 0, 139, alpha), // darkmagenta
+      indexserverPingtime            : this._getRgbColor(189, 183, 107, alpha), // darkkhaki
+      indexserverSwapIn              : this._getRgbColor(112, 128, 144, alpha), // slategray
+      sqlConnections                 : this._getRgbColor(85, 107, 47, alpha), // darkolivegreen
+      internalConnections            : this._getRgbColor(46, 139, 87, alpha), // seagreen
+      externalConnections            : this._getRgbColor(147, 112, 219, alpha), // mediumpurple
+      idleConnections                : this._getRgbColor(216, 191, 216, alpha), // thistle
+      sqlTransactions                : this._getRgbColor(220, 20, 60, alpha), // crimson
+      internalTransactions           : this._getRgbColor(186, 85, 211, alpha), // mediumorchid
+      externalTransactions           : this._getRgbColor(221, 160, 221, alpha), // plum
+      userTransactions               : this._getRgbColor(210, 105, 30, alpha), // chocolate
+      sqlBlockedTrans                : this._getRgbColor(0, 0, 255, alpha), // blue
+      sqlStatements                  : this._getRgbColor(188, 143, 143, alpha), // rosybrown
+      cidRange                       : this._getRgbColor(32, 178, 170, alpha), // lightseagreen
+      tidRange                       : this._getRgbColor(124, 252, 0, alpha), // lawngreen
+      pendingRequestCount            : this._getRgbColor(160, 32, 240, alpha), // purple3
+      mvccNum                        : this._getRgbColor(65, 105, 225, alpha), // royalblue
+      acquiredRecordLocks            : this._getRgbColor(0, 250, 154, alpha), // mediumspringgreen
+      searchCount                    : this._getRgbColor(127, 255, 212, alpha), // aquamarine
+      indexingCount                  : this._getRgbColor(0, 191, 255, alpha), // deepskyblue
+      mergeCount                     : this._getRgbColor(135, 206, 235, alpha), // skyblue
+      unloadCount                    : this._getRgbColor(255, 165, 0, alpha), // orange
+      indexserverThreads             : this._getRgbColor(0, 100, 0, alpha), // darkgreen
+      waitingThreads                 : this._getRgbColor(176, 48, 96, alpha), // maroon3
+      totalThreads                   : this._getRgbColor(100, 149, 237, alpha), // cornflower
+      activeSqlExecutors             : this._getRgbColor(175, 238, 238, alpha), // paleturquoise
+      waitingSqlExecutors            : this._getRgbColor(50, 205, 50, alpha), // limegreen
+      totalSqlExecutors              : this._getRgbColor(240, 230, 140, alpha), // khaki
+      dataWriteSize                  : this._getRgbColor(102, 205, 170, alpha), // mediumaquamarine
+      dataWriteTime                  : this._getRgbColor(169, 169, 169, alpha), // darkgray
+      logWriteSize                   : this._getRgbColor(160, 82, 45, alpha), // sienna
+      logWriteTime                   : this._getRgbColor(128, 128, 0, alpha), // olive
+      dataReadSize                   : this._getRgbColor(255, 215, 0, alpha), // gold
+      dataReadTime                   : this._getRgbColor(95, 158, 160, alpha), // cadetblue
+      logReadSize                    : this._getRgbColor(255, 0, 0, alpha), // red
+      logReadTime                    : this._getRgbColor(184, 134, 11, alpha), // darkgoldenrod
+      dataBackupWriteSize            : this._getRgbColor(255, 255, 0, alpha), // yellow
+      dataBackupWriteTime            : this._getRgbColor(154, 205, 50, alpha), // yellowgreen
+      logBackupWriteSize             : this._getRgbColor(0, 0, 139, alpha), // darkblue
+      logBackupWriteTime             : this._getRgbColor(219, 112, 147, alpha), // palevioletred
+      mutexCollisionCount            : this._getRgbColor(244, 164, 96, alpha), // sandybrown
+      readWriteLockCollisionCount    : this._getRgbColor(233, 150, 122, alpha), // darksalmon
+      admissinControlAdmitCount      : this._getRgbColor(143, 188, 143, alpha), // darkseagreen
+      admissionControlRejectCount    : this._getRgbColor(255, 0, 255, alpha), // fuchsia
+      admissionControlWaitingRequests: this._getRgbColor(153, 50, 204, alpha), // darkorchid
+      admissionControlWaitTime       : this._getRgbColor(144, 238, 144, alpha), // lightgreen
+    };
   }
 
   private static get _unitType(): any {

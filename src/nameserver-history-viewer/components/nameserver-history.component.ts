@@ -515,6 +515,7 @@ export class NameServerHistoryComponent implements OnInit {
             this.data[port],
             this.uiService.getYScale(this._headerKey, port),
             this._headerText,
+            this._headerKey,
             this._selection,
             this.tableSource,
             this._getHostTitle(port),

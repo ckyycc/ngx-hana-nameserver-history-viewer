@@ -24,4 +24,4 @@ export * from './chart-content-data.types';
 export * from './chart-content-time.types';
 export * from './chart-content.types';
 export * from './chart-content-header.types';
-
+export * from './legend-color.types';
