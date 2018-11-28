@@ -1,6 +1,6 @@
 {
   "name": "ngx-hana-nameserver-history-viewer",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -51,7 +51,6 @@
     "@types/node": "~8.9.4",
     "angular-cli-ghpages": "^0.5.3",
     "chart.js": "^2.7.2",
-    "chartjs-plugin-zoom": "^0.6.5",
     "codelyzer": "~4.2.1",
     "core-js": "^2.5.4",
     "hammerjs": "^2.0.8",
@@ -88,7 +87,7 @@
   "dependencies": {
     "papaparse": "^4.6.0",
     "chart.js": "^2.7.2",
-    "chartjs-plugin-zoom": "^0.6.5",
+    "hammerjs": "^2.0.8",
     "moment-timezone": "^0.5.21",
     "ng-pick-datetime": "^6.0.16",
     "ngx-selection-table": "^1.0.5",

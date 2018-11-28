@@ -21,8 +21,8 @@ import { Abort, Alert, HtmlElement, Item, ChartContentData, ChartContentHeader, 
 import { FileService, ChartService, UIService } from '../services';
 
 import 'hammerjs';
-import 'chartjs-plugin-zoom';
 import '../utils/chartjs-downsample';
+import '../utils/chartjs-zoom';
 
 @Component({
   selector: 'ngx-hana-nameserver-history-viewer',
