@@ -1,1 +1,1 @@
-export { zoomPlugin } from './chart.zoom';
+export * from './chart.zoom';
