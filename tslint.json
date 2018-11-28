@@ -1,10 +1,4 @@
 {
-  "linterOptions": {
-    "exclude": [
-      "utils/chartjs-zoom/chart.zoom.ts"
-    ]
-  },
-
   "rulesDirectory": [
     "node_modules/codelyzer"
   ],
