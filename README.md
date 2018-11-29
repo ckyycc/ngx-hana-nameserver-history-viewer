@@ -80,6 +80,7 @@ maxRowsLimitation  | The maximum rows that will be loaded from the selected name
 showInstruction  | Flag of instruction | [showInstruction]="true"
 
 
-## License
-
-[MIT](/LICENSE)
+## Todo
+----
+* Support Angular 7
+* ...
