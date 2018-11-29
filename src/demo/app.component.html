@@ -4,7 +4,8 @@
     <span class="header-title">SAP HANA Nameserver History Viewer</span>
     <div class="header-center">
       <div class="header-max-rows-limitation">
-        <ngx-dropdown-list [items]="maxRowLimitations"
+        <ngx-dropdown-list (selectionChange)="onChangeRowLimitation($event)"
+                           [items]="maxRowLimitations"
                            [multiSelection]="false"
                            [placeHolder]="'Limit Row Number'"
                            [(selectedValue)]="maxRowsLimitation"
@@ -14,7 +15,7 @@
         </ngx-dropdown-list>
       </div>
       <div class="header-hide-measures">
-        <ngx-dropdown-list [items]="measureItems" [multiSelection]="true" [placeHolder]="'Measures'"></ngx-dropdown-list>
+        <ngx-dropdown-list (selectionChange)="onChangeMeasure()" [items]="measureItems" [multiSelection]="true" [placeHolder]="'Measures'"></ngx-dropdown-list>
       </div>
     </div>
     <a class="header-github" href="https://github.com/ckyycc/ngx-hana-nameserver-history-viewer" target="_blank">View on Github</a>
