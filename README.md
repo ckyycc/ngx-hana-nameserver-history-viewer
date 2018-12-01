@@ -4,7 +4,7 @@
 
 An Angular 6 module of SAP HANA nameserver history viewer. Supports MDC, different timezone and zoom-in.
 
-## DEMO
+## Demo
 
 #### Check out the _[DEMO](https://ckyycc.github.io/ngx-hana-nameserver-history-viewer/)_ for more information!
 
