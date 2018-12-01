@@ -83,6 +83,7 @@ showInstruction  | Flag of instruction | [showInstruction]="true"
 Todo
 ----
 * Support Angular 7
+* Support JSON Compression
 * ...
 
 ## License
