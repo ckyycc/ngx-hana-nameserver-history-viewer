@@ -55,6 +55,11 @@ export class NameServerHistoryComponent implements OnInit {
   @Input() showInstruction: true;
 
   /**
+   * Input (optional) bind to [timezone]
+   */
+  @Input() timezone: string;
+
+  /**
    * selected name server history file
    */
   file: File;
@@ -108,11 +113,6 @@ export class NameServerHistoryComponent implements OnInit {
    * data source for the selection table (right part of the chart)
    */
   tableSource: any[];
-
-  /**
-   * selected timezone
-   */
-  timezone: string;
 
   /**
    * the progress for reading file

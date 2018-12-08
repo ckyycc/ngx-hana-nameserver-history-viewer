@@ -1,4 +1,4 @@
-import { Component, Input, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { TimezoneSelectorService } from './timezone-selector.service';
 import * as momentImported from 'moment-timezone';
 
@@ -21,7 +21,7 @@ const moment = momentImported;
   providers: [ TimezoneSelectorService ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TimezoneSelectorComponent {
+export class TimezoneSelectorComponent implements OnChanges {
 
   @Input() disabled = false;
   @Input() timezone: string;
@@ -40,6 +40,15 @@ export class TimezoneSelectorComponent {
     const defaultTZ = this.service.getDefaultTimezone();
     this.timezones = this.service.getZones().map(tz => ({group: tz.region, items: tz.zones.map(zone =>
         ({id: zone, value: zone, text: this._getFormattedZone(tz.region, zone), selected: zone === defaultTZ}))}));
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.timezone && changes.timezone.currentValue) {
+      if (this.timezones) {
+        this.timezones = this.service.getZones().map(tz => ({group: tz.region, items: tz.zones.map(zone =>
+            ({id: zone, value: zone, text: this._getFormattedZone(tz.region, zone), selected: zone === changes.timezone.currentValue}))}));
+      }
+    }
   }
 
   private _getFormattedZone(region, zone) {
