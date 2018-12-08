@@ -1,9 +1,13 @@
 import {Component, OnInit} from '@angular/core';
+import {getAbbreviationAndOffset, getLocalStorage, getTimeZoneFromTopology, setLocalStorage, TimeZoneAbbrOffset} from './demo-util';
+import {DemoService} from './demo-service';
+import {Alert} from '../nameserver-history-viewer/types';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
+  providers: [ DemoService ],
 })
 
 export class AppComponent implements OnInit {
@@ -48,15 +52,24 @@ export class AppComponent implements OnInit {
    */
   measureItemsStorageName = 'measureItems';
 
+  /**
+   * timezone string
+   */
+  timezone: String;
+
+  alertMessage;
+  alertType;
+  constructor(private service: DemoService) {}
+
   ngOnInit() {
     // Initialize the row limitation with local storage
-    const selectedRowLimitation = this._getLocalStorage(this.maxRowsLimitationStorageName);
+    const selectedRowLimitation = getLocalStorage(this.maxRowsLimitationStorageName);
     if (selectedRowLimitation) {
       this.maxRowLimitations.forEach((item: any) => item.selected = selectedRowLimitation.includes(item.id));
     }
 
     // Initialize the measures with local storage
-    const selectedMeasures = this._getLocalStorage(this.measureItemsStorageName);
+    const selectedMeasures = getLocalStorage(this.measureItemsStorageName);
     if (selectedMeasures) {
       this.measureItems.forEach(item => item.selected = selectedMeasures.includes(item.id));
     }
@@ -75,7 +88,7 @@ export class AppComponent implements OnInit {
    */
   onChangeRowLimitation(event) {
     // save the selected item to local storage
-    this._setLocalStorage(this.maxRowsLimitationStorageName, event == null ? undefined : event.toString());
+    setLocalStorage(this.maxRowsLimitationStorageName, event == null ? undefined : event.toString());
   }
 
   /**
@@ -83,39 +96,30 @@ export class AppComponent implements OnInit {
    */
   onChangeMeasure() {
     // save the selected measures to local storage
-    this._setLocalStorage(this.measureItemsStorageName, this.measureItems.filter(item => item.selected).map(item => item.id));
+    setLocalStorage(this.measureItemsStorageName, this.measureItems.filter(item => item.selected).map(item => item.id));
   }
 
   /**
-   * save data to related local storage
-   * @param name local storage item name
-   * @param data data that needs to be saved in local storage
+   * select topology file
    */
-  private _setLocalStorage(name, data) {
-    if (name == null || name.length === 0) {
-      return;
-    }
-    if (data) {
-      localStorage.setItem(name, JSON.stringify(data));
-    } else {
-      localStorage.removeItem(name);
-    }
-  }
-
-  /**
-   * get data from local storage
-   * @param name local storage item name
-   */
-  private _getLocalStorage(name): any {
-    if (name == null || name.length === 0) {
-      return undefined;
-    }
-
-    const data = localStorage.getItem(name);
-    if (data != null) {
-      return JSON.parse(data);
-    } else {
-      return undefined;
-    }
+  browseFiles(event) {
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      const fileContent = e.target.result;
+      this.timezone = undefined;
+      setTimeout(() => {
+        const {abbreviation, offset}: TimeZoneAbbrOffset = getAbbreviationAndOffset(fileContent);
+        const timezone = getTimeZoneFromTopology(abbreviation, offset, this.service.getTimezoneAbbrMappings());
+        if (timezone != null && timezone.length > 0) {
+          this.timezone = timezone;
+          this.alertMessage = `Timezone is changed to ${this.timezone} based on (${abbreviation}, ${offset * 3600})`;
+          this.alertType = Alert.info;
+        } else {
+          this.alertMessage = 'Can not find the timezone information from the provided file, please choose correct "topology.txt" from full system dump.';
+          this.alertType = Alert.warning;
+        }
+      }, 100);
+    };
+    reader.readAsText(event.target.files[0]);
   }
 }

@@ -7,6 +7,7 @@ import { AppComponent } from './app.component';
 
 import { NameserverHistoryModule } from '../nameserver-history-viewer';
 import { DropdownListModule } from 'ngx-dropdown-list';
+import { AlertModule } from '../nameserver-history-viewer/components/alert';
 
 @NgModule({
   declarations: [
@@ -15,6 +16,7 @@ import { DropdownListModule } from 'ngx-dropdown-list';
   imports: [
     NameserverHistoryModule,
     DropdownListModule,
+    AlertModule,
     BrowserModule,
     BrowserAnimationsModule,
     FormsModule,

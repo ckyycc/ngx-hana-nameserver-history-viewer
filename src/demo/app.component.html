@@ -3,19 +3,26 @@
     <!--<span class="header-image"><img src = "../assets/logo.png" alt="SAP HANA Tools" class="logo"></span>-->
     <span class="header-title">SAP HANA Nameserver History Viewer</span>
     <div class="header-center">
-      <div class="header-max-rows-limitation">
-        <ngx-dropdown-list (selectionChange)="onChangeRowLimitation($event)"
-                           [items]="maxRowLimitations"
-                           [multiSelection]="false"
-                           [placeHolder]="'Limit Row Number'"
-                           [(selectedValue)]="maxRowsLimitation"
-                           [suffixText]="' Rows'"
-                           [filterBox]="false"
-                           [formatNumber]="true">
-        </ngx-dropdown-list>
+      <div class="header-selection-boxes">
+        <div class="header-max-rows-limitation">
+          <ngx-dropdown-list (selectionChange)="onChangeRowLimitation($event)"
+                             [items]="maxRowLimitations"
+                             [multiSelection]="false"
+                             [placeHolder]="'Limit Row Num'"
+                             [(selectedValue)]="maxRowsLimitation"
+                             [suffixText]="' Rows'"
+                             [filterBox]="false"
+                             [formatNumber]="true">
+          </ngx-dropdown-list>
+        </div>
+        <div class="header-hide-measures">
+          <ngx-dropdown-list (selectionChange)="onChangeMeasure()" [items]="measureItems" [multiSelection]="true" [placeHolder]="'Measures'"></ngx-dropdown-list>
+        </div>
       </div>
-      <div class="header-hide-measures">
-        <ngx-dropdown-list (selectionChange)="onChangeMeasure()" [items]="measureItems" [multiSelection]="true" [placeHolder]="'Measures'"></ngx-dropdown-list>
+      <div class="header-import-timezone">
+        <label class="input-button" title="Import time zone form topology.txt, this file exists in the root directory of full system dump (system DB if MDC).">
+          <input type="file" (change)="browseFiles($event)" onclick="this.value=null;" accept=".txt"/>Import Timezone
+        </label>
       </div>
     </div>
     <a class="header-github" href="https://github.com/ckyycc/ngx-hana-nameserver-history-viewer" target="_blank">View on Github</a>
@@ -26,7 +33,10 @@
   [defaultSelectedItems]="defaultSelectedItems"
   [hideMeasureColumns]="hiddenMeasures"
   [maxRowsLimitation]="maxRowsLimitation"
-  [showInstruction]="true">
+  [showInstruction]="true"
+  [timezone]="timezone">
 </ngx-hana-nameserver-history-viewer>
 
-
+<div class="message-container" *ngIf="alertMessage">
+  <alert [(alertMessage)]="alertMessage" [alertType]="alertType" [alertTimeout]="5000"></alert>
+</div>
