@@ -58,7 +58,7 @@ export function getDefaultTimezone(): string {
  * @param timezone timezone string, uses local timezone if this is null.
  */
 export function getTimeFromTimeZone (time: number, timezone: string): number {
-  if (timezone == null) {
+  if (timezone == null || timezone.length === 0) {
     timezone = getDefaultTimezone();
     console.warn(`getTimeFromTimeZone - Input timezone is null, returning the local (${timezone}) time. `);
   }
