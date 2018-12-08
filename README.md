@@ -67,7 +67,8 @@ export class AppModule { }
   [defaultSelectedItems]="['indexserverMemUsed', 'mvccNum']"
   [hideMeasureColumns]="['Sum', 'Last']"
   [maxRowsLimitation]="100000"
-  [showInstruction]="true">
+  [showInstruction]="true"
+  [timezone]="'America/Vancouver'">
 </ngx-hana-nameserver-history-viewer>
 ```
 
@@ -78,6 +79,7 @@ defaultSelectedItems  | Item(s) that will be selected by default on the chart. |
 hideMeasureColumns  | Measure(s) that will be hidden from selection table (controling area) of the chart. | [hideMeasureColumns]="['Sum', 'Last']"
 maxRowsLimitation  | The maximum rows that will be loaded from the selected nameserver history file. **Web page might crash _(OOM of JavaScript VM)_ if this number is too high _(eg: > 500000)_** | [maxRowsLimitation]="100000"
 showInstruction  | Flag of instruction | [showInstruction]="true"
+timezone  | Timezone name, can't be abbreviation | [timezone]="'America/Vancouver'"
 
 
 Todo
