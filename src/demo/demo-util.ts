@@ -118,5 +118,4 @@ export function getAbbreviationAndOffset(fileContent: string): TimeZoneAbbrOffse
     offset = null;
   }
   return {abbreviation: abbreviation, offset: offset};
-
 }
