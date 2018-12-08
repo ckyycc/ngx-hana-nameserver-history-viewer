@@ -6,12 +6,12 @@ import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import {
   NameServerHistoryComponent,
   ProgressBarComponent,
-  AlertComponent,
   FileDropInputComponent,
   TimezoneSelectorComponent,
   InstructionComponent,
   PortSelectorComponent,
-  TimeRangeSelectorComponent
+  TimeRangeSelectorComponent,
+  AlertModule
 } from './components';
 import { SelectionTableModule } from 'ngx-selection-table';
 import { DropdownListModule } from 'ngx-dropdown-list';
@@ -21,7 +21,6 @@ import { DropdownListModule } from 'ngx-dropdown-list';
     NameServerHistoryComponent,
     FileDropInputComponent,
     ProgressBarComponent,
-    AlertComponent,
     TimezoneSelectorComponent,
     PortSelectorComponent,
     InstructionComponent,
@@ -31,6 +30,7 @@ import { DropdownListModule } from 'ngx-dropdown-list';
     NameServerHistoryComponent
   ],
   imports: [
+    AlertModule,
     SelectionTableModule,
     DropdownListModule,
     OwlDateTimeModule,
