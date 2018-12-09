@@ -55,10 +55,18 @@ export class AppComponent implements OnInit {
   /**
    * timezone string
    */
-  timezone: String;
+  timezone: string;
 
-  alertMessage;
-  alertType;
+  /**
+   * alert message content
+   */
+  alertMessage: string;
+
+  /**
+   * alert message type
+   */
+  alertType: Alert;
+
   constructor(private service: DemoService) {}
 
   ngOnInit() {
@@ -106,20 +114,44 @@ export class AppComponent implements OnInit {
     const reader = new FileReader();
     reader.onload = (e: any) => {
       const fileContent = e.target.result;
-      this.timezone = undefined;
-      setTimeout(() => {
-        const {abbreviation, offset}: TimeZoneAbbrOffset = getAbbreviationAndOffset(fileContent);
-        const timezone = getTimeZoneFromTopology(abbreviation, offset, this.service.getTimezoneAbbrMappings());
-        if (timezone != null && timezone.length > 0) {
-          this.timezone = timezone;
-          this.alertMessage = `Timezone is changed to ${this.timezone} based on (${abbreviation}, ${offset * 3600})`;
-          this.alertType = Alert.info;
-        } else {
-          this.alertMessage = 'Can not find the timezone information from the provided file, please choose correct "topology.txt" from full system dump.';
-          this.alertType = Alert.warning;
-        }
-      }, 100);
+      const {abbreviation, offset}: TimeZoneAbbrOffset = getAbbreviationAndOffset(fileContent);
+      const timezone = getTimeZoneFromTopology(abbreviation, offset, this.service.getTimezoneAbbrMappings());
+      if (timezone != null && timezone.length > 0) {
+        this.timezone = timezone;
+        this._showMessage(Alert.info, `Timezone is changed to ${this.timezone} based on (${abbreviation}, ${offset * 3600})`);
+      } else {
+        this._showMessage(Alert.warning,
+          'Can not find the timezone information from the provided file, please choose correct "topology.txt" from full system dump.');
+      }
     };
     reader.readAsText(event.target.files[0]);
+  }
+
+  /**
+   * Show messages
+   * @param type type of the message
+   * @param message message text
+   */
+  private _showMessage(type: Alert, message: string): void {
+    if (type) {
+      switch (type) {
+        case Alert.success:
+        case Alert.info:
+          break;
+        case Alert.warning:
+          console.warn(message);
+          break;
+        case Alert.error:
+          console.error(message);
+      }
+    }
+    if (this.alertMessage === message) {
+      // try trigger the change event of the alert.
+      this.alertMessage = void 0;
+      setTimeout(() => this.alertMessage = message, 100);
+    } else {
+      this.alertMessage = message;
+    }
+    this.alertType = type;
   }
 }
