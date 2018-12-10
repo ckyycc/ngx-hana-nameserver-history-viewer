@@ -19,3 +19,12 @@ export function randomColor(opacity: number): string {
 export function getColorString(rgbaColor: ColorRgba): string {
   return `rgba(${rgbaColor['red']}, ${rgbaColor['green']}, ${rgbaColor['blue']}, ${rgbaColor['alpha']})`;
 }
+
+/**
+ * format Number with commas
+ */
+export function getNumberWithCommas(num: number): string {
+  const [integerPart, decimalPart] = num.toString().split('.');
+  const integerWithCommas = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  return decimalPart ? `${integerWithCommas}.${decimalPart}` : integerWithCommas;
+}

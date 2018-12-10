@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
+import { SelectionModel } from '@angular/cdk/collections';
 import { parse } from 'papaparse';
 import { Chart } from 'chart.js';
-import { getColorString, randomColor } from '../utils';
+import { getColorString, getNumberWithCommas, randomColor } from '../utils';
 import { UIService } from './ui.service';
-import { SelectionModel } from '@angular/cdk/collections';
-import { ChartContentDataItem, LegendColor } from '../types';
+import { ChartContentDataItem, LegendColor, Item, Unit } from '../types';
 
 // Using dynamic flag to fix the issue of ng-packagr #696: Lambda not supported
 // @dynamic
@@ -149,7 +149,6 @@ export class ChartService {
                                       title: string,
                                       defaultItems: string[],
                                       zoomCallback: any): any {
-
     return {
       type: 'line',
       data: {
@@ -191,6 +190,22 @@ export class ChartService {
           desiredDataPointDistance: 2,
           minNumPoints: 200,
           maxNumPointsToDraw: 100
+        },
+        tooltips: {
+          callbacks: {
+            label: function(tooltipItem, chartData) {
+              // format numbers with commas and add unit information
+              const label = chartData.datasets[tooltipItem.datasetIndex].label || '';
+              if (label) {
+                // get unit (eg: MB, GB, MB/s, % and so on)
+                const rowItem = tableSource.find(controlTableRow => label === controlTableRow.KPI) || '';
+                const unit = rowItem[Item.unit] && rowItem[Item.unit] !== Unit.PCT ? ` ${rowItem[Item.unit]}` : rowItem[Item.unit] || '';
+                return `${label}: ${getNumberWithCommas(tooltipItem.yLabel)}${unit}`;
+              } else {
+                return getNumberWithCommas(tooltipItem.yLabel);
+              }
+            }
+          }
         },
         scales: {
           xAxes: ChartService._generateXAxes(time),
