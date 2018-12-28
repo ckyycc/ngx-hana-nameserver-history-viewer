@@ -411,12 +411,13 @@ export class UIService {
           }
         });
 
-        if (row.length > (ignoredTailLineNum + invalidCount)) {
+        if (row.length >= (ignoredTailLineNum + invalidCount)) {
           if (isUnitTimeRelated(unit)) {
             const timePeriod = row[row.length - ignoredTailLineNum - 1].x - row[0].x;
             overview.Average = timePeriod !== 0 ? getRoundedValue(overview.Sum * 1000 / timePeriod) : 0;
           } else {
-            overview.Average = getRoundedValue(overview.Sum / (row.length - ignoredTailLineNum - invalidCount));
+            const validItemCount = row.length - ignoredTailLineNum - invalidCount;
+            overview.Average = validItemCount > 0 ? getRoundedValue(overview.Sum / validItemCount) : 0;
           }
           overview.Last = row[row.length - ignoredTailLineNum - 1].y;
           overview.Sum = getRoundedValue(overview.Sum);
@@ -424,9 +425,6 @@ export class UIService {
 
           // remove those ignored lines
           row.length = row.length - ignoredTailLineNum;
-          // for (let i = 0; i < IGNORE_RECORD_NUM_HEAD; i++) {
-          //   row.shift();
-          // }
         }
         this._setOverview(key, overview, unit, port);
       }
