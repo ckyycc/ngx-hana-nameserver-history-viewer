@@ -62,7 +62,7 @@ import { NameserverHistoryModule } from 'ngx-hana-nameserver-history-viewer';
 export class AppModule { }
 
 ```
-### Enabling nameserverh history viewer
+### Enabling nameserver history viewer
 ```HTML
 <ngx-hana-nameserver-history-viewer
   [defaultSelectedItems]="['indexserverMemUsed', 'mvccNum']"
