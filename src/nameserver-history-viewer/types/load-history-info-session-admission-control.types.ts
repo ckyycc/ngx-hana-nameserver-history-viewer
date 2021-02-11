@@ -5,4 +5,7 @@ export interface LoadHistoryInfoSessionAdmissionControl {
   admissionControlRejectCount: LoadHistoryInfoItem;
   admissionControlWaitingRequests: LoadHistoryInfoItem;
   admissionControlWaitTime: LoadHistoryInfoItem;
+  admissionControlEnqueueCount: LoadHistoryInfoItem;
+  admissionControlDequeueCount: LoadHistoryInfoItem;
+  admissionControlTimeoutCount: LoadHistoryInfoItem;
 }

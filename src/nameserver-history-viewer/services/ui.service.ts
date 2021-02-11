@@ -213,6 +213,10 @@ export class UIService {
     const admissionControlRejectCount     = infoItem([Item.kpi, 'Rejected Requests'          ], [Item.yScale, 0, ], [Item.yScaleGroup, ScaleGroup.Unknown], [Item.unit, Unit.ReqPerSec  ], [Item.max, -1], [Item.average, -1], [Item.sum, -1], [Item.last, -1], [Item.description, 'Number of session requests rejected by admission control']);
     const admissionControlWaitingRequests = infoItem([Item.kpi, 'Waiting Requests'           ], [Item.yScale, 0, ], [Item.yScaleGroup, ScaleGroup.Unknown], [Item.unit, Unit.ReqPerSec  ], [Item.max, -1], [Item.average, -1], [Item.sum, -1], [Item.last, -1], [Item.description, 'Number of session requests waiting in admission control queue']);
     const admissionControlWaitTime        = infoItem([Item.kpi, 'Wait Time'                  ], [Item.yScale, 0, ], [Item.yScaleGroup, ScaleGroup.Unknown], [Item.unit, Unit.SecPerSec  ], [Item.max, -1], [Item.average, -1], [Item.sum, -1], [Item.last, -1], [Item.description, 'Total wait time of session requests queued in admission control queue']);
+    const admissionControlEnqueueCount    = infoItem([Item.kpi, 'Enqueued Requests'          ], [Item.yScale, 0, ], [Item.yScaleGroup, ScaleGroup.Unknown], [Item.unit, Unit.ReqPerSec  ], [Item.max, -1], [Item.average, -1], [Item.sum, -1], [Item.last, -1], [Item.description, 'Number of session requests enqueued by admission control']);
+    const admissionControlDequeueCount    = infoItem([Item.kpi, 'Dequeued Requests'          ], [Item.yScale, 0, ], [Item.yScaleGroup, ScaleGroup.Unknown], [Item.unit, Unit.ReqPerSec  ], [Item.max, -1], [Item.average, -1], [Item.sum, -1], [Item.last, -1], [Item.description, 'Number of session requests dequeued by admission control']);
+    const admissionControlTimeoutCount    = infoItem([Item.kpi, 'Timed out Requests'          ], [Item.yScale, 0, ], [Item.yScaleGroup, ScaleGroup.Unknown], [Item.unit, Unit.ReqPerSec  ], [Item.max, -1], [Item.average, -1], [Item.sum, -1], [Item.last, -1], [Item.description, 'Number of timed out session requests in admission control queue']);
+
     // generate Host
     const loadHistoryInfoHost: LoadHistoryInfoHost = {
       cpuUsed                         : cpuUsed            ,
@@ -305,6 +309,9 @@ export class UIService {
       admissionControlRejectCount     : admissionControlRejectCount    ,
       admissionControlWaitingRequests : admissionControlWaitingRequests,
       admissionControlWaitTime        : admissionControlWaitTime       ,
+      admissionControlEnqueueCount    : admissionControlEnqueueCount   ,
+      admissionControlDequeueCount    : admissionControlDequeueCount   ,
+      admissionControlTimeoutCount    : admissionControlTimeoutCount   ,
     };
 
     return {
@@ -523,7 +530,14 @@ export class UIService {
    * get header information and format it to {headKey: key, headText: text}
    */
   public getHeader(keys: string[], port: string): ChartContentHeader[] {
-    return keys.map(key => ({key: key, text: this._getItemByKey(key, port).KPI}));
+    return keys.map(key => {
+      const item = this._getItemByKey(key, port);
+      if (item != null && 'KPI' in item) {
+        return ({key: key, text: item.KPI});
+      } else {
+        console.warn(`${key} is not configured.`);
+      }
+    }).filter(key => key != null );
   }
 
   /**
