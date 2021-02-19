@@ -93,11 +93,10 @@ describe('demo-util', () => {
     expect(getTimeZoneFromTopology('America/New_York', 25200, service.getTimezoneAbbrMappings())).toEqual('America/New_York');
   });
   it('#09 getTimeZoneFromTopology: should return the relative timezone directly base on abbreviation and offset', () => {
-    expect(getTimeZoneFromTopology('CST', 8, service.getTimezoneAbbrMappings())).toEqual('Asia/Chongqing');
-    expect(getTimeZoneFromTopology('CST', -6, service.getTimezoneAbbrMappings())).toEqual('America/Bahia_Banderas');
-    expect(getTimeZoneFromTopology('CST', -5, service.getTimezoneAbbrMappings())).toEqual('America/Havana');
-    expect(getTimeZoneFromTopology('PST', -8, service.getTimezoneAbbrMappings())).toEqual('America/Dawson');
-    expect(getTimeZoneFromTopology('PDT', -7, service.getTimezoneAbbrMappings())).toEqual('America/Los_Angeles');
+    expect(getTimeZoneFromTopology('CST', 8, service.getTimezoneAbbrMappings())).toEqual('Asia/Shanghai');
+    expect(getTimeZoneFromTopology('CST', -6, service.getTimezoneAbbrMappings())).toEqual('America/Chicago');
+    expect(getTimeZoneFromTopology('PST', -8, service.getTimezoneAbbrMappings())).toEqual('America/Vancouver');
+    expect(getTimeZoneFromTopology('PDT', -7, service.getTimezoneAbbrMappings())).toEqual('America/Vancouver');
   });
   it('#10 getTimeZoneFromTopology: should return null if can not find the timezone base on abbreviation and offset', () => {
     expect(getTimeZoneFromTopology('CST', 9, service.getTimezoneAbbrMappings())).toEqual(null);
