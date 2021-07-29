@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {
   calculateValue,
+  calculateValue4Time,
   getDefaultPort,
   getPort,
   getTimeFromTimeZone,
@@ -61,6 +62,7 @@ export class FileService {
    * @param time time object which contains the time data for all ports
    * @param selectedPort if the selected port is empty (did not select any port), all ports info are needed
    * @param isMDC flag for MDC system
+   * @param timezone selected timezone
    * @param maxRowsLimitation prevent browser from crashing, set the max rows limitation.
    * This comes from the input: maxRowsLimitation of the component.
    */
@@ -72,6 +74,7 @@ export class FileService {
                                 time: ChartContentTime,
                                 selectedPort: string,
                                 isMDC: boolean,
+                                timezone: string,
                                 maxRowsLimitation: any) {
     // convert millisecond to second for startTime and endTime.
     startTime = startTime / 1000;
@@ -146,7 +149,7 @@ export class FileService {
           mdcFlag = true;
         }
       }
-      curTime = calculateValue(curTime, data[i][timeColumn]);
+      curTime = calculateValue4Time(curTime, data[i][timeColumn], timezone);
       if (curTime > endTime) {
         if (iEnd < 0) {
           iEnd = i - 1;
@@ -353,7 +356,7 @@ export class FileService {
 
           // get time column
           ({indexStart, indexEnd, lastProcessedTime, isMDC} = FileService._getTimeColumn(
-            results.data, firstChunk, startTime, endTime, lastProcessedTime, time, port, isMDC, maxRowsLimitation));
+            results.data, firstChunk, startTime, endTime, lastProcessedTime, time, port, isMDC, timezone, maxRowsLimitation));
           printProcessedTime(beginTime, 'step3');
 
           if (indexStart == null && indexEnd == null && lastProcessedTime == null && isMDC == null) {

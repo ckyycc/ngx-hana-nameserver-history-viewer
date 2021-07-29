@@ -1,3 +1,5 @@
+import {getTimeFromTimeZone} from './time-util';
+
 const _DEFAULT_PORT = 'DEFAULT';
 
 /**
@@ -120,6 +122,25 @@ export function calculateValue(lastValue: number, nextValue: string): number {
   }
   return newValue;
 }
+
+/**
+ * get next time value from current time base on the operator "<" or ">".
+ * If nextValue is not "<" or ">", returns converted time base on the timezone
+ */
+export function calculateValue4Time(lastValue: number, nextValue: string, timezone: string): number {
+  // if the relative value missed, it's null.
+  // And if it's missed, just use current value from last line.
+  let newValue = lastValue;
+  if (nextValue != null && nextValue.length > 0) {
+    if (nextValue[0] !== '<' && nextValue[0] !== '>') {
+      newValue = getTimeFromTimeZone(parseFloat(nextValue), timezone);
+    } else {
+      newValue = calculateValue(lastValue, nextValue);
+    }
+  }
+  return newValue;
+}
+
 /**
  * check whether the data comes from valid nameserver history file
  */

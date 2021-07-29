@@ -6,8 +6,10 @@ import {
   isSameFile,
   isValidPort,
   validateData,
-  getRealPorts
+  getRealPorts,
+  calculateValue4Time
 } from './file-util';
+import {getTimeFromTimeZone} from './time-util';
 
 
 describe('FileUtil', () => {
@@ -93,5 +95,14 @@ describe('FileUtil', () => {
     expect(validateData([['host', 'time', 'test1'], ['1'], ['2']])).toBe(false);
     expect(validateData([['time', 'test1'], ['1'], ['2'], ['3']])).toBe(false);
     expect(validateData([['host', 'test1'], ['1'], ['2'], ['3']])).toBe(false);
+  });
+  it('#18 calculateValue4Time: ">" should act as "+"', () => {
+    expect(calculateValue4Time(1536101895.920, '>12', 'Asia/Shanghai')).toEqual(1536101907.920);
+  });
+  it('#19 calculateValue4Time: "<" should act as "-"', () => {
+    expect(calculateValue4Time(1536101895.920, '<12', 'Asia/Shanghai')).toEqual(1536101883.920);
+  });
+  it('#20 calculateValue4Time: "NOT > and NOT <" should act as "replace with selected timezone"', () => {
+    expect(calculateValue4Time(1536101895.920, '1536101898.920', 'Asia/Shanghai')).toEqual(getTimeFromTimeZone(1536101898.920, 'Asia/Shanghai'));
   });
 });
