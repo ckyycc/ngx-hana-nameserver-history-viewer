@@ -1,4 +1,4 @@
-import {Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, Input, OnChanges, SimpleChanges, ViewChild} from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
 import {
   setChartHeight,
@@ -36,7 +36,7 @@ enum SearchType {
   styleUrls: [ './nameserver-history.component.scss' ],
   providers: [ FileService, ChartService, UIService ]
 })
-export class NameServerHistoryComponent implements OnChanges, OnInit {
+export class NameServerHistoryComponent implements OnChanges, AfterViewInit {
   @ViewChild('nameserverHistoryAll', { read: ElementRef }) nameserverHistoryAllRef: ElementRef;
   @ViewChild('nameserverHistoryContent', { read: ElementRef }) nameserverHistoryContentRef: ElementRef;
 
@@ -191,21 +191,6 @@ export class NameServerHistoryComponent implements OnChanges, OnInit {
               private chartService: ChartService,
               private uiService: UIService) {}
 
-  ngOnInit() {
-    // this.timezone = this.defaultTimezone;
-    this.onResize();
-
-    // init items' status
-    // reset chart button will be disable by default later, only be enabled after zoomed
-    this._toggleItems([
-      {id: HtmlElement.chartArea, status: false},
-      {id: HtmlElement.readFileProgress, status: false},
-      {id: HtmlElement.showChartButton, status: false},
-      {id: HtmlElement.loadPortsButton, status: true},
-      {id: HtmlElement.resetChartButton, status: false}]);
-
-  }
-
   async ngOnChanges(changes: SimpleChanges) {
     const fbc = changes.fileBuffer;
     if (fbc && fbc.currentValue && fbc.currentValue !== fbc.previousValue) {
@@ -214,13 +199,24 @@ export class NameServerHistoryComponent implements OnChanges, OnInit {
       await this.fileSelected(simulatedEvent);
       this.port = undefined; // clear the port selection
       if (this.autoDisplay) {
-        this.onResize(); // update the size, otherwise there may have a scrollbar (because of the toast) if auto display is set to true
         this.showChart();
       }
     }
   }
 
-    /**
+  ngAfterViewInit() {
+    // init items' status
+    // reset chart button will be disable by default later, only be enabled after zoomed
+    this._toggleItems([
+      {id: HtmlElement.chartArea, status: false},
+      {id: HtmlElement.readFileProgress, status: false},
+      {id: HtmlElement.showChartButton, status: false},
+      {id: HtmlElement.loadPortsButton, status: true},
+      {id: HtmlElement.resetChartButton, status: false}]);
+    this.onResize(); // update the size, otherwise there may have a scrollbar (because of the toast) if auto display is set to true
+  }
+
+  /**
    * Reset Chart to initial status
    * If legend is already selected/unselected from the list, it wouldn't be restored.
    */
