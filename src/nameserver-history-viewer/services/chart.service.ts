@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
-import { parse } from 'papaparse';
 import { Chart } from 'chart.js';
 import { getColorString, getNumberWithCommas, randomColor } from '../utils';
 import { UIService } from './ui.service';
@@ -231,7 +230,7 @@ export class ChartService {
   /**
    * destroy the chart, release the resource of the chart
    */
-  private _destroyChart(chart: Chart): Promise<any> {
+  private _destroyChart(chart: Chart): Promise<void> {
     return new Promise((resolve) => {
       if (chart) {
         chart.destroy();
@@ -242,7 +241,7 @@ export class ChartService {
   /**
    * update/refresh the chart
    */
-  private _updateChart(chart: Chart): Promise<any> {
+  private _updateChart(chart: Chart): Promise<void> {
     return new Promise((resolve, reject) => {
       if (chart) {
         chart.update();
@@ -322,7 +321,7 @@ export class ChartService {
                     tableSource: any,
                     title: string,
                     defaultItems: string[],
-                    zoomCB): Promise<any> {
+                    zoomCB): Promise<void> {
     return new Promise((resolve) => {
       const ctx = (<HTMLCanvasElement> document.getElementById('chartNameServerHistory')).getContext('2d');
       const cfg: any = ChartService._generateChartConfig(time, data, yScale, header, headerKey, selection, tableSource, title, defaultItems, zoomCB);

@@ -5,7 +5,7 @@ import { Port } from '../../types';
 @Component({
   selector: 'port-selector',
   template: `
-    <label>
+    <label style="width: 100%">
       <ngx-dropdown-list (selectionChange)="onChange($event)"
                          [items]="displayPorts"
                          [multiSelection]="false"

@@ -2,7 +2,7 @@
   $defaultBorderRadius: 4px;
   $defaultHeaderHeight: 72px;
   $defaultSplitLineHeight: $defaultHeaderHeight - 10px;
-  $defaultTop: $defaultSplitLineHeight / 2;
+  $defaultTop: $defaultSplitLineHeight * 0.5;
 
   *, *:before, *:after {
     font-size: inherit;

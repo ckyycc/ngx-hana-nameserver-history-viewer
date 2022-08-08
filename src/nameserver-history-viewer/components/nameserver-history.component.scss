@@ -70,6 +70,10 @@
         height: 100%;
         float: left;
         @extend .dashed-box;
+        .box-stream-mode-text{
+          text-align: center;
+          color: darkblue;
+        }
       }
 
       /*BAR AREA -- CENTER LEFT -- DATE/TIMEZONE SELECTOR*/

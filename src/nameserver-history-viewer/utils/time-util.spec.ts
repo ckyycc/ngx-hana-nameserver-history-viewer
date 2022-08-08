@@ -1,8 +1,6 @@
 import { getTimeFromTimeZone, getDefaultTimezone } from './time-util';
-import * as momentImported from 'moment-timezone';
+import * as moment from 'moment-timezone';
 
-// workaround for fixing following error when doing packagr: Cannot call a namespace ('moment')
-const moment = momentImported;
 
 describe('Time Util', () => {
   it('#01 getTimeFromTimeZone: should return the time base on the offset of provided timezone and default timezone "time + (offset-of-the-provided-timezone - currentOffset) * 60)"', () => {

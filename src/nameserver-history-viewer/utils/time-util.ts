@@ -1,10 +1,8 @@
 import { isDevMode } from '@angular/core';
 import { getIgnoredLineNumFromTail } from './ui-util';
 import { ChartContentTime } from '../types';
-import * as momentImported from 'moment-timezone';
+import moment from 'moment-timezone';
 
-// workaround for fixing following error when doing packagr: Cannot call a namespace ('moment')
-const moment = momentImported;
 /**
  * get the time range for all ports
  */
@@ -72,7 +70,7 @@ export function getTimeFromTimeZone (time: number, timezone: string): number {
  * Get time formatted with the provided timezone
  */
 export function getTimeString (time: number): string {
-  return moment(time).format('YYYY-MM-DD HH:mm:ss');
+   return moment(time).format('YYYY-MM-DD HH:mm:ss');
 }
 
 /**

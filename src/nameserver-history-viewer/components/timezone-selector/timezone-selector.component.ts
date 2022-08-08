@@ -1,9 +1,7 @@
 import { Component, Input, ChangeDetectionStrategy, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { TimezoneSelectorService } from './timezone-selector.service';
-import * as momentImported from 'moment-timezone';
+import moment from 'moment-timezone';
 
-// workaround for fixing following error when doing packagr: Cannot call a namespace ('moment')
-const moment = momentImported;
 
 @Component({
   selector: 'timezone-selector',

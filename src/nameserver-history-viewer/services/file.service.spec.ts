@@ -2,10 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { FileService } from './file.service';
 import { getDefaultTimezone } from '../utils';
 import { Abort } from '../types';
-import * as momentImported from 'moment-timezone';
-
-// workaround for fixing following error when doing packagr: Cannot call a namespace ('moment')
-const moment = momentImported;
+import * as moment from 'moment-timezone';
 
 describe('FileService', () => {
   beforeEach(() => {
