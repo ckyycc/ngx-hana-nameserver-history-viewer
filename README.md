@@ -31,7 +31,7 @@ The only file required is the ng-pick-datetime `picker.min.css` file:
 {
   ...
     "styles": [
-      "../node_modules/ng-pick-datetime/assets/style/picker.min.css",
+      "../node_modules/@danielmoncada/angular-datetime-picker/assets/style/picker.min.css",
       ...
     ],
   ...
@@ -41,7 +41,7 @@ The only file required is the ng-pick-datetime `picker.min.css` file:
 ##### 2. Or import the `picker.min.css` in your styles.css
 
 ```css
-@import "~ng-pick-datetime/assets/style/picker.min.css";
+@import "~@danielmoncada/angular-datetime-picker/assets/style/picker.min.css";
 ```
 
 ## Usage
