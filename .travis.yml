@@ -24,7 +24,7 @@ before_install:
 script:
 - npm install
 - npm run packagr
-- ng test --watch=false
+- npm run test:watchless
 
 # Notifications
 notifications:

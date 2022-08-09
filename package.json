@@ -5,6 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "test:watchless": "ng test --watch=false --ts-config tsconfig.packagr.json",
     "test": "ng test --ts-config tsconfig.packagr.json",
     "lint": "ng lint",
     "e2e": "ng e2e",
