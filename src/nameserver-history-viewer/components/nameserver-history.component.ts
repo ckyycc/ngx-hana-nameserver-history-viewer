@@ -199,6 +199,7 @@ export class NameServerHistoryComponent implements OnChanges, AfterViewInit {
       await this.fileSelected(simulatedEvent);
       this.port = undefined; // clear the port selection
       if (this.autoDisplay) {
+        this.onResize(); // ngAfterViewInit/resize won't work in electron
         this.showChart();
       }
     }

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { getDefaultTimezone } from '../../utils';
-import * as moment from 'moment-timezone';
+import moment from 'moment-timezone';
 
 
 export interface Timezone {

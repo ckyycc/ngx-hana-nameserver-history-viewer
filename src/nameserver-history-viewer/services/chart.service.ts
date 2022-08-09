@@ -322,11 +322,15 @@ export class ChartService {
                     title: string,
                     defaultItems: string[],
                     zoomCB): Promise<void> {
-    return new Promise((resolve) => {
-      const ctx = (<HTMLCanvasElement> document.getElementById('chartNameServerHistory')).getContext('2d');
-      const cfg: any = ChartService._generateChartConfig(time, data, yScale, header, headerKey, selection, tableSource, title, defaultItems, zoomCB);
-      this._chart = new Chart(ctx, cfg);
-      resolve();
+    return new Promise((resolve, reject) => {
+      const ctx = (<HTMLCanvasElement> document.getElementById('chartNameServerHistory'))?.getContext('2d');
+      if (ctx) {
+        const cfg: any = ChartService._generateChartConfig(time, data, yScale, header, headerKey, selection, tableSource, title, defaultItems, zoomCB);
+        this._chart = new Chart(ctx, cfg);
+        resolve();
+      } else {
+        reject('Can not find the canvas.');
+      }
     });
   }
 
