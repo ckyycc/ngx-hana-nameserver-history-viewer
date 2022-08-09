@@ -1,6 +1,5 @@
-import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, Input, OnChanges, SimpleChanges, ViewChild} from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
-import { parse } from 'papaparse';
 import {
   setChartHeight,
   sleep,
@@ -15,7 +14,8 @@ import {
   printProcessedTime,
   getTimeRangeString,
   generatePorts,
-  getDefaultTimezone
+  getDefaultTimezone,
+  blobToFile
 } from '../utils';
 import { Abort, Alert, HtmlElement, Item, ChartContentData, ChartContentHeader, ChartContentTime, Port } from '../types';
 import { FileService, ChartService, UIService } from '../services';
@@ -24,13 +24,19 @@ import 'hammerjs';
 import '../utils/chartjs-downsample';
 import '../utils/chartjs-zoom';
 
+enum SearchType {
+  searchWithSubHeader = 'searchWithSubHeader',
+  searchAll = 'searchAll',
+  searchInChildren = 'searchInChildren'
+}
+
 @Component({
   selector: 'ngx-hana-nameserver-history-viewer',
   templateUrl: './nameserver-history.component.html',
   styleUrls: [ './nameserver-history.component.scss' ],
   providers: [ FileService, ChartService, UIService ]
 })
-export class NameServerHistoryComponent implements OnInit {
+export class NameServerHistoryComponent implements OnChanges, AfterViewInit {
   @ViewChild('nameserverHistoryAll', { read: ElementRef }) nameserverHistoryAllRef: ElementRef;
   @ViewChild('nameserverHistoryContent', { read: ElementRef }) nameserverHistoryContentRef: ElementRef;
 
@@ -52,12 +58,27 @@ export class NameServerHistoryComponent implements OnInit {
   /**
    * Input (optional) bind to [showInstruction]
    */
-  @Input() showInstruction: true;
+  @Input() showInstruction = true;
 
   /**
    * Input (optional) bind to [timezone]
    */
   @Input() timezone: string;
+
+  /**
+   * file buffer, use this for stream mode
+   */
+  @Input() fileBuffer: Blob;
+
+  /**
+   * file name for stream mode
+   */
+  @Input() streamModeFileName: string;
+
+  /**
+   * auto display the chart in stream mode
+   */
+  @Input() autoDisplay: boolean;
 
   /**
    * selected name server history file
@@ -154,6 +175,8 @@ export class NameServerHistoryComponent implements OnInit {
    */
   enableResetChartButton: boolean;
 
+  searchType = SearchType.searchAll;
+
   /**
    * selection information for the selection table
    */
@@ -168,10 +191,21 @@ export class NameServerHistoryComponent implements OnInit {
               private chartService: ChartService,
               private uiService: UIService) {}
 
-  ngOnInit() {
-    // this.timezone = this.defaultTimezone;
-    this.onResize();
+  async ngOnChanges(changes: SimpleChanges) {
+    const fbc = changes.fileBuffer;
+    if (fbc && fbc.currentValue && fbc.currentValue !== fbc.previousValue) {
+      // simulate selecting file
+      const simulatedEvent = {target: {files: [blobToFile(this.fileBuffer, this.streamModeFileName)]}};
+      await this.fileSelected(simulatedEvent);
+      this.port = undefined; // clear the port selection
+      if (this.autoDisplay) {
+        this.onResize(); // ngAfterViewInit/resize won't work in electron
+        this.showChart();
+      }
+    }
+  }
 
+  ngAfterViewInit() {
     // init items' status
     // reset chart button will be disable by default later, only be enabled after zoomed
     this._toggleItems([
@@ -180,7 +214,7 @@ export class NameServerHistoryComponent implements OnInit {
       {id: HtmlElement.showChartButton, status: false},
       {id: HtmlElement.loadPortsButton, status: true},
       {id: HtmlElement.resetChartButton, status: false}]);
-
+    this.onResize(); // update the size, otherwise there may have a scrollbar (because of the toast) if auto display is set to true
   }
 
   /**
@@ -242,12 +276,12 @@ export class NameServerHistoryComponent implements OnInit {
   /**
    * select name server history file, currently only supports 1 file.
    */
-  fileSelected(event: any) {
+  async fileSelected(event: any) {
     const selectedFile = getFileFromInput(event.target);
     if (selectedFile) {
       if (!isSameFile(this.file, selectedFile)) {
         // init port selector
-        this._initPortSelector().catch(e => this._showMessage(Alert.error, e));
+        await this._initPortSelector().catch(e => this._showMessage(Alert.error, e));
 
         this.file = selectedFile;
         this.abbreviatedFileName = getAbbreviatedFileName(this.file.name);
@@ -473,7 +507,7 @@ export class NameServerHistoryComponent implements OnInit {
   /**
    * reinitialize the port selector with the ports
    */
-  private _initPortSelector(ports: string[] = null, selectedPort: string = null): Promise<any> {
+  private _initPortSelector(ports: string[] = null, selectedPort: string = null): Promise<void> {
     return new Promise(resolve => {
       // initialization for ngx-select
       if (ports != null && ports.length > 1) {

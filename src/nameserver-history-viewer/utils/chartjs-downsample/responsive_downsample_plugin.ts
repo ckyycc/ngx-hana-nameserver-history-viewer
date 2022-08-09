@@ -22,9 +22,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import * as moment_module from 'moment';
-const moment = (window && (window as any).moment) ? (window as any).moment : moment_module;
-import { Chart, ChartData, ChartDataSets, ChartPoint } from 'chart.js';
+import moment from 'moment';
+import { Chart, ChartDataSets, ChartPoint } from 'chart.js';
 import { IChartPlugin, TimeScale } from './chartjs_ext';
 import * as utils from './utils';
 

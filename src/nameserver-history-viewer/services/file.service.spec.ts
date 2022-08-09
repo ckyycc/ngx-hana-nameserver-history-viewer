@@ -2,10 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { FileService } from './file.service';
 import { getDefaultTimezone } from '../utils';
 import { Abort } from '../types';
-import * as momentImported from 'moment-timezone';
-
-// workaround for fixing following error when doing packagr: Cannot call a namespace ('moment')
-const moment = momentImported;
+import moment from 'moment-timezone';
 
 describe('FileService', () => {
   beforeEach(() => {
@@ -20,164 +17,141 @@ describe('FileService', () => {
   const firstLineTimes = {}, lastLineTimes = {};
   let port, maxRow, firstLineTime, lastLineTime;
 
-  it('#01 getChartContentFromFile: check header for none MDC name server history', (done: DoneFn) => {
+  it('#01 getChartContentFromFile: check header for none MDC name server history', async () => {
     const service = TestBed.get(FileService);
-    service.getChartContentFromFile(FSSpecHelper.getNonMdcFile(), startTime, endTime, port, timezone, maxRow, null)
-      .then(result => {
-        expect(result.header[0]).toBe('indexserverCpu');
-        expect(result.header[1]).toBe('indexserverCpuSys');
-        expect(result.header[28]).toBe('totalThreads');
-        expect(result.header[29]).toBe('activeSqlExecutors');
-        expect(result.header[54]).toBe('swapIn');
-        expect(result.header[55]).toBe('swapOut');
-        done();
-      });
+    const result = await service.getChartContentFromFile(FSSpecHelper.getNonMdcFile(), startTime, endTime, port, timezone, maxRow, null);
+    expect(result.header[0]).toBe('indexserverCpu');
+    expect(result.header[1]).toBe('indexserverCpuSys');
+    expect(result.header[28]).toBe('totalThreads');
+    expect(result.header[29]).toBe('activeSqlExecutors');
+    expect(result.header[54]).toBe('swapIn');
+    expect(result.header[55]).toBe('swapOut');
   });
-  it('#02 getChartContentFromFile: check header for MDC name server history', (done: DoneFn) => {
+  it('#02 getChartContentFromFile: check header for MDC name server history', async () => {
     const service = TestBed.get(FileService);
-    service.getChartContentFromFile(FSSpecHelper.getMdcFile(), startTime, endTime, port, timezone, maxRow, null)
-      .then(result => {
-        expect(result.header[0]).toBe('indexserverCpu');
-        expect(result.header[1]).toBe('indexserverCpuSys');
-        expect(result.header[27]).toBe('totalThreads');
-        expect(result.header[28]).toBe('activeSqlExecutors');
-        expect(result.header[59]).toBe('swapIn');
-        expect(result.header[60]).toBe('swapOut');
-        done();
-      });
+    const result = await service.getChartContentFromFile(FSSpecHelper.getMdcFile(), startTime, endTime, port, timezone, maxRow, null);
+    expect(result.header[0]).toBe('indexserverCpu');
+    expect(result.header[1]).toBe('indexserverCpuSys');
+    expect(result.header[27]).toBe('totalThreads');
+    expect(result.header[28]).toBe('activeSqlExecutors');
+    expect(result.header[59]).toBe('swapIn');
+    expect(result.header[60]).toBe('swapOut');
+
   });
-  it('#03 getChartContentFromFile: check host for none MDC name server history', (done: DoneFn) => {
+  it('#03 getChartContentFromFile: check host for none MDC name server history', async () => {
     const service = TestBed.get(FileService);
-    service.getChartContentFromFile(FSSpecHelper.getNonMdcFile(), startTime, endTime, port, timezone, maxRow, null)
-      .then(result => {
-        expect(result.host).toBe('hanaserver1');
-        done();
-      });
+    const result = await service.getChartContentFromFile(FSSpecHelper.getNonMdcFile(), startTime, endTime, port, timezone, maxRow, null);
+    expect(result.host).toBe('hanaserver1');
+
   });
-  it('#04 getChartContentFromFile: check host for MDC name server history', (done: DoneFn) => {
+  it('#04 getChartContentFromFile: check host for MDC name server history', async () => {
     const service = TestBed.get(FileService);
-    service.getChartContentFromFile(FSSpecHelper.getMdcFile(), startTime, endTime, port, timezone, maxRow, null)
-      .then(result => {
-        expect(result.host).toBe('hanaserver2');
-        done();
-      });
+    const result = await service.getChartContentFromFile(FSSpecHelper.getMdcFile(), startTime, endTime, port, timezone, maxRow, null);
+    expect(result.host).toBe('hanaserver2');
+
   });
-  it('#05 getChartContentFromFile: check maxRowLimitation for none MDC name server history', (done: DoneFn) => {
+  it('#05 getChartContentFromFile: check maxRowLimitation for none MDC name server history', async () => {
     const maxRow1 = 20;
     const service = TestBed.get(FileService);
-    service.getChartContentFromFile(FSSpecHelper.getNonMdcFile(), startTime, endTime, port, timezone, maxRow1, null)
-      .then(result => {
-        expect(result.aborted).toEqual(Abort.maxLineNumReached);
-        expect(result.time[defaultPort].length).toEqual(maxRow1);
-        expect(result.data[defaultPort][0].length).toEqual(maxRow1);
-        expect(result.data[defaultPort][Math.floor((result.data[defaultPort].length - 1) / 2)].length).toEqual(maxRow1);
-        expect(result.data[defaultPort][result.data[defaultPort].length - 1].length).toEqual(maxRow1);
-        done();
-      });
+
+    let result = await service.getChartContentFromFile(FSSpecHelper.getNonMdcFile(), startTime, endTime, port, timezone, maxRow1, null);
+    expect(result.aborted).toEqual(Abort.maxLineNumReached);
+    expect(result.time[defaultPort].length).toEqual(maxRow1);
+    expect(result.data[defaultPort][0].length).toEqual(maxRow1);
+    expect(result.data[defaultPort][Math.floor((result.data[defaultPort].length - 1) / 2)].length).toEqual(maxRow1);
+    expect(result.data[defaultPort][result.data[defaultPort].length - 1].length).toEqual(maxRow1);
 
     const maxRow2 = undefined;
-    service.getChartContentFromFile(FSSpecHelper.getNonMdcFile(), startTime, endTime, port, timezone, maxRow2, null)
-      .then(result => {
-        expect(result.time[defaultPort].length).toEqual(55);
-        expect(result.data[defaultPort][0].length).toEqual(55);
-        expect(result.data[defaultPort][Math.floor((result.data[defaultPort].length - 1) / 2)].length).toEqual(55);
-        expect(result.data[defaultPort][result.data[defaultPort].length - 1].length).toEqual(55);
-        expect(result.aborted).toBeFalsy();
-        done();
-      });
+    result = await service.getChartContentFromFile(FSSpecHelper.getNonMdcFile(), startTime, endTime, port, timezone, maxRow2, null);
+    expect(result.time[defaultPort].length).toEqual(55);
+    expect(result.data[defaultPort][0].length).toEqual(55);
+    expect(result.data[defaultPort][Math.floor((result.data[defaultPort].length - 1) / 2)].length).toEqual(55);
+    expect(result.data[defaultPort][result.data[defaultPort].length - 1].length).toEqual(55);
+    expect(result.aborted).toBeFalsy();
+
   });
-  it('#06 getChartContentFromFile: check maxRowLimitation for MDC name server history', (done: DoneFn) => {
+  it('#06 getChartContentFromFile: check maxRowLimitation for MDC name server history', async () => {
     const maxRow1 = 200;
     const service = TestBed.get(FileService);
-    service.getChartContentFromFile(FSSpecHelper.getMdcFile(), startTime, endTime, port, timezone, maxRow1, null)
-      .then(result => {
-        let sum = 0;
-        Object.keys(result.time).forEach(key => {
-          if (result.time[key]) {
+    let result = await service.getChartContentFromFile(FSSpecHelper.getMdcFile(), startTime, endTime, port, timezone, maxRow1, null);
+
+    let sum = 0;
+    Object.keys(result.time).forEach(key => {
+        if (result.time[key]) {
             sum += result.time[key].length;
-          }
-        });
-        expect(sum).toEqual(maxRow1);
-        sum = 0;
-        Object.keys(result.data).forEach(key => {
-          if (result.data[key]) {
+        }
+    });
+    expect(sum).toEqual(maxRow1);
+    sum = 0;
+    Object.keys(result.data).forEach(key => {
+        if (result.data[key]) {
             sum += result.data[key][0].length;
-          }
-        });
-        expect(sum).toEqual(maxRow1);
+        }
+    });
+    expect(sum).toEqual(maxRow1);
 
-        sum = 0;
-        Object.keys(result.data).forEach(key => {
-          if (result.data[key]) {
+    sum = 0;
+    Object.keys(result.data).forEach(key => {
+        if (result.data[key]) {
             sum += result.data[key][result.data[key].length - 1].length;
-          }
-        });
-        expect(sum).toEqual(maxRow1);
+        }
+    });
+    expect(sum).toEqual(maxRow1);
 
-        sum = 0;
-        Object.keys(result.data).forEach(key => {
-          if (result.data[key]) {
+    sum = 0;
+    Object.keys(result.data).forEach(key => {
+        if (result.data[key]) {
             sum += result.data[key][Math.floor((result.data[key].length - 1) / 2)].length;
-          }
-        });
-        expect(sum).toEqual(maxRow1);
+        }
+    });
+    expect(sum).toEqual(maxRow1);
 
-        expect(result.aborted).toEqual(Abort.maxLineNumReached);
-        done();
-      });
+    expect(result.aborted).toEqual(Abort.maxLineNumReached);
 
     maxRow = 20000;
     port = '';
-    service.getChartContentFromFile(FSSpecHelper.getMdcFile(), startTime, endTime, port, timezone, maxRow, null)
-      .then(result => {
-        expect(result.aborted).toBeFalsy();
-        done();
-      });
+    result = await service.getChartContentFromFile(FSSpecHelper.getMdcFile(), startTime, endTime, port, timezone, maxRow, null);
+    expect(result.aborted).toBeFalsy();
+
   });
-  it('#07 getChartContentFromFile: check time of default timezone for Non-MDC name server history', (done: DoneFn) => {
+  it('#07 getChartContentFromFile: check time of default timezone for Non-MDC name server history', async () => {
     const service = TestBed.get(FileService);
     // default timezone
     timezone = getDefaultTimezone();
     const servicePort = 'DEFAULT';
-    service.getChartContentFromFile(FSSpecHelper.getNonMdcFile(), startTime, endTime, port, timezone, maxRow, null)
-      .then(result => {
-        firstLineTime = Math.round(result.time[servicePort][0]);
-        lastLineTime = Math.round(result.time[servicePort][result.time[servicePort].length - 1]);
-        expect(firstLineTime).toBe(1536101633589);
-        expect(lastLineTime).toBe(1536102179289);
-        done();
-      });
+    const result = await service.getChartContentFromFile(FSSpecHelper.getNonMdcFile(), startTime, endTime, port, timezone, maxRow, null);
+    firstLineTime = Math.round(result.time[servicePort][0]);
+    lastLineTime = Math.round(result.time[servicePort][result.time[servicePort].length - 1]);
+    expect(firstLineTime).toBe(1536101633589);
+    expect(lastLineTime).toBe(1536102179289);
+
   });
-  it('#08 getChartContentFromFile: check time of default timezone for Non-MDC name server history with startTime', (done: DoneFn) => {
+  it('#08 getChartContentFromFile: check time of default timezone for Non-MDC name server history with startTime', async () => {
     const service = TestBed.get(FileService);
     // default timezone
     timezone = getDefaultTimezone();
     startTime = 1536101895920;
     const servicePort = 'DEFAULT';
-    service.getChartContentFromFile(FSSpecHelper.getNonMdcFile(), startTime, endTime, port, timezone, maxRow, null)
-      .then(result => {
-        expect(Math.round(result.time[servicePort][0])).toBe(1536101895930);
-        expect(Math.round(result.time[servicePort][result.time[servicePort].length - 1])).toBe(1536102179289);
-        done();
-      });
+    const result = await service.getChartContentFromFile(FSSpecHelper.getNonMdcFile(), startTime, endTime, port, timezone, maxRow, null);
+    expect(Math.round(result.time[servicePort][0])).toBe(1536101895930);
+    expect(Math.round(result.time[servicePort][result.time[servicePort].length - 1])).toBe(1536102179289);
+
     startTime = 0;
   });
-  it('#09 getChartContentFromFile: check time of default timezone for Non-MDC name server history with endTime', (done: DoneFn) => {
+  it('#09 getChartContentFromFile: check time of default timezone for Non-MDC name server history with endTime', async () => {
     const service = TestBed.get(FileService);
     // default timezone
     timezone = getDefaultTimezone();
     endTime = 1536102139238;
     const servicePort = 'DEFAULT';
-    service.getChartContentFromFile(FSSpecHelper.getNonMdcFile(), startTime, endTime, port, timezone, maxRow, null)
-      .then(result => {
-        expect(Math.round(result.time[servicePort][0])).toBe(1536101633589);
-        expect(Math.round(result.time[servicePort][result.time[servicePort].length - 1])).toBe(1536102139235);
-        expect(result.aborted).toEqual(Abort.maxTimeRangeReached);
-        done();
-      });
+    const result = await service.getChartContentFromFile(FSSpecHelper.getNonMdcFile(), startTime, endTime, port, timezone, maxRow, null);
+    expect(Math.round(result.time[servicePort][0])).toBe(1536101633589);
+    expect(Math.round(result.time[servicePort][result.time[servicePort].length - 1])).toBe(1536102139235);
+    expect(result.aborted).toEqual(Abort.maxTimeRangeReached);
+
     endTime = 4102358400000;
   });
-  it('#10 getChartContentFromFile: check time of default timezone for Non-MDC name server history with startTime and endTime', (done: DoneFn) => {
+  it('#10 getChartContentFromFile: check time of default timezone for Non-MDC name server history with startTime and endTime', async () => {
     const service = TestBed.get(FileService);
     // default timezone
     timezone = getDefaultTimezone();
@@ -185,580 +159,552 @@ describe('FileService', () => {
     endTime = 1536102139238;
 
     const servicePort = 'DEFAULT';
-    service.getChartContentFromFile(FSSpecHelper.getNonMdcFile(), startTime, endTime, port, timezone, maxRow, null)
-      .then(result => {
-        expect(Math.round(result.time[servicePort][0])).toBe(1536101895930);
-        expect(Math.round(result.time[servicePort][result.time[servicePort].length - 1])).toBe(1536102139235);
-        expect(result.aborted).toEqual(Abort.maxTimeRangeReached);
-        done();
-      });
+    const result = await service.getChartContentFromFile(FSSpecHelper.getNonMdcFile(), startTime, endTime, port, timezone, maxRow, null);
+    expect(Math.round(result.time[servicePort][0])).toBe(1536101895930);
+    expect(Math.round(result.time[servicePort][result.time[servicePort].length - 1])).toBe(1536102139235);
+    expect(result.aborted).toEqual(Abort.maxTimeRangeReached);
+
     startTime = 0;
     endTime = 4102358400000;
   });
-  it('#11 getChartContentFromFile: check time of specific timezone for Non-MDC name server history', (done: DoneFn) => {
+  it('#11 getChartContentFromFile: check time of specific timezone for Non-MDC name server history', async () => {
     const service = TestBed.get(FileService);
     const servicePort = 'DEFAULT';
     // test timezone: Asia/Shanghai (GMT +8)
     let specTimezone = 'Asia/Shanghai';
-    FSSpecHelper.checkNonMdcTimeZone(service, startTime, endTime, servicePort, specTimezone, maxRow, firstLineTime, lastLineTime, done);
+    await FSSpecHelper.checkNonMdcTimeZone(service, startTime, endTime, servicePort, specTimezone, maxRow, firstLineTime, lastLineTime);
     // test timezone: Australia/Sydney (GMT +11)
     specTimezone = 'Australia/Sydney';
-    FSSpecHelper.checkNonMdcTimeZone(service, startTime, endTime, servicePort, specTimezone, maxRow, firstLineTime, lastLineTime, done);
+    await FSSpecHelper.checkNonMdcTimeZone(service, startTime, endTime, servicePort, specTimezone, maxRow, firstLineTime, lastLineTime);
     // test timezone: Europe/Berlin (GMT +1)
     specTimezone = 'Europe/Berlin';
-    FSSpecHelper.checkNonMdcTimeZone(service, startTime, endTime, servicePort, specTimezone, maxRow, firstLineTime, lastLineTime, done);
+    await FSSpecHelper.checkNonMdcTimeZone(service, startTime, endTime, servicePort, specTimezone, maxRow, firstLineTime, lastLineTime);
     // test timezone: Pacific/Midway (GMT -11)
     specTimezone = 'Pacific/Midway';
-    FSSpecHelper.checkNonMdcTimeZone(service, startTime, endTime, servicePort, specTimezone, maxRow, firstLineTime, lastLineTime, done);
+    await FSSpecHelper.checkNonMdcTimeZone(service, startTime, endTime, servicePort, specTimezone, maxRow, firstLineTime, lastLineTime);
+
   });
-  it('#12 getChartContentFromFile: check time of default timezone for MDC name server history', (done: DoneFn) => {
+  it('#12 getChartContentFromFile: check time of default timezone for MDC name server history', async () => {
     const service = TestBed.get(FileService);
     // default timezone America/Los_Angeles (GMT -7)
     timezone = getDefaultTimezone();
-    service.getChartContentFromFile(FSSpecHelper.getMdcFile(), startTime, endTime, port, timezone, maxRow, null)
-      .then(result => {
-        let servicePort = '30201';
-        FSSpecHelper.checkMdcTime(firstLineTimes, lastLineTimes, servicePort, result, 1527846647324, 1527853024165);
+    const result = await service.getChartContentFromFile(FSSpecHelper.getMdcFile(), startTime, endTime, port, timezone, maxRow, null);
+    let servicePort = '30201';
+    FSSpecHelper.checkMdcTime(firstLineTimes, lastLineTimes, servicePort, result, 1527846647324, 1527853024165);
 
-        servicePort = '30203';
-        FSSpecHelper.checkMdcTime(firstLineTimes, lastLineTimes, servicePort, result, 1527846667425, 1527851134740);
+    servicePort = '30203';
+    FSSpecHelper.checkMdcTime(firstLineTimes, lastLineTimes, servicePort, result, 1527846667425, 1527851134740);
 
-        servicePort = '30207';
-        FSSpecHelper.checkMdcTime(firstLineTimes, lastLineTimes, servicePort, result, 1527846667425, 1527851114703);
+    servicePort = '30207';
+    FSSpecHelper.checkMdcTime(firstLineTimes, lastLineTimes, servicePort, result, 1527846667425, 1527851114703);
 
-        servicePort = '30240';
-        FSSpecHelper.checkMdcTime(firstLineTimes, lastLineTimes, servicePort, result, 1527851293900, 1527853024165);
+    servicePort = '30240';
+    FSSpecHelper.checkMdcTime(firstLineTimes, lastLineTimes, servicePort, result, 1527851293900, 1527853024165);
 
-        servicePort = '30243';
-        FSSpecHelper.checkMdcTime(firstLineTimes, lastLineTimes, servicePort, result, 1527852224477, 1527853024165);
+    servicePort = '30243';
+    FSSpecHelper.checkMdcTime(firstLineTimes, lastLineTimes, servicePort, result, 1527852224477, 1527853024165);
 
-        servicePort = '30246';
-        FSSpecHelper.checkMdcTime(firstLineTimes, lastLineTimes, servicePort, result, 1527852304684, 1527853024165);
+    servicePort = '30246';
+    FSSpecHelper.checkMdcTime(firstLineTimes, lastLineTimes, servicePort, result, 1527852304684, 1527853024165);
 
-        servicePort = '30249';
-        FSSpecHelper.checkMdcTime(firstLineTimes, lastLineTimes, servicePort, result, 1527852634319, 1527853024165);
-        done();
-      });
+    servicePort = '30249';
+    FSSpecHelper.checkMdcTime(firstLineTimes, lastLineTimes, servicePort, result, 1527852634319, 1527853024165);
+
    });
-  it('#13 getChartContentFromFile: check time of default timezone for MDC name server history with startTime', (done: DoneFn) => {
+  it('#13 getChartContentFromFile: check time of default timezone for MDC name server history with startTime', async () => {
     const service = TestBed.get(FileService);
     // default timezone America/Los_Angeles (GMT -7)
     timezone = 'America/Los_Angeles';
     startTime = 1527850974471;
-    service.getChartContentFromFile(FSSpecHelper.getMdcFile(), startTime, endTime, port, timezone, maxRow, null)
-      .then(result => {
-        let servicePort = '30201';
-        expect([Math.round(result.time[servicePort][0]), Math.round(result.time[servicePort][result.time[servicePort].length - 1])])
-          .toEqual([1527850974472, 1527853024165]);
+    const result = await service.getChartContentFromFile(FSSpecHelper.getMdcFile(), startTime, endTime, port, timezone, maxRow, null);
+    let servicePort = '30201';
+    expect([Math.round(result.time[servicePort][0]), Math.round(result.time[servicePort][result.time[servicePort].length - 1])])
+      .toEqual([1527850974472, 1527853024165]);
 
-        servicePort = '30203';
-        expect([Math.round(result.time[servicePort][0]), Math.round(result.time[servicePort][result.time[servicePort].length - 1])])
-          .toEqual([1527850974472, 1527851134740]);
+    servicePort = '30203';
+    expect([Math.round(result.time[servicePort][0]), Math.round(result.time[servicePort][result.time[servicePort].length - 1])])
+      .toEqual([1527850974472, 1527851134740]);
 
-        servicePort = '30207';
-        expect([Math.round(result.time[servicePort][0]), Math.round(result.time[servicePort][result.time[servicePort].length - 1])])
-          .toEqual([1527850974472, 1527851114703]);
+    servicePort = '30207';
+    expect([Math.round(result.time[servicePort][0]), Math.round(result.time[servicePort][result.time[servicePort].length - 1])])
+      .toEqual([1527850974472, 1527851114703]);
 
-        servicePort = '30240';
-        expect([Math.round(result.time[servicePort][0]), Math.round(result.time[servicePort][result.time[servicePort].length - 1])])
-          .toEqual([1527851293900, 1527853024165]);
+    servicePort = '30240';
+    expect([Math.round(result.time[servicePort][0]), Math.round(result.time[servicePort][result.time[servicePort].length - 1])])
+      .toEqual([1527851293900, 1527853024165]);
 
-        servicePort = '30243';
-        expect([Math.round(result.time[servicePort][0]), Math.round(result.time[servicePort][result.time[servicePort].length - 1])])
-          .toEqual([1527852224477, 1527853024165]);
+    servicePort = '30243';
+    expect([Math.round(result.time[servicePort][0]), Math.round(result.time[servicePort][result.time[servicePort].length - 1])])
+      .toEqual([1527852224477, 1527853024165]);
 
-        servicePort = '30246';
-        expect([Math.round(result.time[servicePort][0]), Math.round(result.time[servicePort][result.time[servicePort].length - 1])])
-          .toEqual([1527852304684, 1527853024165]);
+    servicePort = '30246';
+    expect([Math.round(result.time[servicePort][0]), Math.round(result.time[servicePort][result.time[servicePort].length - 1])])
+      .toEqual([1527852304684, 1527853024165]);
 
-        servicePort = '30249';
-        expect([Math.round(result.time[servicePort][0]), Math.round(result.time[servicePort][result.time[servicePort].length - 1])])
-          .toEqual([1527852634319, 1527853024165]);
-        done();
-      });
+    servicePort = '30249';
+    expect([Math.round(result.time[servicePort][0]), Math.round(result.time[servicePort][result.time[servicePort].length - 1])])
+      .toEqual([1527852634319, 1527853024165]);
+
     startTime = 0;
   });
-  it('#14 getChartContentFromFile: check time of default timezone for MDC name server history with endTime', (done: DoneFn) => {
+  it('#14 getChartContentFromFile: check time of default timezone for MDC name server history with endTime', async () => {
     const service = TestBed.get(FileService);
     // default timezone America/Los_Angeles (GMT -7)
     timezone = 'America/Los_Angeles';
     endTime = 1527853004116;
-    service.getChartContentFromFile(FSSpecHelper.getMdcFile(), startTime, endTime, port, timezone, maxRow, null)
-      .then(result => {
-        let servicePort = '30201';
-        expect([Math.round(result.time[servicePort][0]), Math.round(result.time[servicePort][result.time[servicePort].length - 1])])
-          .toEqual([1527846647324, 1527853004115]);
+    const result = await service.getChartContentFromFile(FSSpecHelper.getMdcFile(), startTime, endTime, port, timezone, maxRow, null);
+    let servicePort = '30201';
+    expect([Math.round(result.time[servicePort][0]), Math.round(result.time[servicePort][result.time[servicePort].length - 1])])
+      .toEqual([1527846647324, 1527853004115]);
 
-        servicePort = '30203';
-        expect([Math.round(result.time[servicePort][0]), Math.round(result.time[servicePort][result.time[servicePort].length - 1])])
-          .toEqual([1527846667425, 1527851134740]);
+    servicePort = '30203';
+    expect([Math.round(result.time[servicePort][0]), Math.round(result.time[servicePort][result.time[servicePort].length - 1])])
+      .toEqual([1527846667425, 1527851134740]);
 
-        servicePort = '30207';
-        expect([Math.round(result.time[servicePort][0]), Math.round(result.time[servicePort][result.time[servicePort].length - 1])])
-          .toEqual([1527846667425, 1527851114703]);
+    servicePort = '30207';
+    expect([Math.round(result.time[servicePort][0]), Math.round(result.time[servicePort][result.time[servicePort].length - 1])])
+      .toEqual([1527846667425, 1527851114703]);
 
-        servicePort = '30240';
-        expect([Math.round(result.time[servicePort][0]), Math.round(result.time[servicePort][result.time[servicePort].length - 1])])
-          .toEqual([1527851293900, 1527853004115]);
+    servicePort = '30240';
+    expect([Math.round(result.time[servicePort][0]), Math.round(result.time[servicePort][result.time[servicePort].length - 1])])
+      .toEqual([1527851293900, 1527853004115]);
 
-        servicePort = '30243';
-        expect([Math.round(result.time[servicePort][0]), Math.round(result.time[servicePort][result.time[servicePort].length - 1])])
-          .toEqual([1527852224477, 1527853004115]);
+    servicePort = '30243';
+    expect([Math.round(result.time[servicePort][0]), Math.round(result.time[servicePort][result.time[servicePort].length - 1])])
+      .toEqual([1527852224477, 1527853004115]);
 
-        servicePort = '30246';
-        expect([Math.round(result.time[servicePort][0]), Math.round(result.time[servicePort][result.time[servicePort].length - 1])])
-          .toEqual([1527852304684, 1527853004115]);
+    servicePort = '30246';
+    expect([Math.round(result.time[servicePort][0]), Math.round(result.time[servicePort][result.time[servicePort].length - 1])])
+      .toEqual([1527852304684, 1527853004115]);
 
-        servicePort = '30249';
-        expect([Math.round(result.time[servicePort][0]), Math.round(result.time[servicePort][result.time[servicePort].length - 1])])
-          .toEqual([1527852634319, 1527853004115]);
-        expect(result.aborted).toEqual(Abort.maxTimeRangeReached);
-        done();
-      });
+    servicePort = '30249';
+    expect([Math.round(result.time[servicePort][0]), Math.round(result.time[servicePort][result.time[servicePort].length - 1])])
+      .toEqual([1527852634319, 1527853004115]);
+    expect(result.aborted).toEqual(Abort.maxTimeRangeReached);
+
     endTime = 4102358400000;
   });
-  it('#15 getChartContentFromFile: check time of default timezone for MDC name server history with startTime and endTime', (done: DoneFn) => {
+  it('#15 getChartContentFromFile: check time of default timezone for MDC name server history with startTime and endTime', async () => {
     const service = TestBed.get(FileService);
     // default timezone America/Los_Angeles (GMT -7)
     timezone = 'America/Los_Angeles';
     startTime = 1527850974471;
     endTime = 1527853004116;
-    service.getChartContentFromFile(FSSpecHelper.getMdcFile(), startTime, endTime, port, timezone, maxRow, null)
-      .then(result => {
-        let servicePort = '30201';
-        expect([Math.round(result.time[servicePort][0]), Math.round(result.time[servicePort][result.time[servicePort].length - 1])])
-          .toEqual([1527850974472, 1527853004115]);
+    const result = await service.getChartContentFromFile(FSSpecHelper.getMdcFile(), startTime, endTime, port, timezone, maxRow, null);
+    let servicePort = '30201';
+    expect([Math.round(result.time[servicePort][0]), Math.round(result.time[servicePort][result.time[servicePort].length - 1])])
+      .toEqual([1527850974472, 1527853004115]);
 
-        servicePort = '30203';
-        expect([Math.round(result.time[servicePort][0]), Math.round(result.time[servicePort][result.time[servicePort].length - 1])])
-          .toEqual([1527850974472, 1527851134740]);
+    servicePort = '30203';
+    expect([Math.round(result.time[servicePort][0]), Math.round(result.time[servicePort][result.time[servicePort].length - 1])])
+      .toEqual([1527850974472, 1527851134740]);
 
-        servicePort = '30207';
-        expect([Math.round(result.time[servicePort][0]), Math.round(result.time[servicePort][result.time[servicePort].length - 1])])
-          .toEqual([1527850974472, 1527851114703]);
+    servicePort = '30207';
+    expect([Math.round(result.time[servicePort][0]), Math.round(result.time[servicePort][result.time[servicePort].length - 1])])
+      .toEqual([1527850974472, 1527851114703]);
 
-        servicePort = '30240';
-        expect([Math.round(result.time[servicePort][0]), Math.round(result.time[servicePort][result.time[servicePort].length - 1])])
-          .toEqual([1527851293900, 1527853004115]);
+    servicePort = '30240';
+    expect([Math.round(result.time[servicePort][0]), Math.round(result.time[servicePort][result.time[servicePort].length - 1])])
+      .toEqual([1527851293900, 1527853004115]);
 
-        servicePort = '30243';
-        expect([Math.round(result.time[servicePort][0]), Math.round(result.time[servicePort][result.time[servicePort].length - 1])])
-          .toEqual([1527852224477, 1527853004115]);
+    servicePort = '30243';
+    expect([Math.round(result.time[servicePort][0]), Math.round(result.time[servicePort][result.time[servicePort].length - 1])])
+      .toEqual([1527852224477, 1527853004115]);
 
-        servicePort = '30246';
-        expect([Math.round(result.time[servicePort][0]), Math.round(result.time[servicePort][result.time[servicePort].length - 1])])
-          .toEqual([1527852304684, 1527853004115]);
+    servicePort = '30246';
+    expect([Math.round(result.time[servicePort][0]), Math.round(result.time[servicePort][result.time[servicePort].length - 1])])
+      .toEqual([1527852304684, 1527853004115]);
 
-        servicePort = '30249';
-        expect([Math.round(result.time[servicePort][0]), Math.round(result.time[servicePort][result.time[servicePort].length - 1])])
-          .toEqual([1527852634319, 1527853004115]);
-        expect(result.aborted).toEqual(Abort.maxTimeRangeReached);
-        done();
-      });
+    servicePort = '30249';
+    expect([Math.round(result.time[servicePort][0]), Math.round(result.time[servicePort][result.time[servicePort].length - 1])])
+      .toEqual([1527852634319, 1527853004115]);
+    expect(result.aborted).toEqual(Abort.maxTimeRangeReached);
+
     startTime = 0;
     endTime = 4102358400000;
   });
-  it('#16 getChartContentFromFile: check time of specific timezone for MDC name server history', (done: DoneFn) => {
+  it('#16 getChartContentFromFile: check time of specific timezone for MDC name server history',  async () => {
     const service = TestBed.get(FileService);
     // test timezone: Asia/Shanghai (GMT +8)
     let specTimezone = 'Asia/Shanghai';
-    FSSpecHelper.checkMdcTimezone(service, startTime, endTime, port, specTimezone, maxRow, firstLineTimes, lastLineTimes, done);
+    await FSSpecHelper.checkMdcTimezone(service, startTime, endTime, port, specTimezone, maxRow, firstLineTimes, lastLineTimes);
     // test timezone: Australia/Sydney (GMT +11)
     specTimezone = 'Australia/Sydney';
-    FSSpecHelper.checkMdcTimezone(service, startTime, endTime, port, specTimezone, maxRow, firstLineTimes, lastLineTimes, done);
+    await FSSpecHelper.checkMdcTimezone(service, startTime, endTime, port, specTimezone, maxRow, firstLineTimes, lastLineTimes);
     // test timezone: Europe/Berlin (GMT +1)Pacific/Midway
     specTimezone = 'Europe/Berlin';
-    FSSpecHelper.checkMdcTimezone(service, startTime, endTime, port, specTimezone, maxRow, firstLineTimes, lastLineTimes, done);
+    await FSSpecHelper.checkMdcTimezone(service, startTime, endTime, port, specTimezone, maxRow, firstLineTimes, lastLineTimes);
     // test timezone: Pacific/Midway (GMT -11)
     specTimezone = 'Pacific/Midway';
-    FSSpecHelper.checkMdcTimezone(service, startTime, endTime, port, specTimezone, maxRow, firstLineTimes, lastLineTimes, done);
+    await FSSpecHelper.checkMdcTimezone(service, startTime, endTime, port, specTimezone, maxRow, firstLineTimes, lastLineTimes);
+
   });
-  it('#17 getChartContentFromFile: check data for Non-MDC name server history', (done: DoneFn) => {
+  it('#17 getChartContentFromFile: check data for Non-MDC name server history', async () => {
     const service = TestBed.get(FileService);
     // default timezone
     timezone = getDefaultTimezone();
     const servicePort = 'DEFAULT';
-    service.getChartContentFromFile(FSSpecHelper.getNonMdcFile(), startTime, endTime, port, timezone, maxRow, null)
-      .then(result => {
-        // indexserverMemUsed
-        let dataLineFirst = result.data[servicePort][2][0];
-        let dataLineLast = result.data[servicePort][2][result.data[servicePort][2].length - 1];
+    const result = await service.getChartContentFromFile(FSSpecHelper.getNonMdcFile(), startTime, endTime, port, timezone, maxRow, null);
+    // indexserverMemUsed
+    let dataLineFirst = result.data[servicePort][2][0];
+    let dataLineLast = result.data[servicePort][2][result.data[servicePort][2].length - 1];
 
-        expect({x: Math.round(dataLineFirst.x), y: Math.round(dataLineFirst.y)}).toEqual({x: 1536101633589, y: 27807184710});
-        expect({x: Math.round(dataLineLast.x), y: Math.round(dataLineLast.y)}).toEqual({x: 1536102179289, y: 27812801062});
+    expect({x: Math.round(dataLineFirst.x), y: Math.round(dataLineFirst.y)}).toEqual({x: 1536101633589, y: 27807184710});
+    expect({x: Math.round(dataLineLast.x), y: Math.round(dataLineLast.y)}).toEqual({x: 1536102179289, y: 27812801062});
 
-        // searchCount
-        dataLineFirst = result.data[servicePort][22][0];
-        dataLineLast = result.data[servicePort][22][result.data[servicePort][22].length - 1];
+    // searchCount
+    dataLineFirst = result.data[servicePort][22][0];
+    dataLineLast = result.data[servicePort][22][result.data[servicePort][22].length - 1];
 
-        expect({x: Math.round(dataLineFirst.x), y: Math.round(dataLineFirst.y)}).toEqual({x: 1536101633589, y: 29});
-        expect({x: Math.round(dataLineLast.x), y: Math.round(dataLineLast.y)}).toEqual({x: 1536102179289, y: 2});
+    expect({x: Math.round(dataLineFirst.x), y: Math.round(dataLineFirst.y)}).toEqual({x: 1536101633589, y: 29});
+    expect({x: Math.round(dataLineLast.x), y: Math.round(dataLineLast.y)}).toEqual({x: 1536102179289, y: 2});
 
-        // networkOut
-        dataLineFirst = result.data[servicePort][53][0];
-        dataLineLast = result.data[servicePort][53][result.data[servicePort][53].length - 1];
+    // networkOut
+    dataLineFirst = result.data[servicePort][53][0];
+    dataLineLast = result.data[servicePort][53][result.data[servicePort][53].length - 1];
 
-        expect({x: Math.round(dataLineFirst.x), y: Math.round(dataLineFirst.y)}).toEqual({x: 1536101633589, y: 922803});
-        expect({x: Math.round(dataLineLast.x), y: Math.round(dataLineLast.y)}).toEqual({x: 1536102179289, y: 383743});
+    expect({x: Math.round(dataLineFirst.x), y: Math.round(dataLineFirst.y)}).toEqual({x: 1536101633589, y: 922803});
+    expect({x: Math.round(dataLineLast.x), y: Math.round(dataLineLast.y)}).toEqual({x: 1536102179289, y: 383743});
 
-        done();
-      });
+
   });
-  it('#18 getChartContentFromFile: check data for Non-MDC name server history with startTime', (done: DoneFn) => {
+  it('#18 getChartContentFromFile: check data for Non-MDC name server history with startTime', async () => {
     const service = TestBed.get(FileService);
     // default timezone
     timezone = getDefaultTimezone();
     startTime = 1536102028096;
     const servicePort = 'DEFAULT';
-    service.getChartContentFromFile(FSSpecHelper.getNonMdcFile(), startTime, endTime, port, timezone, maxRow, null)
-      .then(result => {
-        // indexserverMemUsed
-        let dataLineFirst = result.data[servicePort][2][0];
-        let dataLineLast = result.data[servicePort][2][result.data[servicePort][2].length - 1];
+    const result = await service.getChartContentFromFile(FSSpecHelper.getNonMdcFile(), startTime, endTime, port, timezone, maxRow, null);
+    // indexserverMemUsed
+    let dataLineFirst = result.data[servicePort][2][0];
+    let dataLineLast = result.data[servicePort][2][result.data[servicePort][2].length - 1];
 
-        expect({x: Math.round(dataLineFirst.x), y: Math.round(dataLineFirst.y)}).toEqual({x: 1536102028096, y: 27839484600});
-        expect({x: Math.round(dataLineLast.x), y: Math.round(dataLineLast.y)}).toEqual({x: 1536102179289, y: 27812801062});
+    expect({x: Math.round(dataLineFirst.x), y: Math.round(dataLineFirst.y)}).toEqual({x: 1536102028096, y: 27839484600});
+    expect({x: Math.round(dataLineLast.x), y: Math.round(dataLineLast.y)}).toEqual({x: 1536102179289, y: 27812801062});
 
-        // searchCount
-        dataLineFirst = result.data[servicePort][22][0];
-        dataLineLast = result.data[servicePort][22][result.data[servicePort][22].length - 1];
+    // searchCount
+    dataLineFirst = result.data[servicePort][22][0];
+    dataLineLast = result.data[servicePort][22][result.data[servicePort][22].length - 1];
 
-        expect({x: Math.round(dataLineFirst.x), y: Math.round(dataLineFirst.y)}).toEqual({x: 1536102028096, y: 63});
-        expect({x: Math.round(dataLineLast.x), y: Math.round(dataLineLast.y)}).toEqual({x: 1536102179289, y: 2});
+    expect({x: Math.round(dataLineFirst.x), y: Math.round(dataLineFirst.y)}).toEqual({x: 1536102028096, y: 63});
+    expect({x: Math.round(dataLineLast.x), y: Math.round(dataLineLast.y)}).toEqual({x: 1536102179289, y: 2});
 
-        // networkOut
-        dataLineFirst = result.data[servicePort][53][0];
-        dataLineLast = result.data[servicePort][53][result.data[servicePort][53].length - 1];
+    // networkOut
+    dataLineFirst = result.data[servicePort][53][0];
+    dataLineLast = result.data[servicePort][53][result.data[servicePort][53].length - 1];
 
-        expect({x: Math.round(dataLineFirst.x), y: Math.round(dataLineFirst.y)}).toEqual({x: 1536102028096, y: 274387});
-        expect({x: Math.round(dataLineLast.x), y: Math.round(dataLineLast.y)}).toEqual({x: 1536102179289, y: 383743});
+    expect({x: Math.round(dataLineFirst.x), y: Math.round(dataLineFirst.y)}).toEqual({x: 1536102028096, y: 274387});
+    expect({x: Math.round(dataLineLast.x), y: Math.round(dataLineLast.y)}).toEqual({x: 1536102179289, y: 383743});
 
-        done();
-      });
+
   });
-  it('#19 getChartContentFromFile: check data for Non-MDC name server history with endTime', (done: DoneFn) => {
+  it('#19 getChartContentFromFile: check data for Non-MDC name server history with endTime', async () => {
     const service = TestBed.get(FileService);
     // default timezone
     timezone = getDefaultTimezone();
     startTime = 0;
     endTime = 1536102129224;
     const servicePort = 'DEFAULT';
-    service.getChartContentFromFile(FSSpecHelper.getNonMdcFile(), startTime, endTime, port, timezone, maxRow, null)
-      .then(result => {
-        // indexserverMemUsed
+    const result = await service.getChartContentFromFile(FSSpecHelper.getNonMdcFile(), startTime, endTime, port, timezone, maxRow, null);
+    // indexserverMemUsed
 
-        let dataLineFirst = result.data[servicePort][2][0];
-        let dataLineLast = result.data[servicePort][2][result.data[servicePort][2].length - 1];
-        expect({x: Math.round(dataLineFirst.x), y: Math.round(dataLineFirst.y)}).toEqual({x: 1536101633589, y: 27807184710});
-        expect({x: Math.round(dataLineLast.x), y: Math.round(dataLineLast.y)}).toEqual({x: 1536102129223, y: 27809021422});
+    let dataLineFirst = result.data[servicePort][2][0];
+    let dataLineLast = result.data[servicePort][2][result.data[servicePort][2].length - 1];
+    expect({x: Math.round(dataLineFirst.x), y: Math.round(dataLineFirst.y)}).toEqual({x: 1536101633589, y: 27807184710});
+    expect({x: Math.round(dataLineLast.x), y: Math.round(dataLineLast.y)}).toEqual({x: 1536102129223, y: 27809021422});
 
-        // searchCount
-        dataLineFirst = result.data[servicePort][22][0];
-        dataLineLast = result.data[servicePort][22][result.data[servicePort][22].length - 1];
+    // searchCount
+    dataLineFirst = result.data[servicePort][22][0];
+    dataLineLast = result.data[servicePort][22][result.data[servicePort][22].length - 1];
 
-        expect({x: Math.round(dataLineFirst.x), y: Math.round(dataLineFirst.y)}).toEqual({x: 1536101633589, y: 29});
-        expect({x: Math.round(dataLineLast.x), y: Math.round(dataLineLast.y)}).toEqual({x: 1536102129223, y: 25938});
+    expect({x: Math.round(dataLineFirst.x), y: Math.round(dataLineFirst.y)}).toEqual({x: 1536101633589, y: 29});
+    expect({x: Math.round(dataLineLast.x), y: Math.round(dataLineLast.y)}).toEqual({x: 1536102129223, y: 25938});
 
-        // networkOut
-        dataLineFirst = result.data[servicePort][53][0];
-        dataLineLast = result.data[servicePort][53][result.data[servicePort][53].length - 1];
+    // networkOut
+    dataLineFirst = result.data[servicePort][53][0];
+    dataLineLast = result.data[servicePort][53][result.data[servicePort][53].length - 1];
 
-        expect({x: Math.round(dataLineFirst.x), y: Math.round(dataLineFirst.y)}).toEqual({x: 1536101633589, y: 922803});
-        expect({x: Math.round(dataLineLast.x), y: Math.round(dataLineLast.y)}).toEqual({x: 1536102129223, y: 91061});
+    expect({x: Math.round(dataLineFirst.x), y: Math.round(dataLineFirst.y)}).toEqual({x: 1536101633589, y: 922803});
+    expect({x: Math.round(dataLineLast.x), y: Math.round(dataLineLast.y)}).toEqual({x: 1536102129223, y: 91061});
 
-        done();
-      });
+
   });
-  it('#20 getChartContentFromFile: check data for Non-MDC name server history with startTime and endTime', (done: DoneFn) => {
+  it('#20 getChartContentFromFile: check data for Non-MDC name server history with startTime and endTime', async() => {
     const service = TestBed.get(FileService);
     // default timezone
     timezone = getDefaultTimezone();
     startTime = 1536102028096;
     endTime = 1536102129224;
     const servicePort = 'DEFAULT';
-    service.getChartContentFromFile(FSSpecHelper.getNonMdcFile(), startTime, endTime, port, timezone, maxRow, null)
-      .then(result => {
-        // indexserverMemUsed
+    const result = await service.getChartContentFromFile(FSSpecHelper.getNonMdcFile(), startTime, endTime, port, timezone, maxRow, null);
+    // indexserverMemUsed
 
-        let dataLineFirst = result.data[servicePort][2][0];
-        let dataLineLast = result.data[servicePort][2][result.data[servicePort][2].length - 1];
+    let dataLineFirst = result.data[servicePort][2][0];
+    let dataLineLast = result.data[servicePort][2][result.data[servicePort][2].length - 1];
 
-        expect({x: Math.round(dataLineFirst.x), y: Math.round(dataLineFirst.y)}).toEqual({x: 1536102028096, y: 27839484600});
-        expect({x: Math.round(dataLineLast.x), y: Math.round(dataLineLast.y)}).toEqual({x: 1536102129223, y: 27809021422});
-        // searchCount
-        dataLineFirst = result.data[servicePort][22][0];
-        dataLineLast = result.data[servicePort][22][result.data[servicePort][22].length - 1];
+    expect({x: Math.round(dataLineFirst.x), y: Math.round(dataLineFirst.y)}).toEqual({x: 1536102028096, y: 27839484600});
+    expect({x: Math.round(dataLineLast.x), y: Math.round(dataLineLast.y)}).toEqual({x: 1536102129223, y: 27809021422});
+    // searchCount
+    dataLineFirst = result.data[servicePort][22][0];
+    dataLineLast = result.data[servicePort][22][result.data[servicePort][22].length - 1];
 
-        expect({x: Math.round(dataLineFirst.x), y: Math.round(dataLineFirst.y)}).toEqual({x: 1536102028096, y: 63});
-        expect({x: Math.round(dataLineLast.x), y: Math.round(dataLineLast.y)}).toEqual({x: 1536102129223, y: 25938});
-        //
-        // networkOut
-        dataLineFirst = result.data[servicePort][53][0];
-        dataLineLast = result.data[servicePort][53][result.data[servicePort][53].length - 1];
+    expect({x: Math.round(dataLineFirst.x), y: Math.round(dataLineFirst.y)}).toEqual({x: 1536102028096, y: 63});
+    expect({x: Math.round(dataLineLast.x), y: Math.round(dataLineLast.y)}).toEqual({x: 1536102129223, y: 25938});
+    //
+    // networkOut
+    dataLineFirst = result.data[servicePort][53][0];
+    dataLineLast = result.data[servicePort][53][result.data[servicePort][53].length - 1];
 
-        expect({x: Math.round(dataLineFirst.x), y: Math.round(dataLineFirst.y)}).toEqual({x: 1536102028096, y: 274387});
-        expect({x: Math.round(dataLineLast.x), y: Math.round(dataLineLast.y)}).toEqual({x: 1536102129223, y: 91061});
+    expect({x: Math.round(dataLineFirst.x), y: Math.round(dataLineFirst.y)}).toEqual({x: 1536102028096, y: 274387});
+    expect({x: Math.round(dataLineLast.x), y: Math.round(dataLineLast.y)}).toEqual({x: 1536102129223, y: 91061});
 
-        done();
-      });
+
   });
-  it('#21 getChartContentFromFile: check data for MDC name server history', (done: DoneFn) => {
+  it('#21 getChartContentFromFile: check data for MDC name server history', async () => {
     startTime = 0;
     endTime = 4102358400000;
     const service = TestBed.get(FileService);
     timezone = getDefaultTimezone();
-    service.getChartContentFromFile(FSSpecHelper.getMdcFile(), startTime, endTime, port, timezone, maxRow, null)
-      .then(result => {
-        let servicePort = '30201';
-        let expectedResult = {
-          indexserverMemUsed: {firstLine: {x: 1527846647324, y: 3285994511}, lastLine: {x: 1527853024165, y: 5201941477}},
-          searchCount:        {firstLine: {x: 1527846647324, y: 0},          lastLine: {x: 1527853024165, y: 499}},
-          networkOut:         {firstLine: {x: 1527846647324, y: 450152},     lastLine: {x: 1527853024165, y: 2576381}}
-        };
-        FSSpecHelper.checkMdcData(result, servicePort, expectedResult);
+    const result = await service.getChartContentFromFile(FSSpecHelper.getMdcFile(), startTime, endTime, port, timezone, maxRow, null);
+    let servicePort = '30201';
+    let expectedResult = {
+      indexserverMemUsed: {firstLine: {x: 1527846647324, y: 3285994511}, lastLine: {x: 1527853024165, y: 5201941477}},
+      searchCount:        {firstLine: {x: 1527846647324, y: 0},          lastLine: {x: 1527853024165, y: 499}},
+      networkOut:         {firstLine: {x: 1527846647324, y: 450152},     lastLine: {x: 1527853024165, y: 2576381}}
+    };
+    FSSpecHelper.checkMdcData(result, servicePort, expectedResult);
 
-        servicePort = '30203';
-        expectedResult = {
-          indexserverMemUsed: {firstLine: {x: 1527846667425, y: 3999060521}, lastLine: {x: 1527851134740, y: 5598130783}},
-          searchCount:        {firstLine: {x: 1527846667425, y: 0},          lastLine: {x: 1527851134740, y: 0}},
-          networkOut:         {firstLine: {x: 1527846667425, y: 1364962},    lastLine: {x: 1527851134740, y: 72693}}
-        };
-        FSSpecHelper.checkMdcData(result, servicePort, expectedResult);
+    servicePort = '30203';
+    expectedResult = {
+      indexserverMemUsed: {firstLine: {x: 1527846667425, y: 3999060521}, lastLine: {x: 1527851134740, y: 5598130783}},
+      searchCount:        {firstLine: {x: 1527846667425, y: 0},          lastLine: {x: 1527851134740, y: 0}},
+      networkOut:         {firstLine: {x: 1527846667425, y: 1364962},    lastLine: {x: 1527851134740, y: 72693}}
+    };
+    FSSpecHelper.checkMdcData(result, servicePort, expectedResult);
 
-        servicePort = '30207';
-        expectedResult = {
-          indexserverMemUsed: {firstLine: {x: 1527846667425, y: 2683597582}, lastLine: {x: 1527851114703, y: 3607910424}},
-          searchCount:        {firstLine: {x: 1527846667425, y: 0},          lastLine: {x: 1527851114703, y: 0}},
-          networkOut:         {firstLine: {x: 1527846667425, y: 1364962},    lastLine: {x: 1527851114703, y: 810421}}
-        };
-        FSSpecHelper.checkMdcData(result, servicePort, expectedResult);
+    servicePort = '30207';
+    expectedResult = {
+      indexserverMemUsed: {firstLine: {x: 1527846667425, y: 2683597582}, lastLine: {x: 1527851114703, y: 3607910424}},
+      searchCount:        {firstLine: {x: 1527846667425, y: 0},          lastLine: {x: 1527851114703, y: 0}},
+      networkOut:         {firstLine: {x: 1527846667425, y: 1364962},    lastLine: {x: 1527851114703, y: 810421}}
+    };
+    FSSpecHelper.checkMdcData(result, servicePort, expectedResult);
 
-        servicePort = '30240';
-        expectedResult = {
-          indexserverMemUsed: {firstLine: {x: 1527851293900, y: 4216218953}, lastLine: {x: 1527853024165, y: 8205347019}},
-          searchCount:        {firstLine: {x: 1527851293900, y: 0},          lastLine: {x: 1527853024165, y: 0}},
-          networkOut:         {firstLine: {x: 1527851293900, y: 1089638},    lastLine: {x: 1527853024165, y: 2576381}}
-        };
-        FSSpecHelper.checkMdcData(result, servicePort, expectedResult);
+    servicePort = '30240';
+    expectedResult = {
+      indexserverMemUsed: {firstLine: {x: 1527851293900, y: 4216218953}, lastLine: {x: 1527853024165, y: 8205347019}},
+      searchCount:        {firstLine: {x: 1527851293900, y: 0},          lastLine: {x: 1527853024165, y: 0}},
+      networkOut:         {firstLine: {x: 1527851293900, y: 1089638},    lastLine: {x: 1527853024165, y: 2576381}}
+    };
+    FSSpecHelper.checkMdcData(result, servicePort, expectedResult);
 
-        servicePort = '30243';
-        expectedResult = {
-          indexserverMemUsed: {firstLine: {x: 1527852224477, y: 3370436034}, lastLine: {x: 1527853024165, y: 3538834746}},
-          searchCount:        {firstLine: {x: 1527852224477, y: 0},          lastLine: {x: 1527853024165, y: 0}},
-          networkOut:         {firstLine: {x: 1527852224477, y: 1545216},    lastLine: {x: 1527853024165, y: 2576381}}
-        };
-        FSSpecHelper.checkMdcData(result, servicePort, expectedResult);
+    servicePort = '30243';
+    expectedResult = {
+      indexserverMemUsed: {firstLine: {x: 1527852224477, y: 3370436034}, lastLine: {x: 1527853024165, y: 3538834746}},
+      searchCount:        {firstLine: {x: 1527852224477, y: 0},          lastLine: {x: 1527853024165, y: 0}},
+      networkOut:         {firstLine: {x: 1527852224477, y: 1545216},    lastLine: {x: 1527853024165, y: 2576381}}
+    };
+    FSSpecHelper.checkMdcData(result, servicePort, expectedResult);
 
-        servicePort = '30246';
-        expectedResult = {
-          indexserverMemUsed: {firstLine: {x: 1527852304684, y: 3447748168}, lastLine: {x: 1527853024165, y: 3565683728}},
-          searchCount:        {firstLine: {x: 1527852304684, y: 0},          lastLine: {x: 1527853024165, y: 0}},
-          networkOut:         {firstLine: {x: 1527852304684, y: 36538716},   lastLine: {x: 1527853024165, y: 2576381}}
-        };
-        FSSpecHelper.checkMdcData(result, servicePort, expectedResult);
+    servicePort = '30246';
+    expectedResult = {
+      indexserverMemUsed: {firstLine: {x: 1527852304684, y: 3447748168}, lastLine: {x: 1527853024165, y: 3565683728}},
+      searchCount:        {firstLine: {x: 1527852304684, y: 0},          lastLine: {x: 1527853024165, y: 0}},
+      networkOut:         {firstLine: {x: 1527852304684, y: 36538716},   lastLine: {x: 1527853024165, y: 2576381}}
+    };
+    FSSpecHelper.checkMdcData(result, servicePort, expectedResult);
 
-        servicePort = '30249';
-        expectedResult = {
-          indexserverMemUsed: {firstLine: {x: 1527852634319, y: 3022981072}, lastLine: {x: 1527853024165, y: 3254856185}},
-          searchCount:        {firstLine: {x: 1527852634319, y: 0},          lastLine: {x: 1527853024165, y: 0}},
-          networkOut:         {firstLine: {x: 1527852634319, y: 859454},     lastLine: {x: 1527853024165, y: 2576381}}
-        };
-        FSSpecHelper.checkMdcData(result, servicePort, expectedResult);
+    servicePort = '30249';
+    expectedResult = {
+      indexserverMemUsed: {firstLine: {x: 1527852634319, y: 3022981072}, lastLine: {x: 1527853024165, y: 3254856185}},
+      searchCount:        {firstLine: {x: 1527852634319, y: 0},          lastLine: {x: 1527853024165, y: 0}},
+      networkOut:         {firstLine: {x: 1527852634319, y: 859454},     lastLine: {x: 1527853024165, y: 2576381}}
+    };
+    FSSpecHelper.checkMdcData(result, servicePort, expectedResult);
 
-        done();
-      });
+
   });
-  it('#22 getChartContentFromFile: check data for MDC name server history with startTime', (done: DoneFn) => {
+  it('#22 getChartContentFromFile: check data for MDC name server history with startTime', async () => {
     startTime = 1527852044158;
     endTime = 4102358400000;
     const service = TestBed.get(FileService);
     timezone = getDefaultTimezone();
-    service.getChartContentFromFile(FSSpecHelper.getMdcFile(), startTime, endTime, port, timezone, maxRow, null)
-      .then(result => {
-        let servicePort = '30201';
-        let expectedResult = {
-          indexserverMemUsed: {firstLine: {x: 1527852044159, y: 5112963348}, lastLine: {x: 1527853024165, y: 5201941477}},
-          searchCount:        {firstLine: {x: 1527852044159, y: 0},          lastLine: {x: 1527853024165, y: 499}},
-          networkOut:         {firstLine: {x: 1527852044159, y: 760796},     lastLine: {x: 1527853024165, y: 2576381}}
-        };
-        FSSpecHelper.checkMdcData(result, servicePort, expectedResult);
+    const result = await service.getChartContentFromFile(FSSpecHelper.getMdcFile(), startTime, endTime, port, timezone, maxRow, null);
+    let servicePort = '30201';
+    let expectedResult = {
+      indexserverMemUsed: {firstLine: {x: 1527852044159, y: 5112963348}, lastLine: {x: 1527853024165, y: 5201941477}},
+      searchCount:        {firstLine: {x: 1527852044159, y: 0},          lastLine: {x: 1527853024165, y: 499}},
+      networkOut:         {firstLine: {x: 1527852044159, y: 760796},     lastLine: {x: 1527853024165, y: 2576381}}
+    };
+    FSSpecHelper.checkMdcData(result, servicePort, expectedResult);
 
-        servicePort = '30203';
-        expect(result[servicePort]).toEqual(undefined);
-        servicePort = '30207';
-        expect(result[servicePort]).toEqual(undefined);
-        servicePort = '30240';
-        expectedResult = {
-          indexserverMemUsed: {firstLine: {x: 1527852044159, y: 11889402001}, lastLine: {x: 1527853024165, y: 8205347019}},
-          searchCount:        {firstLine: {x: 1527852044159, y: 0},           lastLine: {x: 1527853024165, y: 0}},
-          networkOut:         {firstLine: {x: 1527852044159, y: 760796},      lastLine: {x: 1527853024165, y: 2576381}}
-        };
-        FSSpecHelper.checkMdcData(result, servicePort, expectedResult);
+    servicePort = '30203';
+    expect(result[servicePort]).toEqual(undefined);
+    servicePort = '30207';
+    expect(result[servicePort]).toEqual(undefined);
+    servicePort = '30240';
+    expectedResult = {
+      indexserverMemUsed: {firstLine: {x: 1527852044159, y: 11889402001}, lastLine: {x: 1527853024165, y: 8205347019}},
+      searchCount:        {firstLine: {x: 1527852044159, y: 0},           lastLine: {x: 1527853024165, y: 0}},
+      networkOut:         {firstLine: {x: 1527852044159, y: 760796},      lastLine: {x: 1527853024165, y: 2576381}}
+    };
+    FSSpecHelper.checkMdcData(result, servicePort, expectedResult);
 
-        servicePort = '30243';
-        expectedResult = {
-          indexserverMemUsed: {firstLine: {x: 1527852224477, y: 3370436034}, lastLine: {x: 1527853024165, y: 3538834746}},
-          searchCount:        {firstLine: {x: 1527852224477, y: 0},          lastLine: {x: 1527853024165, y: 0}},
-          networkOut:         {firstLine: {x: 1527852224477, y: 1545216},    lastLine: {x: 1527853024165, y: 2576381}}
-        };
-        FSSpecHelper.checkMdcData(result, servicePort, expectedResult);
+    servicePort = '30243';
+    expectedResult = {
+      indexserverMemUsed: {firstLine: {x: 1527852224477, y: 3370436034}, lastLine: {x: 1527853024165, y: 3538834746}},
+      searchCount:        {firstLine: {x: 1527852224477, y: 0},          lastLine: {x: 1527853024165, y: 0}},
+      networkOut:         {firstLine: {x: 1527852224477, y: 1545216},    lastLine: {x: 1527853024165, y: 2576381}}
+    };
+    FSSpecHelper.checkMdcData(result, servicePort, expectedResult);
 
-        servicePort = '30246';
-        expectedResult = {
-          indexserverMemUsed: {firstLine: {x: 1527852304684, y: 3447748168}, lastLine: {x: 1527853024165, y: 3565683728}},
-          searchCount:        {firstLine: {x: 1527852304684, y: 0},          lastLine: {x: 1527853024165, y: 0}},
-          networkOut:         {firstLine: {x: 1527852304684, y: 36538716},   lastLine: {x: 1527853024165, y: 2576381}}
-        };
-        FSSpecHelper.checkMdcData(result, servicePort, expectedResult);
+    servicePort = '30246';
+    expectedResult = {
+      indexserverMemUsed: {firstLine: {x: 1527852304684, y: 3447748168}, lastLine: {x: 1527853024165, y: 3565683728}},
+      searchCount:        {firstLine: {x: 1527852304684, y: 0},          lastLine: {x: 1527853024165, y: 0}},
+      networkOut:         {firstLine: {x: 1527852304684, y: 36538716},   lastLine: {x: 1527853024165, y: 2576381}}
+    };
+    FSSpecHelper.checkMdcData(result, servicePort, expectedResult);
 
-        servicePort = '30249';
-        expectedResult = {
-          indexserverMemUsed: {firstLine: {x: 1527852634319, y: 3022981072}, lastLine: {x: 1527853024165, y: 3254856185}},
-          searchCount:        {firstLine: {x: 1527852634319, y: 0},          lastLine: {x: 1527853024165, y: 0}},
-          networkOut:         {firstLine: {x: 1527852634319, y: 859454},     lastLine: {x: 1527853024165, y: 2576381}}
-        };
-        FSSpecHelper.checkMdcData(result, servicePort, expectedResult);
+    servicePort = '30249';
+    expectedResult = {
+      indexserverMemUsed: {firstLine: {x: 1527852634319, y: 3022981072}, lastLine: {x: 1527853024165, y: 3254856185}},
+      searchCount:        {firstLine: {x: 1527852634319, y: 0},          lastLine: {x: 1527853024165, y: 0}},
+      networkOut:         {firstLine: {x: 1527852634319, y: 859454},     lastLine: {x: 1527853024165, y: 2576381}}
+    };
+    FSSpecHelper.checkMdcData(result, servicePort, expectedResult);
 
-        done();
-      });
+
   });
-  it('#23 getChartContentFromFile: check data for MDC name server history with endTime', (done: DoneFn) => {
+  it('#23 getChartContentFromFile: check data for MDC name server history with endTime', async () => {
     startTime = 0;
     endTime = 1527852984075;
     const service = TestBed.get(FileService);
     timezone = getDefaultTimezone();
-    service.getChartContentFromFile(FSSpecHelper.getMdcFile(), startTime, endTime, port, timezone, maxRow, null)
-      .then(result => {
-        let servicePort = '30201';
-        let expectedResult = {
-          indexserverMemUsed: {firstLine: {x: 1527846647324, y: 3285994511}, lastLine: {x: 1527852984074, y: 5201701125}},
-          searchCount:        {firstLine: {x: 1527846647324, y: 0},          lastLine: {x: 1527852984074, y: 0}},
-          networkOut:         {firstLine: {x: 1527846647324, y: 450152},     lastLine: {x: 1527852984074, y: 127046}}
-        };
-        FSSpecHelper.checkMdcData(result, servicePort, expectedResult);
+    const result = await service.getChartContentFromFile(FSSpecHelper.getMdcFile(), startTime, endTime, port, timezone, maxRow, null);
+    let servicePort = '30201';
+    let expectedResult = {
+      indexserverMemUsed: {firstLine: {x: 1527846647324, y: 3285994511}, lastLine: {x: 1527852984074, y: 5201701125}},
+      searchCount:        {firstLine: {x: 1527846647324, y: 0},          lastLine: {x: 1527852984074, y: 0}},
+      networkOut:         {firstLine: {x: 1527846647324, y: 450152},     lastLine: {x: 1527852984074, y: 127046}}
+    };
+    FSSpecHelper.checkMdcData(result, servicePort, expectedResult);
 
-        servicePort = '30203';
-        expectedResult = {
-          indexserverMemUsed: {firstLine: {x: 1527846667425, y: 3999060521}, lastLine: {x: 1527851134740, y: 5598130783}},
-          searchCount:        {firstLine: {x: 1527846667425, y: 0},          lastLine: {x: 1527851134740, y: 0}},
-          networkOut:         {firstLine: {x: 1527846667425, y: 1364962},    lastLine: {x: 1527851134740, y: 72693}}
-        };
-        FSSpecHelper.checkMdcData(result, servicePort, expectedResult);
+    servicePort = '30203';
+    expectedResult = {
+      indexserverMemUsed: {firstLine: {x: 1527846667425, y: 3999060521}, lastLine: {x: 1527851134740, y: 5598130783}},
+      searchCount:        {firstLine: {x: 1527846667425, y: 0},          lastLine: {x: 1527851134740, y: 0}},
+      networkOut:         {firstLine: {x: 1527846667425, y: 1364962},    lastLine: {x: 1527851134740, y: 72693}}
+    };
+    FSSpecHelper.checkMdcData(result, servicePort, expectedResult);
 
-        servicePort = '30207';
-        expectedResult = {
-          indexserverMemUsed: {firstLine: {x: 1527846667425, y: 2683597582}, lastLine: {x: 1527851114703, y: 3607910424}},
-          searchCount:        {firstLine: {x: 1527846667425, y: 0},          lastLine: {x: 1527851114703, y: 0}},
-          networkOut:         {firstLine: {x: 1527846667425, y: 1364962},    lastLine: {x: 1527851114703, y: 810421}}
-        };
+    servicePort = '30207';
+    expectedResult = {
+      indexserverMemUsed: {firstLine: {x: 1527846667425, y: 2683597582}, lastLine: {x: 1527851114703, y: 3607910424}},
+      searchCount:        {firstLine: {x: 1527846667425, y: 0},          lastLine: {x: 1527851114703, y: 0}},
+      networkOut:         {firstLine: {x: 1527846667425, y: 1364962},    lastLine: {x: 1527851114703, y: 810421}}
+    };
 
-        FSSpecHelper.checkMdcData(result, servicePort, expectedResult);
+    FSSpecHelper.checkMdcData(result, servicePort, expectedResult);
 
-        servicePort = '30240';
-        expectedResult = {
-          indexserverMemUsed: {firstLine: {x: 1527851293900, y: 4216218953}, lastLine: {x: 1527852984074, y: 8203273459}},
-          searchCount:        {firstLine: {x: 1527851293900, y: 0},          lastLine: {x: 1527852984074, y: 0}},
-          networkOut:         {firstLine: {x: 1527851293900, y: 1089638},    lastLine: {x: 1527852984074, y: 127046}}
-        };
-        FSSpecHelper.checkMdcData(result, servicePort, expectedResult);
+    servicePort = '30240';
+    expectedResult = {
+      indexserverMemUsed: {firstLine: {x: 1527851293900, y: 4216218953}, lastLine: {x: 1527852984074, y: 8203273459}},
+      searchCount:        {firstLine: {x: 1527851293900, y: 0},          lastLine: {x: 1527852984074, y: 0}},
+      networkOut:         {firstLine: {x: 1527851293900, y: 1089638},    lastLine: {x: 1527852984074, y: 127046}}
+    };
+    FSSpecHelper.checkMdcData(result, servicePort, expectedResult);
 
-        servicePort = '30243';
-        expectedResult = {
-          indexserverMemUsed: {firstLine: {x: 1527852224477, y: 3370436034}, lastLine: {x: 1527852984074, y: 3530968090}},
-          searchCount:        {firstLine: {x: 1527852224477, y: 0},          lastLine: {x: 1527852984074, y: 0}},
-          networkOut:         {firstLine: {x: 1527852224477, y: 1545216},    lastLine: {x: 1527852984074, y: 127046}}
-        };
-        FSSpecHelper.checkMdcData(result, servicePort, expectedResult);
+    servicePort = '30243';
+    expectedResult = {
+      indexserverMemUsed: {firstLine: {x: 1527852224477, y: 3370436034}, lastLine: {x: 1527852984074, y: 3530968090}},
+      searchCount:        {firstLine: {x: 1527852224477, y: 0},          lastLine: {x: 1527852984074, y: 0}},
+      networkOut:         {firstLine: {x: 1527852224477, y: 1545216},    lastLine: {x: 1527852984074, y: 127046}}
+    };
+    FSSpecHelper.checkMdcData(result, servicePort, expectedResult);
 
-        servicePort = '30246';
-        expectedResult = {
-          indexserverMemUsed: {firstLine: {x: 1527852304684, y: 3447748168}, lastLine: {x: 1527852984074, y: 3562815616}},
-          searchCount:        {firstLine: {x: 1527852304684, y: 0},          lastLine: {x: 1527852984074, y: 0}},
-          networkOut:         {firstLine: {x: 1527852304684, y: 36538716},   lastLine: {x: 1527852984074, y: 127046}}
-        };
-        FSSpecHelper.checkMdcData(result, servicePort, expectedResult);
+    servicePort = '30246';
+    expectedResult = {
+      indexserverMemUsed: {firstLine: {x: 1527852304684, y: 3447748168}, lastLine: {x: 1527852984074, y: 3562815616}},
+      searchCount:        {firstLine: {x: 1527852304684, y: 0},          lastLine: {x: 1527852984074, y: 0}},
+      networkOut:         {firstLine: {x: 1527852304684, y: 36538716},   lastLine: {x: 1527852984074, y: 127046}}
+    };
+    FSSpecHelper.checkMdcData(result, servicePort, expectedResult);
 
-        servicePort = '30249';
-        expectedResult = {
-          indexserverMemUsed: {firstLine: {x: 1527852634319, y: 3022981072}, lastLine: {x: 1527852984074, y: 3248750185}},
-          searchCount:        {firstLine: {x: 1527852634319, y: 0},          lastLine: {x: 1527852984074, y: 0}},
-          networkOut:         {firstLine: {x: 1527852634319, y: 859454},     lastLine: {x: 1527852984074, y: 127046}}
-        };
-        FSSpecHelper.checkMdcData(result, servicePort, expectedResult);
+    servicePort = '30249';
+    expectedResult = {
+      indexserverMemUsed: {firstLine: {x: 1527852634319, y: 3022981072}, lastLine: {x: 1527852984074, y: 3248750185}},
+      searchCount:        {firstLine: {x: 1527852634319, y: 0},          lastLine: {x: 1527852984074, y: 0}},
+      networkOut:         {firstLine: {x: 1527852634319, y: 859454},     lastLine: {x: 1527852984074, y: 127046}}
+    };
+    FSSpecHelper.checkMdcData(result, servicePort, expectedResult);
 
-        done();
-      });
+
   });
-  it('#24 getChartContentFromFile: check data for MDC name server history with startTime and endTime', (done: DoneFn) => {
+  it('#24 getChartContentFromFile: check data for MDC name server history with startTime and endTime', async() => {
     startTime = 1527852044158;
     endTime = 1527852984075;
     const service = TestBed.get(FileService);
     timezone = getDefaultTimezone();
-    service.getChartContentFromFile(FSSpecHelper.getMdcFile(), startTime, endTime, port, timezone, maxRow, null)
-      .then(result => {
-        let servicePort = '30201';
-        let expectedResult = {
-          indexserverMemUsed: {firstLine: {x: 1527852044159, y: 5112963348}, lastLine: {x: 1527852984074, y: 5201701125}},
-          searchCount:        {firstLine: {x: 1527852044159, y: 0},          lastLine: {x: 1527852984074, y: 0}},
-          networkOut:         {firstLine: {x: 1527852044159, y: 760796},     lastLine: {x: 1527852984074, y: 127046}}
-        };
-        FSSpecHelper.checkMdcData(result, servicePort, expectedResult);
+    const result = await service.getChartContentFromFile(FSSpecHelper.getMdcFile(), startTime, endTime, port, timezone, maxRow, null);
+    let servicePort = '30201';
+    let expectedResult = {
+      indexserverMemUsed: {firstLine: {x: 1527852044159, y: 5112963348}, lastLine: {x: 1527852984074, y: 5201701125}},
+      searchCount:        {firstLine: {x: 1527852044159, y: 0},          lastLine: {x: 1527852984074, y: 0}},
+      networkOut:         {firstLine: {x: 1527852044159, y: 760796},     lastLine: {x: 1527852984074, y: 127046}}
+    };
+    FSSpecHelper.checkMdcData(result, servicePort, expectedResult);
 
-        servicePort = '30203';
-        expect(result[servicePort]).toEqual(undefined);
-        servicePort = '30207';
-        expect(result[servicePort]).toEqual(undefined);
+    servicePort = '30203';
+    expect(result[servicePort]).toEqual(undefined);
+    servicePort = '30207';
+    expect(result[servicePort]).toEqual(undefined);
 
-        servicePort = '30240';
-        expectedResult = {
-          indexserverMemUsed: {firstLine: {x: 1527852044159, y: 11889402001}, lastLine: {x: 1527852984074, y: 8203273459}},
-          searchCount:        {firstLine: {x: 1527852044159, y: 0},           lastLine: {x: 1527852984074, y: 0}},
-          networkOut:         {firstLine: {x: 1527852044159, y: 760796},      lastLine: {x: 1527852984074, y: 127046}}
-        };
-        FSSpecHelper.checkMdcData(result, servicePort, expectedResult);
+    servicePort = '30240';
+    expectedResult = {
+      indexserverMemUsed: {firstLine: {x: 1527852044159, y: 11889402001}, lastLine: {x: 1527852984074, y: 8203273459}},
+      searchCount:        {firstLine: {x: 1527852044159, y: 0},           lastLine: {x: 1527852984074, y: 0}},
+      networkOut:         {firstLine: {x: 1527852044159, y: 760796},      lastLine: {x: 1527852984074, y: 127046}}
+    };
+    FSSpecHelper.checkMdcData(result, servicePort, expectedResult);
 
-        servicePort = '30243';
-        expectedResult = {
-          indexserverMemUsed: {firstLine: {x: 1527852224477, y: 3370436034}, lastLine: {x: 1527852984074, y: 3530968090}},
-          searchCount:        {firstLine: {x: 1527852224477, y: 0},          lastLine: {x: 1527852984074, y: 0}},
-          networkOut:         {firstLine: {x: 1527852224477, y: 1545216},    lastLine: {x: 1527852984074, y: 127046}}
-        };
-        FSSpecHelper.checkMdcData(result, servicePort, expectedResult);
+    servicePort = '30243';
+    expectedResult = {
+      indexserverMemUsed: {firstLine: {x: 1527852224477, y: 3370436034}, lastLine: {x: 1527852984074, y: 3530968090}},
+      searchCount:        {firstLine: {x: 1527852224477, y: 0},          lastLine: {x: 1527852984074, y: 0}},
+      networkOut:         {firstLine: {x: 1527852224477, y: 1545216},    lastLine: {x: 1527852984074, y: 127046}}
+    };
+    FSSpecHelper.checkMdcData(result, servicePort, expectedResult);
 
-        servicePort = '30246';
-        expectedResult = {
-          indexserverMemUsed: {firstLine: {x: 1527852304684, y: 3447748168}, lastLine: {x: 1527852984074, y: 3562815616}},
-          searchCount:        {firstLine: {x: 1527852304684, y: 0},          lastLine: {x: 1527852984074, y: 0}},
-          networkOut:         {firstLine: {x: 1527852304684, y: 36538716},   lastLine: {x: 1527852984074, y: 127046}}
-        };
-        FSSpecHelper.checkMdcData(result, servicePort, expectedResult);
+    servicePort = '30246';
+    expectedResult = {
+      indexserverMemUsed: {firstLine: {x: 1527852304684, y: 3447748168}, lastLine: {x: 1527852984074, y: 3562815616}},
+      searchCount:        {firstLine: {x: 1527852304684, y: 0},          lastLine: {x: 1527852984074, y: 0}},
+      networkOut:         {firstLine: {x: 1527852304684, y: 36538716},   lastLine: {x: 1527852984074, y: 127046}}
+    };
+    FSSpecHelper.checkMdcData(result, servicePort, expectedResult);
 
-        servicePort = '30249';
-        expectedResult = {
-          indexserverMemUsed: {firstLine: {x: 1527852634319, y: 3022981072}, lastLine: {x: 1527852984074, y: 3248750185}},
-          searchCount:        {firstLine: {x: 1527852634319, y: 0},          lastLine: {x: 1527852984074, y: 0}},
-          networkOut:         {firstLine: {x: 1527852634319, y: 859454},     lastLine: {x: 1527852984074, y: 127046}}
-        };
-        FSSpecHelper.checkMdcData(result, servicePort, expectedResult);
+    servicePort = '30249';
+    expectedResult = {
+      indexserverMemUsed: {firstLine: {x: 1527852634319, y: 3022981072}, lastLine: {x: 1527852984074, y: 3248750185}},
+      searchCount:        {firstLine: {x: 1527852634319, y: 0},          lastLine: {x: 1527852984074, y: 0}},
+      networkOut:         {firstLine: {x: 1527852634319, y: 859454},     lastLine: {x: 1527852984074, y: 127046}}
+    };
+    FSSpecHelper.checkMdcData(result, servicePort, expectedResult);
 
-        done();
-      });
+
   });
-  it('#25 getPortsFromFile: check loading ports for none MDC name server history', (done: DoneFn) => {
+  it('#25 getPortsFromFile: check loading ports for none MDC name server history', async () => {
     const service = TestBed.get(FileService);
-    service.getPortsFromFile(FSSpecHelper.getNonMdcFile(), null)
-      .then(result => {
-        expect(result).toEqual(['DEFAULT']);
-        done();
-      });
+    const result = await service.getPortsFromFile(FSSpecHelper.getNonMdcFile(), null);
+    expect(result).toEqual(['DEFAULT']);
+
   });
-  it('#26 getPortsFromFile: check loading ports for MDC name server history', (done: DoneFn) => {
+  it('#26 getPortsFromFile: check loading ports for MDC name server history', async () => {
     const service = TestBed.get(FileService);
-    service.getPortsFromFile(FSSpecHelper.getMdcFile(), null)
-      .then(result => {
-        expect(result).toEqual( ['30201', '30203', '30207', '30240', '30243', '30246', '30249']);
-        done();
-      });
+    const result = await service.getPortsFromFile(FSSpecHelper.getMdcFile(), null);
+    expect(result).toEqual( ['30201', '30203', '30207', '30240', '30243', '30246', '30249']);
+
   });
 });
 
@@ -3304,16 +3250,15 @@ hanaserver2;;1527846629.804;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-
     expect(firstLineTimes[servicePort]).toBe(firstLineExpect);
     expect(lastLineTimes[servicePort]).toBe(lastLineExpect);
   }
-  static checkNonMdcTimeZone(service, startTime, endTime, servicePort, timezone, maxRow, firstLineTime, lastLineTime, done) {
-    service.getChartContentFromFile(FSSpecHelper.getNonMdcFile(), startTime, endTime, servicePort, timezone, maxRow, null)
+  static checkNonMdcTimeZone(service, startTime, endTime, servicePort, timezone, maxRow, firstLineTime, lastLineTime) {
+    return service.getChartContentFromFile(FSSpecHelper.getNonMdcFile(), startTime, endTime, servicePort, timezone, maxRow, null)
       .then(result => {
         const offset = FSSpecHelper.getOffset(timezone, firstLineTime);
         FSSpecHelper._checkTimeZone(result, servicePort, firstLineTime, lastLineTime, offset);
-        done();
       });
   }
-  static checkMdcTimezone(service, startTime, endTime, port, timezone, maxRow, firstLineTime, lastLineTime, done) {
-    service.getChartContentFromFile(FSSpecHelper.getMdcFile(), startTime, endTime, port, timezone, maxRow, null)
+  static checkMdcTimezone(service, startTime, endTime, port, timezone, maxRow, firstLineTime, lastLineTime) {
+    return service.getChartContentFromFile(FSSpecHelper.getMdcFile(), startTime, endTime, port, timezone, maxRow, null)
       .then(result => {
         let serverPort = '30201';
         let offset = FSSpecHelper.getOffset(timezone, firstLineTime[serverPort]);
@@ -3336,7 +3281,6 @@ hanaserver2;;1527846629.804;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-
         serverPort = '30249';
         offset = FSSpecHelper.getOffset(timezone, firstLineTime[serverPort]);
         FSSpecHelper._checkTimeZone(result, serverPort, firstLineTime[serverPort], lastLineTime[serverPort], offset);
-        done();
       });
   }
   static checkMdcData(result, servicePort, expectedResult) {

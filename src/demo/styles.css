@@ -1,4 +1,4 @@
-@import "~ng-pick-datetime/assets/style/picker.min.css";
+@import "~@danielmoncada/angular-datetime-picker/assets/style/picker.min.css";
 body {
   margin: 0 8px 0 8px;
   padding: 0;

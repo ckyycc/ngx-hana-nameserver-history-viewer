@@ -381,7 +381,7 @@ export class UIService {
   /**
    * convert unit values (eg: byte to MB or GB) and generate the control data (sum, max, avg) for one row
    */
-  private _convertUnitAndGenerateRowControlData(row: ChartContentDataItem[], key: string, unit: UnitType, port: string): Promise<any> {
+  private _convertUnitAndGenerateRowControlData(row: ChartContentDataItem[], key: string, unit: UnitType, port: string): Promise<void> {
     return new Promise(resolve => {
       if (row) {
         const overview: LoadHistoryInfoItem = {Sum: 0, Max: 0, Average: 0, Last: 0};

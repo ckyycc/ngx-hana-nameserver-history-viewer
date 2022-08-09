@@ -1,7 +1,7 @@
 # Language
 language: node_js
 node_js:
-- 11
+- 16
 
 dist: xenial
 
@@ -24,7 +24,7 @@ before_install:
 script:
 - npm install
 - npm run packagr
-- ng test --watch=false
+- npm run test:watchless
 
 # Notifications
 notifications:

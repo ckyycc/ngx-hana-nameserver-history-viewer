@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
 import { getDefaultTimezone } from '../../utils';
-import * as momentImported from 'moment-timezone';
+import moment from 'moment-timezone';
 
-// workaround for fixing following error when doing packagr: Cannot call a namespace ('moment')
-const moment = momentImported;
 
 export interface Timezone {
   region: string;

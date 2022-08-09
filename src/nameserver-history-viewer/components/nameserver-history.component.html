@@ -5,8 +5,10 @@
         <file-drop-input (fileDrop)="fileDropped($event)" (fileInput)="fileSelected($event)"
                          [dropAreaText]= "abbreviatedFileName"
                          [inputAreaText]="'Browse'"
-                         [title]="file?.name? file.name:'Select a name server history file from your local disk.'">
+                         [title]="file?.name? file.name:'Select a name server history file from your local disk.'"
+                         *ngIf="!fileBuffer">
         </file-drop-input>
+        <p *ngIf="fileBuffer" class="box-stream-mode-text">{{streamModeFileName || 'nameserver_history.trc (stream mode)'}}</p>
       </div>
       <div *ngIf="showReadFileProgress">
         <progress-bar [progress]="readProgress"></progress-bar>
@@ -42,9 +44,9 @@
   <div #nameserverHistoryContent class="nameserver-history-content">
     <div class="nameserver-history-content-chart">
       <instruction [(show)]="showInstruction" *ngIf="!showChartFlag && showInstruction"
-                   [step1Finished]="file"
-                   [step2Finished]="dateTimeRange && (dateTimeRange[0] || dateTimeRange[1]) || timezone != defaultTimezone"
-                   [step3Finished]="port"
+                   [step1Finished]="!!file"
+                   [step2Finished]="dateTimeRange && (!!dateTimeRange[0] || !!dateTimeRange[1]) || timezone != defaultTimezone"
+                   [step3Finished]="!!port"
                    [step4Finished]="stepShowChart && !enableShowChartButton"
                    [step5Finished]="false">
       </instruction>
@@ -58,7 +60,7 @@
                            [keyColumn]="kpiColumn"
                            [hiddenColumns]="hiddenColumns"
                            [tooltipColumn]="descColumn"
-                           [searchStyle]="'searchAll'"
+                           [searchStyle]="searchType"
                            [searchColumn]="kpiColumn"
                            [multiSelection]="true">
       </ngx-selection-table>

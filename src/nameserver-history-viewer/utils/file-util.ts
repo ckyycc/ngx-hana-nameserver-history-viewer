@@ -147,3 +147,18 @@ export function calculateValue4Time(lastValue: number, nextValue: string, timezo
 export function validateData(data: string[][]): boolean {
   return data == null ? false : data.length >= 4 && ['host', 'time'].every(i => data[0].includes(i));
 }
+
+/**
+ * convert blob to file
+ * @param theBlob
+ * @param fileName
+ */
+export function blobToFile (theBlob: Blob, fileName: string): File {
+  const blob: any = theBlob;
+  // A Blob() is almost a File() - it's just missing the two properties below which we will add
+  blob.lastModifiedDate = new Date();
+  blob.name = fileName;
+
+  // Cast to a File() type
+  return <File>theBlob;
+}

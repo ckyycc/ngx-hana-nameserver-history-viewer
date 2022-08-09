@@ -4,13 +4,14 @@ import { FSSpecHelper } from '../services/file.service.spec';
 import { ChartService, FileService, UIService } from '../services';
 import { Alert } from '../types';
 import * as utils from '../utils';
+import * as fileUtil from '../utils/file-util';
 
 describe('NameServerHistoryComponent', () => {
   let component: NameServerHistoryComponent;
   let event;
   let mdcFile;
   let spyNameServerHistoryComponent;
-  let spyUtil;
+
   beforeEach(() => {
     mdcFile = FSSpecHelper.getMdcFile();
     event = {};
@@ -31,12 +32,16 @@ describe('NameServerHistoryComponent', () => {
 
 
     // set spy on getFileFromDrop (file-util.ts)
-    // jasmine.createSpy('getFileFromDrop').and.returnValue(Promise.resolve(mdcFile));
-    spyOn(utils, 'getFileFromDrop').and.returnValue(Promise.resolve(mdcFile));
+    // jasmine.createSpy('getFileFromDrop').and.resolveTo(mdcFile);
+    // spyOn(fileUtil, 'getFileFromDrop').and.returnValue(Promise.resolve(mdcFile));
+    // jasmine.createSpy('getFileFromDrop', fileUtil.getFileFromDrop).and.returnValue(Promise.resolve(mdcFile));
+
     // set spy on getTimeRangeString (file-util.ts)
-    spyOn(utils, 'getTimeRangeString').and.returnValue('2000-01-01 ~ 2000-01-02');
+    jasmine.createSpy('getTimeRangeString').and.returnValue('2000-01-01 ~ 2000-01-02');
+    // spyOn(utils, 'getTimeRangeString').and.returnValue('2000-01-01 ~ 2000-01-02');
     // set spy on isEmptyData (ui-util.ts)
-    spyUtil = spyOn(utils, 'isEmptyData').and.returnValue(false);
+    jasmine.createSpy('isEmptyData').and.returnValue(false);
+    // spyUtil = spyOn(utils, 'isEmptyData').and.returnValue(false);
 
     // set spy on resetChart (chartService)
     spyOn(ChartService.prototype, 'resetChart').and.returnValue(Promise.resolve(''));
@@ -49,32 +54,32 @@ describe('NameServerHistoryComponent', () => {
     // spyOn(UIService.prototype, 'getYScale').and.returnValue('');
 
   });
-  it('#01 fileSelected: should skip the same file', () => {
+  it('#01 fileSelected: should skip the same file', async () => {
     const file = FSSpecHelper.getMdcFile();
     event['target'].files = [file];
     component.file = file;
-    component.fileSelected(event);
+    await component.fileSelected(event);
     expect(component.abbreviatedFileName).toEqual('or Drop File Here');
     expect(component.enableShowChartButton).toBeFalsy();
   });
-  it('#02 fileSelected: should not skip if the selected file is a different one', () => {
+  it('#02 fileSelected: should not skip if the selected file is a different one', async () => {
     event['target'].files = [FSSpecHelper.getMdcFile()];
     component.file = FSSpecHelper.getNonMdcFile();
-    component.fileSelected(event);
+    await component.fileSelected(event);
     expect(component.abbreviatedFileName).toEqual(utils.getAbbreviatedFileName('mdcNameServerHistory.trc'));
     expect(component.enableShowChartButton).toBeTruthy();
   });
   it('#03 fileDropped: should skip the same file', fakeAsync(() => {
     component.abbreviatedFileName = 'or Drop File Here';
     component.file = mdcFile;
-    component.fileDropped(event);
+    component.fileDropped({file: mdcFile});
     tick();
     expect(component.abbreviatedFileName).toEqual('or Drop File Here');
     expect(component.enableShowChartButton).toBeFalsy();
   }));
-  it('#04 fileDropped: should not skip if the selected file is a different one', fakeAsync(() => {
+  it('#04 fileDropped: should not skip if the selected file is a different one', fakeAsync(async() => {
     component.file = FSSpecHelper.getNonMdcFile();
-    component.fileDropped(event);
+    component.fileDropped({file: FSSpecHelper.getMdcFile()});
     tick();
     expect(component.abbreviatedFileName).toEqual(utils.getAbbreviatedFileName('mdcNameServerHistory.trc'));
     expect(component.enableShowChartButton).toBe(true);

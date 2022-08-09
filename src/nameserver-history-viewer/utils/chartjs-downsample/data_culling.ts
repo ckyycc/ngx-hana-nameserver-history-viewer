@@ -24,11 +24,10 @@
  */
 import { ChartPoint } from 'chart.js';
 import { Scale } from './chartjs_ext';
-import * as moment_module from 'moment';
-const moment = (window && (window as any).moment) ? (window as any).moment : moment_module;
+import moment from 'moment';
 import * as utils from './utils';
 
-export type XValue = number | string | Date | moment_module.Moment;
+export type XValue = number | string | Date | moment.Moment;
 export type Range = [XValue, XValue];
 
 function getCompareValue(value: XValue): number {

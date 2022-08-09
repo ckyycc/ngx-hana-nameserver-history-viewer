@@ -1,5 +1,5 @@
 import {TimeZoneAbbrMapping} from './demo-service';
-import * as moment from 'moment-timezone';
+import moment from 'moment-timezone';
 
 /**
  * interface for the abbreviation and offset getting from topology.txt
