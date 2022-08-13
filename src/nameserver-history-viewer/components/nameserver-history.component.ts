@@ -15,7 +15,8 @@ import {
   getTimeRangeString,
   generatePorts,
   getDefaultTimezone,
-  blobToFile
+  blobToFile,
+  isFile,
 } from '../utils';
 import { Abort, Alert, HtmlElement, Item, ChartContentData, ChartContentHeader, ChartContentTime, Port } from '../types';
 import { FileService, ChartService, UIService } from '../services';
@@ -193,9 +194,10 @@ export class NameServerHistoryComponent implements OnChanges, AfterViewInit {
 
   async ngOnChanges(changes: SimpleChanges) {
     const fbc = changes.fileBuffer;
-    if (fbc && fbc.currentValue && fbc.currentValue !== fbc.previousValue) {
+    // !isFile(fbc.currentValue) --> only show chart when it's not a file -> it's a file, means the object has already been processed
+    if (fbc && fbc.currentValue && fbc.currentValue !== fbc.previousValue && !isFile(fbc.currentValue)) {
       // simulate selecting file
-      const simulatedEvent = {target: {files: [blobToFile(this.fileBuffer, this.streamModeFileName)]}};
+      const simulatedEvent = {target: {files: [blobToFile(fbc.currentValue, this.streamModeFileName)]}};
       await this.fileSelected(simulatedEvent);
       this.port = undefined; // clear the port selection
       if (this.autoDisplay) {
