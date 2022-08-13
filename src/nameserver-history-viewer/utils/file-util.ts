@@ -162,3 +162,11 @@ export function blobToFile (theBlob: Blob, fileName: string): File {
   // Cast to a File() type
   return <File>theBlob;
 }
+
+/**
+ * check the object is a File object or not a File(Blob)
+ * @param obj
+ */
+export function isFile(obj): boolean {
+  return obj && typeof obj.name === 'string';
+}
