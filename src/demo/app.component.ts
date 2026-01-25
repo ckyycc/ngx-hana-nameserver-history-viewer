@@ -2,11 +2,17 @@ import {Component, OnInit} from '@angular/core';
 import {getAbbreviationAndOffset, getLocalStorage, getTimeZoneFromTopology, setLocalStorage, TimeZoneAbbrOffset} from './demo-util';
 import {DemoService} from './demo-service';
 import {Alert} from '../nameserver-history-viewer/types';
+import { DropdownListComponent } from 'ngx-dropdown-list';
+import { NameServerHistoryComponent } from '../nameserver-history-viewer/components/nameserver-history.component';
+import { AlertComponent } from '../nameserver-history-viewer/components/alert';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
+  standalone: true,
+  imports: [ CommonModule, AlertComponent, DropdownListComponent, NameServerHistoryComponent ],
   providers: [ DemoService ],
 })
 

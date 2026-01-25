@@ -12,7 +12,7 @@ describe('UIService', () => {
   });
 
   it('#01 getHiddenColumns: predefined hidden columns + new hidden columns', () => {
-    const service = TestBed.get(UIService);
+    const service = TestBed.inject(UIService);
     let hiddenColumns = service.getHiddenColumns([Item.max, Item.average]);
     expect(hiddenColumns).toEqual([Item.yScaleGroup, Item.description, Item.max, Item.average]);
 
@@ -20,7 +20,7 @@ describe('UIService', () => {
     expect(hiddenColumns).toEqual([Item.yScaleGroup, Item.description]);
   });
   it('#02 getSelectionTableRows, convertUnitAndGenerateControlData and generateYScale', (done: DoneFn) => {
-    const service = TestBed.get(UIService);
+    const service = TestBed.inject(UIService);
     const fsService =  new FileService();
 
     fsService.getChartContentFromFile(FSSpecHelper.getNonMdcFile(), 0, 4102358400000, undefined, 'America/Los_Angeles', undefined, null)

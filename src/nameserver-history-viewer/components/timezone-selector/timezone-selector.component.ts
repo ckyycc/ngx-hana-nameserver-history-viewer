@@ -1,6 +1,7 @@
 import { Component, Input, ChangeDetectionStrategy, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { TimezoneSelectorService } from './timezone-selector.service';
 import moment from 'moment-timezone';
+import { DropdownListComponent } from 'ngx-dropdown-list';
 
 
 @Component({
@@ -17,6 +18,7 @@ import moment from 'moment-timezone';
     </ngx-dropdown-list>
   `,
   providers: [ TimezoneSelectorService ],
+  imports: [ DropdownListComponent ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TimezoneSelectorComponent implements OnChanges {
@@ -41,10 +43,10 @@ export class TimezoneSelectorComponent implements OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.timezone && changes.timezone.currentValue) {
+    if (changes['timezone'] && changes['timezone'].currentValue) {
       if (this.timezones) {
         this.timezones = this.service.getZones().map(tz => ({group: tz.region, items: tz.zones.map(zone =>
-            ({id: zone, value: zone, text: this._getFormattedZone(tz.region, zone), selected: zone === changes.timezone.currentValue}))}));
+            ({id: zone, value: zone, text: this._getFormattedZone(tz.region, zone), selected: zone === changes['timezone'].currentValue}))}));
       }
     }
   }

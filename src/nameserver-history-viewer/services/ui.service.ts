@@ -365,6 +365,7 @@ export class UIService {
       }
       return UIService._unitType[unit];
     }
+    return UnitType.TypeEA; // default return value
   }
 
   private _setOverview (key: string, overview: LoadHistoryInfoItem, unit: UnitType, port: string) {
@@ -536,6 +537,7 @@ export class UIService {
         return ({key: key, text: item.KPI});
       } else {
         console.warn(`${key} is not configured.`);
+        return null;
       }
     }).filter(key => key != null );
   }
@@ -598,4 +600,3 @@ export class UIService {
     return Promise.all(promises);
   }
 }
-

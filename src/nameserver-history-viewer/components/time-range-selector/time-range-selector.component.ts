@@ -1,4 +1,7 @@
 import { Component, Input, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
+import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'nshviewer-angular-datetime-picker';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'time-range-selector',
@@ -23,6 +26,8 @@ import { Component, Input, ChangeDetectionStrategy, Output, EventEmitter } from 
     </div>
   `,
   styleUrls: [ './time-range-selector.component.scss' ],
+  standalone: true,
+  imports: [ CommonModule, FormsModule, OwlDateTimeModule, OwlNativeDateTimeModule ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TimeRangeSelectorComponent {

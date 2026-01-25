@@ -1,6 +1,7 @@
 import { Component, Input, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
 import { PortSelectorService } from './port-selector.service';
 import { Port } from '../../types';
+import { DropdownListComponent } from 'ngx-dropdown-list';
 
 @Component({
   selector: 'port-selector',
@@ -17,6 +18,7 @@ import { Port } from '../../types';
     </label>
   `,
   providers: [ PortSelectorService ],
+  imports: [ DropdownListComponent ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PortSelectorComponent {

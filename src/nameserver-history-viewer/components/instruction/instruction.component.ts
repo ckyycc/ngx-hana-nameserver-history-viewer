@@ -1,9 +1,11 @@
+import { CommonModule } from '@angular/common';
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 
 @Component({
   selector: 'instruction',
   templateUrl: './instruction.component.html',
-  styleUrls: ['./instruction.component.scss']
+  styleUrls: ['./instruction.component.scss'],
+  imports: [ CommonModule ]
 })
 
 export class InstructionComponent {

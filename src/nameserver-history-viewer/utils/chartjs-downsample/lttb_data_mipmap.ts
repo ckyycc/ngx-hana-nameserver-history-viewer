@@ -32,7 +32,7 @@ import { DataMipmap } from './data_mipmap';
 export class LTTBDataMipmap extends DataMipmap {
     protected resolutions: number[];
 
-    getMipMapIndexForResolution(resolution: number): number {
+    override getMipMapIndexForResolution(resolution: number): number {
         if (utils.isNil(resolution)) { return 0; }
 
         let index = utils.findIndexInArray(this.resolutions, (levelResolution) => levelResolution >= resolution);
@@ -44,7 +44,7 @@ export class LTTBDataMipmap extends DataMipmap {
         return index;
     }
 
-    protected createMipMap(): void {
+    protected override createMipMap(): void {
         super.createMipMap();
         this.resolutions = this.mipMaps.map((level) => this.computeAverageResolution(level));
     }
@@ -70,7 +70,7 @@ export class LTTBDataMipmap extends DataMipmap {
      * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
      * THE SOFTWARE.
      */
-    protected downsampleToResolution(
+    protected override downsampleToResolution(
         data: ChartPoint[],
         targetResolution: number,
         targetLength: number

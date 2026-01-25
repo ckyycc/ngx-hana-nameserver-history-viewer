@@ -54,7 +54,7 @@ export function defaultsDeep<T>(object: T, defaults: Partial<T>): T {
         if (typeof value === 'undefined') {
           object[key] = defaults[key];
         } else if (value !== null && typeof value === 'object') {
-          object[key] = defaultsDeep(value, defaults[key]);
+          object[key] = defaultsDeep(value, defaults[key] as any);
         }
       }
     }

@@ -220,7 +220,7 @@ export class ResponsiveDownsamplePlugin implements IChartPlugin {
 
         return false;
       }
-      return;
+      return true;
     }
 
     const targetResolution = ResponsiveDownsamplePlugin.getTargetResolution(chart, options);
@@ -244,5 +244,6 @@ export class ResponsiveDownsamplePlugin implements IChartPlugin {
         return false;
       }
     }
+    return true;
   }
 }

@@ -1,9 +1,12 @@
 ﻿import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 @Component({
     selector: 'alert',
     templateUrl: './alert.component.html',
     styleUrls: ['./alert.component.scss'],
+    standalone: true,
+    imports: [CommonModule]
 })
 
 export class AlertComponent implements OnChanges {
@@ -13,10 +16,10 @@ export class AlertComponent implements OnChanges {
   @Output() alertMessageChange = new EventEmitter<string>();
 
   message: string;
-  private _timeout;
+  private _timeout: any;
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.alertMessage) {
-      this._setMessage(changes.alertMessage.currentValue);
+    if (changes['alertMessage']) {
+      this._setMessage(changes['alertMessage'].currentValue);
     }
   }
 
@@ -50,7 +53,7 @@ export class AlertComponent implements OnChanges {
   /**
    * get css class base on the alert type
    */
-  get alertClassType() {
+  get alertClassType(): string {
     if (this.alertType) {
       switch (this.alertType.toLowerCase()) {
         case 'success':
@@ -61,7 +64,10 @@ export class AlertComponent implements OnChanges {
           return 'alert-info';
         case 'warning':
           return 'alert-warning';
+        default:
+          return '';
       }
     }
+    return '';
   }
 }

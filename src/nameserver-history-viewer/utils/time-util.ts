@@ -21,6 +21,7 @@ function _getTotalTimeRange(time: ChartContentTime): {startTime: number, endTime
 
     return {startTime: startTime, endTime: endTime};
   }
+  return undefined;
 }
 
 /**
@@ -40,6 +41,7 @@ function _getTimeRange(time: number[]): {startTime: number, endTime: number} {
 
     return {startTime: startTime, endTime: endTime};
   }
+  return {startTime: 0, endTime: 0};
 }
 
 /**
@@ -96,6 +98,7 @@ export function getTimeRangeString(time: any): string {
     }
     return `${startTimeString} ~ ${endTimeString}`;
   }
+  return 'N/A ~ N/A';
 }
 
 /**
