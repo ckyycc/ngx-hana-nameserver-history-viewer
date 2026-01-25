@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 
 @Component({
@@ -16,7 +17,8 @@ import { Component, Input } from '@angular/core';
           <span *ngIf="progress === 100">Done</span>
         </span>
     </div>
-  `
+  `,
+  imports: [ CommonModule ]
 })
 
 export class ProgressBarComponent {

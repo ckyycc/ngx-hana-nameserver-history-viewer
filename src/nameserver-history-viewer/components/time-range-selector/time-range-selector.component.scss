@@ -1,4 +1,4 @@
-@import '../nameserver-history.component.scss';
+@use '../nameserver-history.component.scss' as *;
 
 .time-range {
   width: 100%;

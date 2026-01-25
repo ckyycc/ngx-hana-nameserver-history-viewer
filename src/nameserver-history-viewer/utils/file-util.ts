@@ -42,10 +42,11 @@ export function getRealPorts(ports: string[], includeDefault: boolean = false): 
  * get file from <input>
  * @param inputTarget
  */
-export function  getFileFromInput(inputTarget: any): File {
-  if (inputTarget && inputTarget.files && inputTarget.files.length >= 0) {
+export function  getFileFromInput(inputTarget: any): File | null {
+  if (inputTarget && inputTarget.files && inputTarget.files.length > 0) {
     return inputTarget.files[0];
   }
+  return null;
 }
 
 /**

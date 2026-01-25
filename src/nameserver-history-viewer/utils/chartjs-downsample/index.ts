@@ -26,7 +26,8 @@ import * as chartjs from 'chart.js';
 const Chart = window && (window as any).Chart ? (window as any).Chart : chartjs.Chart;
 
 import { ResponsiveDownsamplePlugin, ResponsiveDownsamplePluginOptions } from './responsive_downsample_plugin';
-export { ResponsiveDownsamplePlugin, ResponsiveDownsamplePluginOptions } from './responsive_downsample_plugin';
+export { ResponsiveDownsamplePlugin };
+export type { ResponsiveDownsamplePluginOptions } from './responsive_downsample_plugin';
 
 
 // comment this because this plugin is only used internally, merge ChartOptions interface is unnecessary

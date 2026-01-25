@@ -24,6 +24,16 @@ import { FileService, ChartService, UIService } from '../services';
 import 'hammerjs';
 import '../utils/chartjs-downsample';
 import '../utils/chartjs-zoom';
+import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'nshviewer-angular-datetime-picker';
+import { SelectionTableComponent } from 'ngx-selection-table';
+import { FileDropInputComponent } from './file-drop-input';
+import { InstructionComponent } from './instruction';
+import { PortSelectorComponent } from './port-selector';
+import { ProgressBarComponent } from './progress-bar';
+import { TimeRangeSelectorComponent } from './time-range-selector';
+import { TimezoneSelectorComponent } from './timezone-selector';
+import { AlertComponent } from './alert';
+import { CommonModule } from '@angular/common';
 
 enum SearchType {
   searchWithSubHeader = 'searchWithSubHeader',
@@ -35,7 +45,9 @@ enum SearchType {
   selector: 'ngx-hana-nameserver-history-viewer',
   templateUrl: './nameserver-history.component.html',
   styleUrls: [ './nameserver-history.component.scss' ],
-  providers: [ FileService, ChartService, UIService ]
+  providers: [ FileService, ChartService, UIService ],
+  standalone: true,
+  imports: [ CommonModule, AlertComponent, TimezoneSelectorComponent, TimeRangeSelectorComponent, ProgressBarComponent, PortSelectorComponent, InstructionComponent, FileDropInputComponent, SelectionTableComponent, OwlDateTimeModule, OwlNativeDateTimeModule ]
 })
 export class NameServerHistoryComponent implements OnChanges, AfterViewInit {
   @ViewChild('nameserverHistoryAll', { read: ElementRef }) nameserverHistoryAllRef: ElementRef;
@@ -193,7 +205,7 @@ export class NameServerHistoryComponent implements OnChanges, AfterViewInit {
               private uiService: UIService) {}
 
   async ngOnChanges(changes: SimpleChanges) {
-    const fbc = changes.fileBuffer;
+    const fbc = changes['fileBuffer'];
     // !isFile(fbc.currentValue) --> only show chart when it's not a file -> it's a file, means the object has already been processed
     if (fbc && fbc.currentValue && fbc.currentValue !== fbc.previousValue && !isFile(fbc.currentValue)) {
       // simulate selecting file
@@ -247,13 +259,14 @@ export class NameServerHistoryComponent implements OnChanges, AfterViewInit {
       const selectedTime = this._selectedTimeRange;
       if (selectedTime.startTime > selectedTime.endTime) {
         this._showMessage(Alert.error, 'Time range is not correct.');
-        return;
+        return Promise.resolve();
       }
       if (this.file) {
         // it's time for displaying the reading progress bar
         this._toggleItems([{id: HtmlElement.readFileProgress, status: true}]);
         return this._buildChartFromDataFile(this.file, selectedTime.startTime, selectedTime.endTime, this.port);
       }
+      return Promise.resolve();
     }).catch(e => {
       this._showMessage(Alert.error, e);
       this._toggleItems([{id: HtmlElement.readFileProgress, status: false}]);
@@ -427,6 +440,7 @@ export class NameServerHistoryComponent implements OnChanges, AfterViewInit {
     if (this.header) {
       return this.header.map(headerItem => headerItem.key);
     }
+    return [];
   }
 
   /**
@@ -574,10 +588,11 @@ export class NameServerHistoryComponent implements OnChanges, AfterViewInit {
                   return this._initPortSelector(ports, port);
                 }
               }
+              return Promise.resolve();
             });
         });
     } else {
-      if (ports.length > 0) {
+      if (ports && ports.length > 0) {
         this._showMessage(
           Alert.warning,
           'The selected port does not exist in the name server history file. Please choose a correct port and have a try again.');
@@ -587,6 +602,7 @@ export class NameServerHistoryComponent implements OnChanges, AfterViewInit {
         }
       }
     }
+    return Promise.resolve();
   }
 
   /**
@@ -598,6 +614,7 @@ export class NameServerHistoryComponent implements OnChanges, AfterViewInit {
     if (this.host) {
       return  `${this.host} - ${port} ( ${getTimeRangeString(this.time[port])} )`;
     }
+    return '';
   }
 
   /**

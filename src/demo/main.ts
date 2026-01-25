@@ -1,12 +1,13 @@
+import 'zone.js';
+import { bootstrapApplication } from '@angular/platform-browser';
+import { AppComponent } from './app.component';
 import { enableProdMode } from '@angular/core';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { appConfig } from './app.config';
+import '@angular/compiler';
+import 'nshviewer-angular-datetime-picker/assets/style/picker.min.css';
 
-import { AppModule } from './app.module';
-import { environment } from '../environments/environment';
 
-if (environment.production) {
-  enableProdMode();
-}
+enableProdMode();
 
-platformBrowserDynamic().bootstrapModule(AppModule)
+bootstrapApplication(AppComponent, appConfig)
   .catch(err => console.log(err));

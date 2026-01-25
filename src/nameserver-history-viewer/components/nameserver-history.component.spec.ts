@@ -17,7 +17,7 @@ describe('NameServerHistoryComponent', () => {
     event = {};
     event['target'] = {};
     TestBed.configureTestingModule({providers: [NameServerHistoryComponent, FileService, ChartService, UIService]});
-    component = TestBed.get(NameServerHistoryComponent);
+    component = TestBed.inject(NameServerHistoryComponent);
 
     spyNameServerHistoryComponent = jasmine.createSpyObj(
       'NameServerHistoryComponent', ['_buildChartFromDataFile', '_readPortsFromFile', '_initChartEnv', '_buildChart']);
