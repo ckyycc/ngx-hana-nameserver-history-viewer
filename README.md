@@ -22,7 +22,7 @@ npm install ngx-hana-nameserver-history-viewer --save
 
 ### Requirements
 
-The library depends on [ngx-selection-table](https://github.com/ckyycc/ngx-selection-table), [ngx-dropdown-list](https://github.com/ckyycc/ngx-dropdown-list), [moment-timezone](https://github.com/moment/moment-timezone), [papaparse](https://github.com/mholt/PapaParse), [angular-datetime-picker](https://github.com/danielmoncada/date-time-picker), [chart.js](https://github.com/chartjs/Chart.js) and [hammer.js](https://github.com/hammerjs/hammer.js).
+The library depends on [ngx-selection-table](https://github.com/ckyycc/ngx-selection-table), [ngx-dropdown-list](https://github.com/ckyycc/ngx-dropdown-list), [moment-timezone](https://github.com/moment/moment-timezone), [papaparse](https://github.com/mholt/PapaParse), [nshviewer-angular-datetime-picker](https://github.com/ckyycc/date-time-picker), [chart.js](https://github.com/chartjs/Chart.js).
 
 The only file required is the ng-pick-datetime `picker.min.css` file:
 
@@ -32,17 +32,17 @@ The only file required is the ng-pick-datetime `picker.min.css` file:
 {
   ...
     "styles": [
-      "../node_modules/@danielmoncada/angular-datetime-picker/assets/style/picker.min.css",
+      "../node_modules/nshviewer-angular-datetime-picker/assets/style/picker.min.css",
       ...
     ],
   ...
 }
 ```
 
-##### 2. Or import the `picker.min.css` in your styles.css
+##### 2. Or import the `picker.min.css` in your main.ts
 
-```css
-@import "~@danielmoncada/angular-datetime-picker/assets/style/picker.min.css";
+```TypeScript
+import 'nshviewer-angular-datetime-picker/assets/style/picker.min.css';
 ```
 
 ## Usage
