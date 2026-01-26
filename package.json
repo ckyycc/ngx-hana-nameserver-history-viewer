@@ -68,12 +68,13 @@
     "@angular/core": "^21.1.1",
     "@angular/forms": "^21.1.1",
     "@angular/platform-browser": "^21.1.1",
-    "nshviewer-angular-datetime-picker": "^21.0.0",
-    "chart.js": "2.7.3",
-    "hammerjs": "^2.0.8",
+    "chart.js": "4.5.1",
+    "chartjs-plugin-zoom": "2.2.0",
+    "chartjs-adapter-moment": "^1.0.1",
     "moment-timezone": "^0.6.0",
     "ngx-dropdown-list": "^21.0.2",
     "ngx-selection-table": "^21.0.2",
+    "nshviewer-angular-datetime-picker": "^21.0.0",
     "papaparse": "^5.4.1",
     "zone.js": "^0.16.0"
   }

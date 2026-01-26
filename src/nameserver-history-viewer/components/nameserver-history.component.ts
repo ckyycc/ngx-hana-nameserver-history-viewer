@@ -22,8 +22,6 @@ import { Abort, Alert, HtmlElement, Item, ChartContentData, ChartContentHeader, 
 import { FileService, ChartService, UIService } from '../services';
 
 import 'hammerjs';
-import '../utils/chartjs-downsample';
-import '../utils/chartjs-zoom';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'nshviewer-angular-datetime-picker';
 import { SelectionTableComponent } from 'ngx-selection-table';
 import { FileDropInputComponent } from './file-drop-input';
