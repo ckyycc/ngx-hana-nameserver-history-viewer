@@ -127,8 +127,8 @@ export class ChartService {
         type: 'time',
         time: {
           displayFormats: {
-            'millisecond': 'MMMDD HH:mm',
-            'second': 'MMMDD HH:mm',
+            'millisecond': 'MMMDD HH:mm:ss',
+            'second': 'MMMDD HH:mm:ss',
             'minute': 'MMMDD HH:mm',
             'hour': 'MMMDD HH',
             'day': 'MMMDD',
