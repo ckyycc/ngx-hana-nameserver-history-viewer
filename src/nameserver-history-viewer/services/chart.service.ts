@@ -94,18 +94,34 @@ export class ChartService {
   /**
    * Generate DataSets by the data and header information
    */
-  private static _generateDataSets(data: ChartContentDataItem[][], header: string[], headerKey: string[], defaultItems: string[]): ChartDataset<'line'>[] {
+  private static _generateDataSets(data: ChartContentDataItem[][], header: string[], headerKey: string[], defaultItems: string[], yScale: number[]): ChartDataset<'line'>[] {
     const alpha = 0.5;
     const colors: LegendColor = UIService.getColors(alpha);
     return data.map((item, i) => {
       const color = colors[headerKey[i]] ? getColorString(colors[headerKey[i]]) : randomColor(alpha);
+      // only cap 100 which is percentage
+      if (yScale[i] === 100) {
+        // to save some memory, change the value directly
+        //   cappedData = item.map(dp =>
+        //     dp.y > 100 ? { ...dp, y: 100, originalY: dp.y } : dp
+        //   );
+        // }
+        for(let j = 0, len = item.length; j < len; j++) {
+          const dp: any = item[j];
+          if (dp.y > 100) {
+            dp.originalY = dp.y;
+            dp.y = 100;
+          }
+        }
+      }
+
       return {
         borderColor: color,
         backgroundColor: color,
         borderWidth: 1,
         spanGaps: false,
         label: header[i],
-        data: data[i],
+        data: item,
         fill: false,
         yAxisID: `y-axis-${i}`,
         hidden: !defaultItems.includes(header[i]),
@@ -184,7 +200,7 @@ export class ChartService {
     return {
       type: 'line',
       data: {
-        datasets: ChartService._generateDataSets(data, header, headerKey, defaultItems)
+        datasets: ChartService._generateDataSets(data, header, headerKey, defaultItems, yScale)
       },
       options: {
         layout: {
@@ -193,9 +209,9 @@ export class ChartService {
           }
         },
         interaction: {
-          intersect: true, // true means not a range hit
-          axis: 'x',
-          mode: 'nearest'
+          intersect: true, // true means must actually hover over a point
+          axis: 'xy',      // check both x and y axis for intersection
+          mode: 'index'    // when intersecting, show all datasets at the same index/x position
         },
         responsive: true,
         animation: false, // must disable it otherwise zoomin will hang
@@ -227,6 +243,8 @@ export class ChartService {
             text: title
           },
           tooltip: {
+            mode: 'nearest',
+            intersect: true, // true means only show tooltip for the closest point
             callbacks: {
               label: function(context) {
                 // format numbers with commas and add unit information
@@ -235,9 +253,13 @@ export class ChartService {
                   // get unit (eg: MB, GB, MB/s, % and so on)
                   const rowItem = tableSource.find(controlTableRow => label === controlTableRow.KPI) || '';
                   const unit = rowItem[Item.unit] && rowItem[Item.unit] !== Unit.PCT ? ` ${rowItem[Item.unit]}` : rowItem[Item.unit] || '';
-                  return `${label}: ${getNumberWithCommas(context.parsed.y)}${unit}`;
+                  // Use original value if available, otherwise use displayed value
+                  const valueToShow = (context.raw as any)?.originalY ?? context.parsed.y;
+                  return `${label}: ${getNumberWithCommas(valueToShow)}${unit}`;
                 } else {
-                  return getNumberWithCommas(context.parsed.y);
+                  // Use original value if available, otherwise use displayed value
+                  const valueToShow = (context.raw as any)?.originalY ?? context.parsed.y;
+                  return getNumberWithCommas(valueToShow);
                 }
               }
             }
