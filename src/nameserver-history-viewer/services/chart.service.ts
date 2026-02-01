@@ -145,10 +145,7 @@ export class ChartService {
           source: 'auto',
           maxRotation: 0,
           autoSkip: true,
-          // callback: function(val, index) {
-          //   // Hide every 2nd tick label
-          //   return  index % 2 === 0? this.getLabelForValue(val) : '';
-          // },
+          autoSkipPadding: 40, // label space
         },
         reverse: false
       }
