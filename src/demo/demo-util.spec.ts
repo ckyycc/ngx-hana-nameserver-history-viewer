@@ -84,29 +84,29 @@ describe('demo-util', () => {
 
   });
   it('#07 getTimeZoneFromTopology: should return Etc/GMTxx if abbreviation is number', () => {
-    expect(getTimeZoneFromTopology('+07', 7, service.getTimezoneAbbrMappings())).toEqual('Etc/GMT-7');
-    expect(getTimeZoneFromTopology('-10', 10, service.getTimezoneAbbrMappings())).toEqual('Etc/GMT+10');
-    expect(getTimeZoneFromTopology('+00', 0, service.getTimezoneAbbrMappings())).toEqual('Etc/GMT+0');
-    expect(getTimeZoneFromTopology('-00', 0, service.getTimezoneAbbrMappings())).toEqual('Etc/GMT+0');
+    expect(getTimeZoneFromTopology('+07', 7, service.timezoneAbbrMappings)).toEqual('Etc/GMT-7');
+    expect(getTimeZoneFromTopology('-10', 10, service.timezoneAbbrMappings)).toEqual('Etc/GMT+10');
+    expect(getTimeZoneFromTopology('+00', 0, service.timezoneAbbrMappings)).toEqual('Etc/GMT+0');
+    expect(getTimeZoneFromTopology('-00', 0, service.timezoneAbbrMappings)).toEqual('Etc/GMT+0');
   });
   it('#08 getTimeZoneFromTopology: should return timezone directly if abbreviation is a value from standard timezone', () => {
-    expect(getTimeZoneFromTopology('America/New_York', 25200, service.getTimezoneAbbrMappings())).toEqual('America/New_York');
+    expect(getTimeZoneFromTopology('America/New_York', 25200, service.timezoneAbbrMappings)).toEqual('America/New_York');
   });
   it('#09 getTimeZoneFromTopology: should return the relative timezone directly base on abbreviation and offset', () => {
-    expect(getTimeZoneFromTopology('CST', 8, service.getTimezoneAbbrMappings())).toEqual('Asia/Shanghai');
-    expect(getTimeZoneFromTopology('CST', -6, service.getTimezoneAbbrMappings())).toEqual('America/Chicago');
-    expect(getTimeZoneFromTopology('PST', -8, service.getTimezoneAbbrMappings())).toEqual('America/Vancouver');
-    expect(getTimeZoneFromTopology('PDT', -7, service.getTimezoneAbbrMappings())).toEqual('America/Vancouver');
+    expect(getTimeZoneFromTopology('CST', 8, service.timezoneAbbrMappings)).toEqual('Asia/Shanghai');
+    expect(getTimeZoneFromTopology('CST', -6, service.timezoneAbbrMappings)).toEqual('America/Chicago');
+    expect(getTimeZoneFromTopology('PST', -8, service.timezoneAbbrMappings)).toEqual('America/Vancouver');
+    expect(getTimeZoneFromTopology('PDT', -7, service.timezoneAbbrMappings)).toEqual('America/Vancouver');
   });
   it('#10 getTimeZoneFromTopology: should return null if can not find the timezone base on abbreviation and offset', () => {
-    expect(getTimeZoneFromTopology('CST', 9, service.getTimezoneAbbrMappings())).toEqual(null);
-    expect(getTimeZoneFromTopology('PST', -7, service.getTimezoneAbbrMappings())).toEqual(null);
-    expect(getTimeZoneFromTopology('PDT', -8, service.getTimezoneAbbrMappings())).toEqual(null);
+    expect(getTimeZoneFromTopology('CST', 9, service.timezoneAbbrMappings)).toEqual(null);
+    expect(getTimeZoneFromTopology('PST', -7, service.timezoneAbbrMappings)).toEqual(null);
+    expect(getTimeZoneFromTopology('PDT', -8, service.timezoneAbbrMappings)).toEqual(null);
   });
   it('#11 getTimeZoneFromTopology: should return null if abbreviation is null', () => {
-    expect(getTimeZoneFromTopology(null, 9, service.getTimezoneAbbrMappings())).toEqual(null);
+    expect(getTimeZoneFromTopology(null, 9, service.timezoneAbbrMappings)).toEqual(null);
   });
   it('#12 getTimeZoneFromTopology: should return null if offset is null', () => {
-    expect(getTimeZoneFromTopology('PST', null, service.getTimezoneAbbrMappings())).toEqual(null);
+    expect(getTimeZoneFromTopology('PST', null, service.timezoneAbbrMappings)).toEqual(null);
   });
 });

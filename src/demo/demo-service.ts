@@ -14,7 +14,7 @@ export class DemoService {
   /**
    * get timezones with timezone abbreviation and offset.
    */
-  getTimezoneAbbrMappings(): TimeZoneAbbrMapping[] {
+  get timezoneAbbrMappings(): TimeZoneAbbrMapping[] {
     /**
      * Below timezones are adapted from:
      * https://github.com/kevalbhatt/timezone-picker/blob/master/src/timezones.json,

@@ -1,8 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { FileService } from './file.service';
-import { getDefaultTimezone } from '../utils';
+import { defaultTimezone, getOffset } from '../utils';
 import { Abort } from '../types';
-import moment from 'moment-timezone';
 
 describe('FileService', () => {
   const defaultPort = 'DEFAULT';
@@ -116,7 +115,7 @@ describe('FileService', () => {
   });
   it('#07 getChartContentFromFile: check time of default timezone for Non-MDC name server history', async () => {
     // default timezone
-    timezone = getDefaultTimezone();
+    timezone = defaultTimezone();
     const servicePort = 'DEFAULT';
     const result = await service.getChartContentFromFile(FSSpecHelper.getNonMdcFile(), startTime, endTime, port, timezone, maxRow, null);
     const firstLineTime = Math.round(result.time[servicePort][0]);
@@ -126,7 +125,7 @@ describe('FileService', () => {
   });
   it('#08 getChartContentFromFile: check time of default timezone for Non-MDC name server history with startTime', async () => {
     // default timezone
-    timezone = getDefaultTimezone();
+    timezone = defaultTimezone();
     startTime = 1536101895920;
     const servicePort = 'DEFAULT';
     const result = await service.getChartContentFromFile(FSSpecHelper.getNonMdcFile(), startTime, endTime, port, timezone, maxRow, null);
@@ -135,7 +134,7 @@ describe('FileService', () => {
   });
   it('#09 getChartContentFromFile: check time of default timezone for Non-MDC name server history with endTime', async () => {
     // default timezone
-    timezone = getDefaultTimezone();
+    timezone = defaultTimezone();
     endTime = 1536102139238;
     const servicePort = 'DEFAULT';
     const result = await service.getChartContentFromFile(FSSpecHelper.getNonMdcFile(), startTime, endTime, port, timezone, maxRow, null);
@@ -145,7 +144,7 @@ describe('FileService', () => {
   });
   it('#10 getChartContentFromFile: check time of default timezone for Non-MDC name server history with startTime and endTime', async () => {
     // default timezone
-    timezone = getDefaultTimezone();
+    timezone = defaultTimezone();
     startTime = 1536101895920;
     endTime = 1536102139238;
 
@@ -176,7 +175,7 @@ describe('FileService', () => {
   });
   it('#12 getChartContentFromFile: check time of default timezone for MDC name server history', async () => {
     // default timezone America/Los_Angeles (GMT -7)
-    timezone = getDefaultTimezone();
+    timezone = defaultTimezone();
     const result = await service.getChartContentFromFile(FSSpecHelper.getMdcFile(), startTime, endTime, port, timezone, maxRow, null);
     FSSpecHelper.updateFirstAndLastLineTimes(firstLineTimes, lastLineTimes, undefined, ports, service, timezone, startTime, endTime, maxRow);
     timeRanges = [[1527846647324, 1527853024165], [1527846667425, 1527851134740], [1527846667425, 1527851114703], [1527851293900, 1527853024165], [1527852224477, 1527853024165], [1527852304684, 1527853024165], [1527852634319, 1527853024165]];
@@ -229,7 +228,7 @@ describe('FileService', () => {
   });
   it('#16 getChartContentFromFile: check time of specific timezone for MDC name server history',  async () => {
     // init with local timezone
-    timezone = getDefaultTimezone();
+    timezone = defaultTimezone();
     FSSpecHelper.updateFirstAndLastLineTimes(firstLineTimes, lastLineTimes, undefined, ports, service, timezone, startTime, endTime, maxRow);
     // test timezone: Asia/Shanghai (GMT +8), Australia/Sydney (GMT +11), Europe/Berlin (GMT +1)Pacific/Midway,  Pacific/Midway (GMT -11)
     let specTimezones = ['Asia/Shanghai', 'Australia/Sydney', 'Europe/Berlin', 'Pacific/Midway'];
@@ -239,7 +238,7 @@ describe('FileService', () => {
   });
   it('#17 getChartContentFromFile: check data for Non-MDC name server history', async () => {
     // default timezone
-    timezone = getDefaultTimezone();
+    timezone = defaultTimezone();
     const servicePort = 'DEFAULT';
     const result = await service.getChartContentFromFile(FSSpecHelper.getNonMdcFile(), startTime, endTime, port, timezone, maxRow, null);
     // indexserverMemUsed
@@ -265,7 +264,7 @@ describe('FileService', () => {
   });
   it('#18 getChartContentFromFile: check data for Non-MDC name server history with startTime', async () => {
     // default timezone
-    timezone = getDefaultTimezone();
+    timezone = defaultTimezone();
     startTime = 1536102028096;
     const servicePort = 'DEFAULT';
     const result = await service.getChartContentFromFile(FSSpecHelper.getNonMdcFile(), startTime, endTime, port, timezone, maxRow, null);
@@ -292,7 +291,7 @@ describe('FileService', () => {
   });
   it('#19 getChartContentFromFile: check data for Non-MDC name server history with endTime', async () => {
     // default timezone
-    timezone = getDefaultTimezone();
+    timezone = defaultTimezone();
     startTime = 0;
     endTime = 1536102129224;
     const servicePort = 'DEFAULT';
@@ -320,7 +319,7 @@ describe('FileService', () => {
   });
   it('#20 getChartContentFromFile: check data for Non-MDC name server history with startTime and endTime', async() => {
     // default timezone
-    timezone = getDefaultTimezone();
+    timezone = defaultTimezone();
     startTime = 1536102028096;
     endTime = 1536102129224;
     const servicePort = 'DEFAULT';
@@ -349,7 +348,7 @@ describe('FileService', () => {
   it('#21 getChartContentFromFile: check data for MDC name server history', async () => {
     startTime = 0;
     endTime = 4102358400000;
-    timezone = getDefaultTimezone();
+    timezone = defaultTimezone();
     const result = await service.getChartContentFromFile(FSSpecHelper.getMdcFile(), startTime, endTime, port, timezone, maxRow, null);
     let servicePort = '30201';
     let expectedResult = {
@@ -410,7 +409,7 @@ describe('FileService', () => {
   it('#22 getChartContentFromFile: check data for MDC name server history with startTime', async () => {
     startTime = 1527852044158;
     endTime = 4102358400000;
-    timezone = getDefaultTimezone();
+    timezone = defaultTimezone();
     const result = await service.getChartContentFromFile(FSSpecHelper.getMdcFile(), startTime, endTime, port, timezone, maxRow, null);
     let servicePort = '30201';
     let expectedResult = {
@@ -459,7 +458,7 @@ describe('FileService', () => {
   it('#23 getChartContentFromFile: check data for MDC name server history with endTime', async () => {
     startTime = 0;
     endTime = 1527852984075;
-    timezone = getDefaultTimezone();
+    timezone = defaultTimezone();
     const result = await service.getChartContentFromFile(FSSpecHelper.getMdcFile(), startTime, endTime, port, timezone, maxRow, null);
     let servicePort = '30201';
     let expectedResult = {
@@ -521,7 +520,7 @@ describe('FileService', () => {
   it('#24 getChartContentFromFile: check data for MDC name server history with startTime and endTime', async() => {
     startTime = 1527852044158;
     endTime = 1527852984075;
-    timezone = getDefaultTimezone();
+    timezone = defaultTimezone();
     const result = await service.getChartContentFromFile(FSSpecHelper.getMdcFile(), startTime, endTime, port, timezone, maxRow, null);
     let servicePort = '30201';
     let expectedResult = {
@@ -3110,9 +3109,9 @@ hanaserver2;;1527846629.804;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-
     return new File(mdcFileBlob, 'mdcNameServerHistory.trc', {type: 'text/plain', lastModified: Number(new Date())});
   }
   static getOffset(timezone, time): number {
-    const utcOffset = moment.tz.zone(timezone).utcOffset(time);
-    const currentOffset = moment.tz.zone(getDefaultTimezone()).utcOffset(time);
-    return (currentOffset - utcOffset) / 60;
+    const utcOffset = getOffset(timezone, time) / 60; // convert to minutes
+    const currentOffset = getOffset(defaultTimezone(), time) / 60; // convert to minutes
+    return (utcOffset - currentOffset) / 60;
   }
   static checkMdcTime(firstLineTimes, lastLineTimes, servicePort, result, firstLineExpect, lastLineExpect) {
     this.updateFirstAndLastLineTimes(firstLineTimes, lastLineTimes, result, [servicePort]);

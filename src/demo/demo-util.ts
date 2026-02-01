@@ -1,5 +1,5 @@
-import {TimeZoneAbbrMapping} from './demo-service';
-import moment from 'moment-timezone';
+import { TimeZoneAbbrMapping } from './demo-service';
+import { supportedTimezones } from '../nameserver-history-viewer';
 
 /**
  * interface for the abbreviation and offset getting from topology.txt
@@ -51,12 +51,12 @@ export function getTimeZoneFromTopology(abbreviation: string, offset: number, tz
   if (abbreviation == null || offset == null) {
     return null;
   }
-  // if abbreviation is number, get GMT timezone from moment.js
+  // if abbreviation is number, get GMT timezone
   if (!isNaN(Number(abbreviation))) {
     const tzNum = Number(abbreviation);
     const etcGMTTZ = `Etc/GMT${tzNum > 0 ? '-' : '+'}${Math.abs(tzNum)}`;
     // get GMT timezone
-    for (const name of moment.tz.names()) {
+    for (const name of supportedTimezones()) {
       if (name === etcGMTTZ) {
         return name;
       }
@@ -64,7 +64,7 @@ export function getTimeZoneFromTopology(abbreviation: string, offset: number, tz
   }
 
   // get timezone base on timezone name
-  for (const name of moment.tz.names()) {
+  for (const name of supportedTimezones()) {
     if (name.indexOf('/') > 0) {
       if (name === abbreviation) {
         return name;
@@ -78,7 +78,7 @@ export function getTimeZoneFromTopology(abbreviation: string, offset: number, tz
   for (const region of tzRegions) {
     for (const mapping of tzAbbrMappings) {
       if (mapping.timezone.startsWith(region)) {
-        if (mapping.abbreviation === abbreviation && Math.abs(mapping.offset - offset) < 1) {
+        if (mapping.abbreviation === abbreviation && Math.abs(mapping.offset - offset) < 0.1) {
           return mapping.timezone;
         }
       }

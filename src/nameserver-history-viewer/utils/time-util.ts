@@ -1,7 +1,8 @@
 import { isDevMode } from '@angular/core';
 import { getIgnoredLineNumFromTail } from './ui-util';
 import { ChartContentTime } from '../types';
-import moment from 'moment-timezone';
+import { format } from 'date-fns';
+import { TZDateMini  } from '@date-fns/tz';
 
 /**
  * get the time range for all ports
@@ -43,12 +44,40 @@ function _getTimeRange(time: number[]): {startTime: number, endTime: number} {
   }
   return {startTime: 0, endTime: 0};
 }
+export function getEtcTimezones() {
+        // Add Etc timezones manually since Intl doesn't include them
+    const etcTimezones = [
+      'Etc/GMT+0', 'Etc/GMT+1', 'Etc/GMT+2', 'Etc/GMT+3', 'Etc/GMT+4', 'Etc/GMT+5', 'Etc/GMT+6',
+      'Etc/GMT+7', 'Etc/GMT+8', 'Etc/GMT+9', 'Etc/GMT+10', 'Etc/GMT+11', 'Etc/GMT+12','Etc/GMT-0',
+      'Etc/GMT-1', 'Etc/GMT-2', 'Etc/GMT-3', 'Etc/GMT-4', 'Etc/GMT-5', 'Etc/GMT-6',
+      'Etc/GMT-7', 'Etc/GMT-8', 'Etc/GMT-9', 'Etc/GMT-10', 'Etc/GMT-11', 'Etc/GMT-12',
+      'Etc/GMT-13', 'Etc/GMT-14'
+    ];
+
+    return [...etcTimezones, ...getZeroOffsetEtcZones()];
+  }
+  /**
+   * etc zones with 0 offset
+   */
+export function getZeroOffsetEtcZones() {
+  return ['Etc/GMT', 'Etc/GMT0', 'Etc/Greenwich', 'Etc/UTC', 'Etc/UCT', 'Etc/Universal', 'Etc/Zulu']
+}
 
 /**
  * get default local time zone
  */
-export function getDefaultTimezone(): string {
-  return moment.tz.guess();
+export function defaultTimezone(): string {
+  return Intl.DateTimeFormat().resolvedOptions().timeZone;
+}
+
+/**
+ * 
+ * @returns get supported timezones from intl
+ */
+export function supportedTimezones() {
+  const zones = Intl.supportedValuesOf('timeZone');
+  // Combine Intl zones with Etc zones
+  return [...zones, ...getEtcTimezones()];
 }
 
 /**
@@ -59,20 +88,47 @@ export function getDefaultTimezone(): string {
  */
 export function getTimeFromTimeZone (time: number, timezone: string): number {
   if (timezone == null || timezone.length === 0) {
-    timezone = getDefaultTimezone();
+    timezone = defaultTimezone();
     console.warn(`getTimeFromTimeZone - Input timezone is null, returning the local (${timezone}) time. `);
   }
-  const utcOffset = moment.tz.zone(timezone).utcOffset(time * 1000);
-  const currentOffset = moment.tz.zone(getDefaultTimezone()).utcOffset(time * 1000);
+  // Get timezone offsets in milliseconds
+  const utcOffset = getOffset(timezone, time * 1000);
+  const currentOffset = getOffset(defaultTimezone(), time * 1000); // seconds
   // convert to utc and then to selected timezone
-  return time + currentOffset * 60 - utcOffset * 60;
+  return time + utcOffset - currentOffset;
+}
+
+/**
+ * get timezone offsests in seconds
+ */
+export function getOffset(timezone: string, time: number): number {
+  const date = new Date(time);
+  let offset: number;
+  // Handle Etc timezones specially since getTimezoneOffset doesn't support them
+  if (getZeroOffsetEtcZones().includes(timezone)) {
+    offset = 0;
+  } else if (timezone.startsWith('Etc/GMT')) {
+      // Extract the offset from the zone name
+      // Note: Etc/GMT+X means UTC-X (opposite sign)
+      const match = timezone.match(/Etc\/GMT([+-])(\d+)/);
+      if (match) {
+        const sign = match[1];
+        const hours = parseInt(match[2], 10);
+        offset = (sign === '+' ? -hours : +hours) * 60 * 60;
+      } else {
+        offset = 0;
+      }
+  } else {
+    offset = (new TZDateMini(date, timezone)).getTimezoneOffset() * -60;
+  }
+  return offset;
 }
 
 /**
  * Get time formatted with the provided timezone
  */
 export function getTimeString (time: number): string {
-   return moment(time).format('YYYY-MM-DD HH:mm:ss');
+   return format(new Date(time), 'yyyy-MM-dd HH:mm:ss');
 }
 
 /**

@@ -14,7 +14,7 @@ import {
   printProcessedTime,
   getTimeRangeString,
   generatePorts,
-  getDefaultTimezone,
+  defaultTimezone,
   blobToFile,
   isFile,
 } from '../utils';
@@ -384,7 +384,7 @@ export class NameServerHistoryComponent implements OnChanges, AfterViewInit {
    * get default timezone
    */
   get defaultTimezone(): string {
-    return getDefaultTimezone();
+    return defaultTimezone();
   }
 
   /**
