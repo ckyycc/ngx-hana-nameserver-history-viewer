@@ -121,7 +121,7 @@ export class AppComponent implements OnInit {
     reader.onload = (e: any) => {
       const fileContent = e.target.result;
       const {abbreviation, offset}: TimeZoneAbbrOffset = getAbbreviationAndOffset(fileContent);
-      const timezone = getTimeZoneFromTopology(abbreviation, offset, this.service.getTimezoneAbbrMappings());
+      const timezone = getTimeZoneFromTopology(abbreviation, offset, this.service.timezoneAbbrMappings);
       if (timezone != null && timezone.length > 0) {
         this.timezone = timezone;
         this._showMessage(Alert.info, `Timezone is changed to ${this.timezone} based on (${abbreviation}, ${offset * 3600})`);

@@ -16,7 +16,7 @@ import {
   Filler,
   Decimation
 } from 'chart.js';
-import 'chartjs-adapter-moment';
+import 'chartjs-adapter-date-fns';
 import zoomPlugin from 'chartjs-plugin-zoom';
 import { getColorString, getNumberWithCommas, randomColor } from '../utils';
 import { UIService } from './ui.service';
@@ -127,17 +127,17 @@ export class ChartService {
         type: 'time',
         time: {
           displayFormats: {
-            'millisecond': 'MMMDD HH:mm:ss',
-            'second': 'MMMDD HH:mm:ss',
-            'minute': 'MMMDD HH:mm',
-            'hour': 'MMMDD HH',
-            'day': 'MMMDD',
-            'week': 'MMMDD',
-            'month': 'MMM YYYY',
-            'quarter': 'MMM YYYY',
-            'year': 'MMM YYYY',
+            'millisecond': 'MMMdd HH:mm:ss',
+            'second': 'MMMdd HH:mm:ss',
+            'minute': 'MMMdd HH:mm',
+            'hour': 'MMMdd HH',
+            'day': 'MMMdd',
+            'week': 'MMMdd',
+            'month': 'MMM yyyy',
+            'quarter': 'MMM yyyy',
+            'year': 'MMM yyyy',
           },
-          tooltipFormat: 'll HH:mm:ss'
+          tooltipFormat: 'MMM dd, yyyy HH:mm:ss'
         },
         min: timeArray[0],
         max: timeArray[timeArray.length - 1],
@@ -249,7 +249,7 @@ export class ChartService {
           decimation: {
             enabled: true,
             algorithm: 'lttb', // Largest-Triangle-Three-Buckets algorithm
-            samples: 500, // Increased samples for better quality
+            samples: 600, // Increased samples for better quality
             threshold: 1 // increase it may hang the ui due to swith of using/not using downsampling, disable it (set it to 0), will slowdown average zoom in.
           },
           zoom: {
