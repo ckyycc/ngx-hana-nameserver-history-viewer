@@ -316,7 +316,7 @@ export class UIService {
 
     return {
       'Host': loadHistoryInfoHost,
-      'Index Server': loadHistoryInfoIndexServer,
+      'Service': loadHistoryInfoIndexServer,
       'SQL': loadHistoryInfoSQL,
       'Row Store': loadHistoryInfoRowStore,
       'Column Store': loadHistoryInfoColumnStore,

@@ -678,20 +678,25 @@ export class NameServerHistoryComponent implements OnChanges, AfterViewInit {
    */
   private _loadSettingsForSelectionsTable(port: string, service: string): void {
     this.tableSource = this.uiService.getSelectionTableRows(this._headerKey, port, this.defaultSelectedItems);
-    // replace confusing service type, issue: https://github.com/ckyycc/ngx-hana-nameserver-history-viewer/issues/14
-    // by default will replaced it with Service (port), eg: Service (30015)
-    // if topology is imported, it will be: Name Server (30001) or Index Server (30040), and so on...
-    const serviceHeader = this.tableSource.find(ts=> ts[this.kpiColumn] === 'Index Server' && ts.header);
-    if (serviceHeader) {
-      serviceHeader[this.kpiColumn] = `${getHANAServiceDisplayName(service) || 'Service'} (${port})`;
-    }
-
+    this._updateServiceHeader(port, service);
     this._selection = new SelectionModel(true, []);
     this.tableSource.forEach(row => {
       if (this.uiService.getDisplayItems(this._headerKey, port, this.defaultSelectedItems).includes(row.KPI)) {
         this._selection.select(row);
       }
     });
+  }
+
+  /**
+   * Replace confusing service type, issue: https://github.com/ckyycc/ngx-hana-nameserver-history-viewer/issues/14
+   * by default will replaced it with Service (port), eg: Service (30015)
+   *if topology is imported, it will be: Name Server (30001) or Index Server (30040), and so on...
+   */
+  private _updateServiceHeader(port: string, service: string) {
+    const serviceHeader = this.tableSource.find(ts=> ts[this.kpiColumn] === 'Service' && ts.header);
+    if (serviceHeader) {
+      serviceHeader[this.kpiColumn] = `${getHANAServiceDisplayName(service) || 'Service'} (${port})`;
+    }
   }
 
   /**

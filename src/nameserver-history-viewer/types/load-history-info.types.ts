@@ -12,7 +12,7 @@ import {LoadHistoryInfoSyncPrimitives} from './load-history-info-sync-primitives
 
 export interface LoadHistoryInfo {
   'Host': LoadHistoryInfoHost;
-  'Index Server': LoadHistoryInfoIndexServer;
+  'Service': LoadHistoryInfoIndexServer;
   'SQL': LoadHistoryInfoSQL;
   'Row Store': LoadHistoryInfoRowStore;
   'Column Store': LoadHistoryInfoColumnStore;

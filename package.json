@@ -1,6 +1,6 @@
 {
   "name": "ngx-hana-nameserver-history-viewer",
-  "version": "21.1.1",
+  "version": "21.1.2",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
