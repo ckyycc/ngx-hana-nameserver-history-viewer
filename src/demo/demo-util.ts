@@ -119,3 +119,128 @@ export function getAbbreviationAndOffset(fileContent: string): TimeZoneAbbrOffse
   }
   return {abbreviation: abbreviation, offset: offset};
 }
+
+
+type HostPortServiceMap = Record<string, Record<string, string>>;
+
+interface StackItem {
+  indent: number;
+  key: string;
+}
+
+type TimezoneInfo = {
+  abbreviation: string | null; // timezone_name
+  offset: number | null;       // timezone_offset / 3600 (小时)
+};
+
+type ParseResult = {
+  hosts: HostPortServiceMap;
+  timezone: TimezoneInfo;
+};
+
+
+/**
+ * Get host -> port -> service from topology
+ */
+export function parseHostPortServices(text: string): HostPortServiceMap {
+  const result: HostPortServiceMap = {};
+  const stack: StackItem[] = [];
+
+  const lines = text.split(/\r?\n/);
+
+  for (const rawLine of lines) {
+    const line = rawLine.replace(/\s+$/, ""); // trimRight
+    if (!line.trim()) continue;
+    if (line.trim() === "''") continue;
+
+    const indent = (line.match(/^\s*/) ?? [""])[0].length;
+    const content = line.trim();
+
+    if (content.includes("=")) {
+      continue;
+    }
+
+    while (stack.length > 0 && indent <= stack[stack.length - 1].indent) {
+      stack.pop(); // back to parent level, pop all the level lower than current level
+    }
+    stack.push({ indent, key: content });
+
+    // numbers only line（30001/30003...）
+    if (!/^\d+$/.test(content)) continue;
+
+    // pure numbers--> port, then, find closest host
+    const hostIdx = stack.findIndex((x) => x.key === "host");
+    if (hostIdx < 0) continue;
+
+    // host -> hostName -> serviceName -> port
+    // at least 3 items after: stack[hostIdx+1], stack[hostIdx+2], stack[hostIdx+3]
+    // all above level services (if have) have already been pop out,
+    // eg: first service is indexserver, secondary is namesever, when reaching nameserver, indexserver must be poped out.
+    if (stack.length < hostIdx + 4) continue;
+
+    const hostName = stack[hostIdx + 1]?.key;
+    const serviceName = stack[hostIdx + 2]?.key;
+    const port = stack[hostIdx + 3]?.key;
+
+    // port should be number, host/service must exist
+    if (!hostName || !serviceName || !port || !/^\d+$/.test(port)) continue;
+
+    if (!result[hostName]) result[hostName] = {};
+    result[hostName][port] = serviceName;
+  }
+
+  return result;
+}
+
+export function parseTopologyJson(obj: any): ParseResult {
+  const hostRoot = obj?.topology?.host ?? {};
+
+  const hosts: HostPortServiceMap = {};
+  let abbreviation: string | null = null;
+  let offset: number | null = null;
+
+  for (const hostName of Object.keys(hostRoot)) {
+    const hostNode = hostRoot[hostName];
+    if (!hostNode || typeof hostNode !== "object") continue;
+
+    hosts[hostName] = {};
+
+    // serviceName: compileserver/daemon/indexserver/nameserver/...
+    for (const serviceName of Object.keys(hostNode)) {
+      const serviceNode = hostNode[serviceName];
+
+      // serviceName -> { port -> { ... } }
+      if (!serviceNode || typeof serviceNode !== "object") continue;
+
+      for (const port of Object.keys(serviceNode)) {
+        // only process number port
+        if (!/^\d+$/.test(port)) continue;
+        hosts[hostName][port] = serviceName;
+
+        // timezone only exists in nameserver's port.info, get first one
+        if (abbreviation == null || offset == null) {
+          if (serviceName === "nameserver") {
+            const info = serviceNode?.[port]?.info;
+            if (info && typeof info === "object") {
+              if (abbreviation == null && typeof info.timezone_name === "string") {
+                abbreviation = info.timezone_name;
+              }
+              if (offset == null && info.timezone_offset != null) {
+                offset = Number(info.timezone_offset) / 3600;
+                if (!Number.isFinite(offset)) offset = null;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  return {
+    hosts,
+    timezone: {
+      abbreviation,
+      offset,
+    }
+  };
+}

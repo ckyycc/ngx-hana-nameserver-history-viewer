@@ -19,7 +19,7 @@
        <time-range-selector [disabled]="showReadFileProgress" [(dateTimeRange)]="dateTimeRange"></time-range-selector>
      </div>
       <div class="timezone-selector">
-        <timezone-selector [(timezone)]="timezone" [disabled]="showReadFileProgress"></timezone-selector>
+        <timezone-selector [(timezone)]="timezone" (timezoneChange)="onTimezoneChange($event)" [disabled]="showReadFileProgress"></timezone-selector>
       </div>
     </div>
 

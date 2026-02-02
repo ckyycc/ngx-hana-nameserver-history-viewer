@@ -20,8 +20,8 @@
         </div>
       </div>
       <div class="header-import-timezone">
-        <label class="input-button" title="Import time zone form topology.txt, this file exists in the root directory of full system dump (system DB if MDC).">
-          <input type="file" (change)="browseFiles($event)" onclick="this.value=null;" accept=".txt"/>Import Timezone
+        <label class="input-button" title="Import timezone and service port information from:&#10;• topology.txt (full system dump root directory)&#10;• nameserver_topology_&lt;host&gt;.json (system db trace directory)">
+          <input type="file" (change)="browseFiles($event)" onclick="this.value=null;" accept=".txt,.json"/>Import Topology
         </label>
       </div>
     </div>
@@ -34,7 +34,8 @@
   [hideMeasureColumns]="hiddenMeasures"
   [maxRowsLimitation]="maxRowsLimitation"
   [showInstruction]="true"
-  [timezone]="timezone">
+  [(timezone)]="timezone"
+  [servicePortInfo]="hostPortServiceInfo">
 </ngx-hana-nameserver-history-viewer>
 
 <div class="message-container" *ngIf="alertMessage">
