@@ -554,5 +554,58 @@ describe('demo-util', () => {
       `;
       expect(getAbbreviationAndOffset(content)).toEqual({abbreviation: '+05:30', offset: 5.5});
     });
+
+    it('#32 getAbbreviationAndOffset: should handle numeric timezone name as 0', () => {
+      const content = `
+            ssfs_masterkey_changed=01.01.1970 07:00:00
+            ssfs_masterkey_systempki_changed=01.01.1970 07:00:00
+            start_time=2018-12-01 17:11:10.685
+            timezone_name=0
+            timezone_offset=0
+            topology_mem_info=<ok>
+            topology_mem_type=shared
+          pid=36214
+          start_time=2018-12-01 17:11:10.685
+          stonith=yes
+          volume=1
+      preprocessor
+      `;
+      expect(getAbbreviationAndOffset(content)).toEqual({abbreviation: '0', offset: 0});
+    });
+  });
+
+  describe('parseTopologyJson - additional numeric timezone cases', () => {
+    it('#33 parseTopologyJson: should handle numeric timezone name as 0', () => {
+      const mockTopologyJson = {
+        topology: {
+          host: {
+            host1: {
+              nameserver: {
+                '30001': {
+                  info: {
+                    timezone_name: '0',
+                    timezone_offset: 0
+                  }
+                }
+              }
+            }
+          }
+        }
+      };
+
+      const result = parseTopologyJson(mockTopologyJson);
+
+      expect(result).toEqual({
+        hosts: {
+          host1: {
+            '30001': 'nameserver'
+          }
+        },
+        timezone: {
+          abbreviation: '0',
+          offset: 0
+        }
+      });
+    });
   });
 });
