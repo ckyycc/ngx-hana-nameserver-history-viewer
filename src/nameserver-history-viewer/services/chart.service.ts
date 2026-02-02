@@ -210,7 +210,7 @@ export class ChartService {
         },
         interaction: {
           intersect: true, // true means must actually hover over a point
-          axis: 'x',
+          axis: 'xy',
           mode: 'index'    // when intersecting, show all datasets at the same index/x position
         },
         responsive: true,
