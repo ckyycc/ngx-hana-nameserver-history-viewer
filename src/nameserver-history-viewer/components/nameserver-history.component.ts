@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, Input, OnChanges, SimpleChanges, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, Input, Output, OnChanges, EventEmitter, SimpleChanges, ViewChild} from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
 import {
   setChartHeight,
@@ -17,6 +17,7 @@ import {
   defaultTimezone,
   blobToFile,
   isFile,
+  getHANAServiceDisplayName
 } from '../utils';
 import { Abort, Alert, HtmlElement, Item, ChartContentData, ChartContentHeader, ChartContentTime, Port } from '../types';
 import { FileService, ChartService, UIService } from '../services';
@@ -88,6 +89,17 @@ export class NameServerHistoryComponent implements OnChanges, AfterViewInit {
    * auto display the chart in stream mode
    */
   @Input() autoDisplay: boolean;
+
+  /**
+   * service port info
+   */
+  @Input() servicePortInfo: any;
+
+  /**
+   * update timezone value
+   */
+  @Output() timezoneChange = new EventEmitter<string>();
+
 
   /**
    * selected name server history file
@@ -345,6 +357,15 @@ export class NameServerHistoryComponent implements OnChanges, AfterViewInit {
   }
 
   /**
+   * Handle timezone change from timezone-selector
+   * @param newTimezone the new timezone value
+   */
+  onTimezoneChange(newTimezone: string): void {
+    this.timezone = newTimezone;
+    this.timezoneChange.emit(newTimezone);
+  }
+
+  /**
    * Switch port and reinitialize chart, triggered by changing the port
    * @param port the selected port
    */
@@ -368,7 +389,7 @@ export class NameServerHistoryComponent implements OnChanges, AfterViewInit {
         {id: HtmlElement.resetChartButton, status: false}]);
       // init the environment with switch flag
       this._initChartEnv(true).then(() => {
-        return this._buildChart(port, null, true);
+        return this._buildChart(port, null, this.servicePortInfo?.[this.host]?.[port], true);
       }).catch(e => this._showMessage(Alert.error, e));
     }
   }
@@ -510,7 +531,7 @@ export class NameServerHistoryComponent implements OnChanges, AfterViewInit {
               }
             }
             return sleep(100).then(() => {
-              return this._buildChart(port, ports);
+              return this._buildChart(port, ports, this.servicePortInfo?.[this.host]?.[port]);
             });
           });
       });
@@ -548,12 +569,13 @@ export class NameServerHistoryComponent implements OnChanges, AfterViewInit {
    * build and display the chart on page
    * @param port the selected port
    * @param ports all available ports
+   * @param service service name
    * @param switchFlag indicates whether this function is triggered from switching ports (no init port selector needed)
    */
-  private _buildChart(port: string, ports: string[], switchFlag = false): Promise<any> {
+  private _buildChart(port: string, ports: string[], service: string, switchFlag = false): Promise<any> {
     const beginTime = new Date();
     if (port) {
-      return Promise.resolve(this._loadSettingsForSelectionsTable(port))
+      return Promise.resolve(this._loadSettingsForSelectionsTable(port, service))
         .then( () => {
           // get the config
           return this.chartService.buildChart(
@@ -654,8 +676,16 @@ export class NameServerHistoryComponent implements OnChanges, AfterViewInit {
    * Load settings for the selection table (the right part of the chart)
    * @param port the selected port
    */
-  private _loadSettingsForSelectionsTable(port: string): void {
+  private _loadSettingsForSelectionsTable(port: string, service: string): void {
     this.tableSource = this.uiService.getSelectionTableRows(this._headerKey, port, this.defaultSelectedItems);
+    // replace confusing service type, issue: https://github.com/ckyycc/ngx-hana-nameserver-history-viewer/issues/14
+    // by default will replaced it with Service (port), eg: Service (30015)
+    // if topology is imported, it will be: Name Server (30001) or Index Server (30040), and so on...
+    const serviceHeader = this.tableSource.find(ts=> ts[this.kpiColumn] === 'Index Server' && ts.header);
+    if (serviceHeader) {
+      serviceHeader[this.kpiColumn] = `${getHANAServiceDisplayName(service) || 'Service'} (${port})`;
+    }
+
     this._selection = new SelectionModel(true, []);
     this.tableSource.forEach(row => {
       if (this.uiService.getDisplayItems(this._headerKey, port, this.defaultSelectedItems).includes(row.KPI)) {

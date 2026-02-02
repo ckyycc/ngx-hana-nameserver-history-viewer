@@ -1,4 +1,4 @@
-import {getAbbreviationAndOffset, getLocalStorage, getTimeZoneFromTopology, setLocalStorage} from './demo-util';
+import {getAbbreviationAndOffset, getLocalStorage, getTimeZoneFromTopology, setLocalStorage, parseHostPortServices, parseTopologyJson} from './demo-util';
 import {DemoService} from './demo-service';
 
 describe('demo-util', () => {
@@ -108,5 +108,451 @@ describe('demo-util', () => {
   });
   it('#12 getTimeZoneFromTopology: should return null if offset is null', () => {
     expect(getTimeZoneFromTopology('PST', null, service.timezoneAbbrMappings)).toEqual(null);
+  });
+
+  describe('parseHostPortServices', () => {
+    it('#13 parseHostPortServices: should parse valid topology text correctly', () => {
+      const mockTopologyText = `
+        host
+          host1
+            indexserver
+              30003
+            nameserver
+              30001
+          host2
+            indexserver
+              30003
+            xsengine
+              30007
+      `;
+
+      const result = parseHostPortServices(mockTopologyText);
+
+      expect(result).toEqual({
+        host1: {
+          '30003': 'indexserver',
+          '30001': 'nameserver'
+        },
+        host2: {
+          '30003': 'indexserver',
+          '30007': 'xsengine'
+        }
+      });
+    });
+
+    it('#14 parseHostPortServices: should handle empty text', () => {
+      const result = parseHostPortServices('');
+      expect(result).toEqual({});
+    });
+
+    it('#15 parseHostPortServices: should handle text without host section', () => {
+      const mockTopologyText = `
+        some_other_section
+          value1
+          value2
+      `;
+
+      const result = parseHostPortServices(mockTopologyText);
+      expect(result).toEqual({});
+    });
+
+    it('#16 parseHostPortServices: should ignore non-numeric ports', () => {
+      const mockTopologyText = `
+        host
+          host1
+            indexserver
+              30003
+              non_numeric_port
+            nameserver
+              30001
+      `;
+
+      const result = parseHostPortServices(mockTopologyText);
+
+      expect(result).toEqual({
+        host1: {
+          '30003': 'indexserver',
+          '30001': 'nameserver'
+        }
+      });
+    });
+
+    it('#17 parseHostPortServices: should handle lines with equals signs', () => {
+      const mockTopologyText = `
+        host
+          host1
+            indexserver
+              30003
+        timezone_name=+07
+        timezone_offset=25200
+      `;
+
+      const result = parseHostPortServices(mockTopologyText);
+
+      expect(result).toEqual({
+        host1: {
+          '30003': 'indexserver'
+        }
+      });
+    });
+
+    it('#18 parseHostPortServices: should handle empty quotes', () => {
+      const mockTopologyText = `
+        host
+          host1
+            indexserver
+              30003
+        ''
+        
+        other_section
+      `;
+
+      const result = parseHostPortServices(mockTopologyText);
+
+      expect(result).toEqual({
+        host1: {
+          '30003': 'indexserver'
+        }
+      });
+    });
+  });
+
+  describe('parseTopologyJson', () => {
+    it('#19 parseTopologyJson: should parse valid topology JSON correctly', () => {
+      const mockTopologyJson = {
+        topology: {
+          host: {
+            host1: {
+              indexserver: {
+                '30003': { info: {} },
+                '30004': { info: {} }
+              },
+              nameserver: {
+                '30001': {
+                  info: {
+                    timezone_name: 'PST',
+                    timezone_offset: -28800
+                  }
+                }
+              }
+            },
+            host2: {
+              xsengine: {
+                '30007': { info: {} }
+              }
+            }
+          }
+        }
+      };
+
+      const result = parseTopologyJson(mockTopologyJson);
+
+      expect(result).toEqual({
+        hosts: {
+          host1: {
+            '30003': 'indexserver',
+            '30004': 'indexserver',
+            '30001': 'nameserver'
+          },
+          host2: {
+            '30007': 'xsengine'
+          }
+        },
+        timezone: {
+          abbreviation: 'PST',
+          offset: -8
+        }
+      });
+    });
+
+    it('#20 parseTopologyJson: should handle empty topology JSON', () => {
+      const result = parseTopologyJson({});
+
+      expect(result).toEqual({
+        hosts: {},
+        timezone: {
+          abbreviation: null,
+          offset: null
+        }
+      });
+    });
+
+    it('#21 parseTopologyJson: should handle null/undefined input', () => {
+      expect(parseTopologyJson(null)).toEqual({
+        hosts: {},
+        timezone: {
+          abbreviation: null,
+          offset: null
+        }
+      });
+
+      expect(parseTopologyJson(undefined)).toEqual({
+        hosts: {},
+        timezone: {
+          abbreviation: null,
+          offset: null
+        }
+      });
+    });
+
+    it('#22 parseTopologyJson: should ignore non-numeric ports', () => {
+      const mockTopologyJson = {
+        topology: {
+          host: {
+            host1: {
+              indexserver: {
+                '30003': { info: {} },
+                'non_numeric': { info: {} },
+                'another_string': { info: {} }
+              }
+            }
+          }
+        }
+      };
+
+      const result = parseTopologyJson(mockTopologyJson);
+
+      expect(result).toEqual({
+        hosts: {
+          host1: {
+            '30003': 'indexserver'
+          }
+        },
+        timezone: {
+          abbreviation: null,
+          offset: null
+        }
+      });
+    });
+
+    it('#23 parseTopologyJson: should handle invalid timezone_offset', () => {
+      const mockTopologyJson = {
+        topology: {
+          host: {
+            host1: {
+              nameserver: {
+                '30001': {
+                  info: {
+                    timezone_name: 'PST',
+                    timezone_offset: 'invalid_number'
+                  }
+                }
+              }
+            }
+          }
+        }
+      };
+
+      const result = parseTopologyJson(mockTopologyJson);
+
+      expect(result).toEqual({
+        hosts: {
+          host1: {
+            '30001': 'nameserver'
+          }
+        },
+        timezone: {
+          abbreviation: 'PST',
+          offset: null
+        }
+      });
+    });
+
+    it('#24 parseTopologyJson: should get timezone from first nameserver found', () => {
+      const mockTopologyJson = {
+        topology: {
+          host: {
+            host1: {
+              indexserver: {
+                '30003': { info: {} }
+              },
+              nameserver: {
+                '30001': {
+                  info: {
+                    timezone_name: 'PST',
+                    timezone_offset: -28800
+                  }
+                }
+              }
+            },
+            host2: {
+              nameserver: {
+                '30001': {
+                  info: {
+                    timezone_name: 'EST',
+                    timezone_offset: -18000
+                  }
+                }
+              }
+            }
+          }
+        }
+      };
+
+      const result = parseTopologyJson(mockTopologyJson);
+
+      expect(result.timezone).toEqual({
+        abbreviation: 'PST',
+        offset: -8
+      });
+    });
+
+    it('#25 parseTopologyJson: should handle missing topology structure', () => {
+      const mockTopologyJson = {
+        other_data: {
+          some_value: 'test'
+        }
+      };
+
+      const result = parseTopologyJson(mockTopologyJson);
+
+      expect(result).toEqual({
+        hosts: {},
+        timezone: {
+          abbreviation: null,
+          offset: null
+        }
+      });
+    });
+
+    it('#26 parseTopologyJson: should handle negative timezone offset correctly', () => {
+      const mockTopologyJson = {
+        topology: {
+          host: {
+            host1: {
+              nameserver: {
+                '30001': {
+                  info: {
+                    timezone_name: '-04',
+                    timezone_offset: -14400
+                  }
+                }
+              }
+            }
+          }
+        }
+      };
+
+      const result = parseTopologyJson(mockTopologyJson);
+
+      expect(result).toEqual({
+        hosts: {
+          host1: {
+            '30001': 'nameserver'
+          }
+        },
+        timezone: {
+          abbreviation: '-04',
+          offset: -4
+        }
+      });
+    });
+
+    it('#27 parseTopologyJson: should handle positive timezone offset correctly', () => {
+      const mockTopologyJson = {
+        topology: {
+          host: {
+            host1: {
+              nameserver: {
+                '30001': {
+                  info: {
+                    timezone_name: '+08',
+                    timezone_offset: 28800
+                  }
+                }
+              }
+            }
+          }
+        }
+      };
+
+      const result = parseTopologyJson(mockTopologyJson);
+
+      expect(result).toEqual({
+        hosts: {
+          host1: {
+            '30001': 'nameserver'
+          }
+        },
+        timezone: {
+          abbreviation: '+08',
+          offset: 8
+        }
+      });
+    });
+  });
+
+  describe('getAbbreviationAndOffset - additional timezone cases', () => {
+    it('#28 getAbbreviationAndOffset: should handle negative timezone correctly', () => {
+      const content = `
+            ssfs_masterkey_changed=01.01.1970 07:00:00
+            ssfs_masterkey_systempki_changed=01.01.1970 07:00:00
+            start_time=2018-12-01 17:11:10.685
+            timezone_name=-04
+            timezone_offset=-14400
+            topology_mem_info=<ok>
+            topology_mem_type=shared
+          pid=36214
+          start_time=2018-12-01 17:11:10.685
+          stonith=yes
+          volume=1
+      preprocessor
+      `;
+      expect(getAbbreviationAndOffset(content)).toEqual({abbreviation: '-04', offset: -4});
+    });
+
+    it('#29 getAbbreviationAndOffset: should handle positive timezone correctly', () => {
+      const content = `
+            ssfs_masterkey_changed=01.01.1970 07:00:00
+            ssfs_masterkey_systempki_changed=01.01.1970 07:00:00
+            start_time=2018-12-01 17:11:10.685
+            timezone_name=+08
+            timezone_offset=28800
+            topology_mem_info=<ok>
+            topology_mem_type=shared
+          pid=36214
+          start_time=2018-12-01 17:11:10.685
+          stonith=yes
+          volume=1
+      preprocessor
+      `;
+      expect(getAbbreviationAndOffset(content)).toEqual({abbreviation: '+08', offset: 8});
+    });
+
+    it('#30 getAbbreviationAndOffset: should handle zero timezone correctly', () => {
+      const content = `
+            ssfs_masterkey_changed=01.01.1970 07:00:00
+            ssfs_masterkey_systempki_changed=01.01.1970 07:00:00
+            start_time=2018-12-01 17:11:10.685
+            timezone_name=+00
+            timezone_offset=0
+            topology_mem_info=<ok>
+            topology_mem_type=shared
+          pid=36214
+          start_time=2018-12-01 17:11:10.685
+          stonith=yes
+          volume=1
+      preprocessor
+      `;
+      expect(getAbbreviationAndOffset(content)).toEqual({abbreviation: '+00', offset: 0});
+    });
+
+    it('#31 getAbbreviationAndOffset: should handle fractional timezone offset', () => {
+      const content = `
+            ssfs_masterkey_changed=01.01.1970 07:00:00
+            ssfs_masterkey_systempki_changed=01.01.1970 07:00:00
+            start_time=2018-12-01 17:11:10.685
+            timezone_name=+05:30
+            timezone_offset=19800
+            topology_mem_info=<ok>
+            topology_mem_type=shared
+          pid=36214
+          start_time=2018-12-01 17:11:10.685
+          stonith=yes
+          volume=1
+      preprocessor
+      `;
+      expect(getAbbreviationAndOffset(content)).toEqual({abbreviation: '+05:30', offset: 5.5});
+    });
   });
 });

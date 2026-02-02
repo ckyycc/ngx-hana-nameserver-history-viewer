@@ -13,6 +13,27 @@ const _IGNORED_LINE_FROM_TAIL = 1;
  */
 const _NON_INDEX_SERVER_PORTS = ['01', '02', '04', '05', '06', '07', '10', '11', '12', '29'];
 
+const _HANA_SERVICES = {
+  indexserver: 'Index Server',
+  nameserver: 'Name Server',
+  compileserver: 'Compile Server',
+  preprocessor: 'Preprocessor Server',
+  webdispatcher: 'SAP Web Dispatcher',
+  scriptserver: 'Script Server',
+  docstore: 'Document Store Server',
+  diserver: 'HDI Server',
+  xsengine: 'XS Classic Server',
+  esserver: 'Extended Store Server',
+  dpserver: 'Data Provisioning Server',
+  streamingserver: 'Streaming Cluster',
+  etsserver: 'Accelerator for SAP ASE',
+  xscontroller: 'SAP HANA XS Controller',
+  xsexecagent: 'SAP HANA XS Execution Agent',
+  xsuaaserver: 'SAP HANA XS UAA'
+};
+
+export const getHANAServiceDisplayName = (s?: string) => (s ? (_HANA_SERVICES[s] ?? s) : "");
+
 /**
  * Get the ignored line number from tail (For some reason, hana studio will abandon the last line of nameserver history trace file).
  */

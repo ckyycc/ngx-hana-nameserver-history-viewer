@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {getAbbreviationAndOffset, getLocalStorage, getTimeZoneFromTopology, setLocalStorage, TimeZoneAbbrOffset} from './demo-util';
+import {getAbbreviationAndOffset, getLocalStorage, getTimeZoneFromTopology, setLocalStorage, TimeZoneAbbrOffset, parseHostPortServices, parseTopologyJson} from './demo-util';
 import {DemoService} from './demo-service';
 import {Alert} from '../nameserver-history-viewer/types';
 import { DropdownListComponent } from 'ngx-dropdown-list';
@@ -73,6 +73,11 @@ export class AppComponent implements OnInit {
    */
   alertType: Alert;
 
+  /**
+   * host service port info
+   */
+  hostPortServiceInfo: any;
+
   constructor(private service: DemoService) {}
 
   ngOnInit() {
@@ -116,21 +121,61 @@ export class AppComponent implements OnInit {
   /**
    * select topology file
    */
-  browseFiles(event) {
+  browseFiles(event: Event): void {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+
     const reader = new FileReader();
-    reader.onload = (e: any) => {
-      const fileContent = e.target.result;
-      const {abbreviation, offset}: TimeZoneAbbrOffset = getAbbreviationAndOffset(fileContent);
-      const timezone = getTimeZoneFromTopology(abbreviation, offset, this.service.timezoneAbbrMappings);
-      if (timezone != null && timezone.length > 0) {
-        this.timezone = timezone;
-        this._showMessage(Alert.info, `Timezone is changed to ${this.timezone} based on (${abbreviation}, ${offset * 3600})`);
-      } else {
-        this._showMessage(Alert.warning,
-          'Can not find the timezone information from the provided file, please choose correct "topology.txt" from full system dump.');
-      }
-    };
-    reader.readAsText(event.target.files[0]);
+    reader.onload = (e) => this._processFileContent(e.target?.result as string);
+    reader.readAsText(file);
+  }
+
+  /**
+   * Process the uploaded file content
+   */
+  private _processFileContent(fileContent: string): void {
+    const { hosts, timezone } = this._parseFileContent(fileContent);
+    
+    this.hostPortServiceInfo = hosts;
+    console.log(this.hostPortServiceInfo);
+    
+    this._updateTimezone(timezone.abbreviation, timezone.offset);
+  }
+
+  /**
+   * Parse file content (JSON or text format)
+   */
+  private _parseFileContent(fileContent: string): { hosts: any, timezone: { abbreviation: string, offset: number } } {
+    try {
+      // Try parsing as JSON first
+      const jsonContent = JSON.parse(fileContent);
+      const result = parseTopologyJson(jsonContent);
+      return {
+        hosts: result.hosts,
+        timezone: result.timezone
+      };
+    } catch {
+      // Fall back to text parsing
+      const timezone = getAbbreviationAndOffset(fileContent);
+      return {
+        hosts: parseHostPortServices(fileContent),
+        timezone
+      };
+    }
+  }
+
+  /**
+   * Update timezone based on parsed information
+   */
+  private _updateTimezone(abbreviation: string, offset: number): void {
+    const timezone = getTimeZoneFromTopology(abbreviation, offset, this.service.timezoneAbbrMappings);
+    if (timezone?.length > 0) {
+      this.timezone = timezone;
+      this._showMessage(Alert.info, `Timezone is changed to ${this.timezone} based on (${abbreviation}, ${offset * 3600})`);
+    } else {
+      this._showMessage(Alert.warning,
+        'Can not find the timezone information from the provided file, please choose correct "topology.txt" or "nameserver_topology_<host>.json" from full system dump.');
+    }
   }
 
   /**
