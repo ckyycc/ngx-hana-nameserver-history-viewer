@@ -24,7 +24,11 @@
             "tsConfig": "src/tsconfig.app.json",
             "assets": ["src/assets"],
             "styles": [],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": [
+              "papaparse",
+              "hammerjs"
+            ]
           },
           "configurations": {
             "production": {
